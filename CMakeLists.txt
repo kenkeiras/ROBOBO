@@ -3,9 +3,8 @@ project(udc_robot_control_java)
 
 find_package(catkin REQUIRED rosjava_core std_msgs message_generation)
 
-catkin_rosjava_setup()
 
-catkin_package(CATKIN_DEPENDS message_runtime)
+catkin_rosjava_setup()
 
 add_message_files(
   FILES
@@ -15,5 +14,14 @@ add_message_files(
   Led.msg  
   RobotAction.msg
 )
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+
+
+catkin_package(CATKIN_DEPENDS message_runtime)
 
 

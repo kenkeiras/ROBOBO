@@ -11,6 +11,7 @@ public abstract class Constantes {
 
     // Nombres para los nodos
     public static final String NODE_COMMANDS    = "commands";
+    public static final String NODE_IR_SENSORS  = "irsensors";
     public static final String NODE_AUDIO       = "audio";
     public static final String NODE_BATERY      = "batery";
     public static final String NODE_IMAGE       = "image";
@@ -29,6 +30,7 @@ public abstract class Constantes {
 
     // Nombres para las colas
     public static final String TOPIC_COMMANDS    = "commands";
+    public static final String TOPIC_IR_SENSORS  = "irsensors";
     public static final String TOPIC_AUDIO       = "audio";
     public static final String TOPIC_BATERY      = "batery";
     public static final String TOPIC_IMAGE       = "image";
@@ -44,21 +46,6 @@ public abstract class Constantes {
     public static final String TOPIC_PRESSURE    = "pressure";
     public static final String TOPIC_ILLUMINANCE = "illuminance";
 
-    /*
-                AudioData._TYPE,
-            BateryStatus._TYPE,
-            CompressedImage._TYPE,
-            CameraInfo._TYPE,
-            NavSatFix._TYPE,
-            Imu._TYPE, // acelerometro
-            Imu._TYPE, // gyroscopio
-            Imu._TYPE, // quat
-            Imu._TYPE, // imu
-            MagneticField._TYPE,
-            Range._TYPE,
-            Temperature._TYPE,
-            FluidPressure._TYPE,
-            Illuminance._TYPE
-     */
+
 
 }

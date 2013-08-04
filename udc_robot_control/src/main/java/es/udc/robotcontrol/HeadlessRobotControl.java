@@ -25,6 +25,8 @@ import org.ros.node.NodeMain;
 import sensor_msgs.*;
 import udc_robot_control_java.ActionCommand;
 import udc_robot_control_java.BateryStatus;
+import udc_robot_control_java.Led;
+import udc_robot_control_java.SensorStatus;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +41,8 @@ public class HeadlessRobotControl implements NodeMain {
     private String robotName;
 
     private RosListener notificador;
+
+    private ConnectedNode cn;
 
     /**
      * Subscriptores a las colas de mensajes emitidos por el robot
@@ -64,7 +68,8 @@ public class HeadlessRobotControl implements NodeMain {
             Range._TYPE,
             Temperature._TYPE,
             FluidPressure._TYPE,
-            Illuminance._TYPE
+            Illuminance._TYPE,
+            SensorStatus._TYPE
     };
 
     // Nombres de las colas en las que escribe el robot.
@@ -82,7 +87,8 @@ public class HeadlessRobotControl implements NodeMain {
             Constantes.TOPIC_RANGE,
             Constantes.TOPIC_TEMPERATURE,
             Constantes.TOPIC_PRESSURE,
-            Constantes.TOPIC_ILLUMINANCE
+            Constantes.TOPIC_ILLUMINANCE,
+            Constantes.TOPIC_IR_SENSORS
     };
 
 
@@ -103,6 +109,7 @@ public class HeadlessRobotControl implements NodeMain {
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
+        cn = connectedNode;
         for (int i = 0; i < listaSubs.length; i++) {
             listaSubs[i] = new GeneralSubscriber(this, msgTypes[i]);
             listaSubs[i].conectar(connectedNode, nombreCola(topicNames[i]));
@@ -142,6 +149,10 @@ public class HeadlessRobotControl implements NodeMain {
 
     public ActionCommand newCommand() {
         return publisher.newMsg();
+    }
+
+    public Led newLed() {
+        return cn.getTopicMessageFactory().newFromType(Led._TYPE);
     }
 
     public void sendCommand(ActionCommand msg) {

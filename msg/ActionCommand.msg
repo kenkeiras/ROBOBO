@@ -1,9 +1,9 @@
 # Define un mensaje con ordenes para el robot
-# Las posibles órdenes incluyen:
+# Las posibles ordenes incluyen:
 #  * Parar o arrancar publishers
 #  * Enceder o apagar leds
 #  * Configurar el modo de accion de los motores
-# Ver clase CommandListener para una descripción completa de los posibles comandos y sus efectos
+# Ver clase CommandListener para una descripcion completa de los posibles comandos y sus efectos
 #
 int32 CMD_RESET           = 0 # Resetea el estado del robot, detiene motores y apaga leds
 int32 CMD_HARD_RESET      = 1 # Resetea el estado del robot, detiene motores apaga leds y desactiva todos los publishers
@@ -14,35 +14,27 @@ int32 CMD_SET_ENGINES     = 5 # Fija los motores
 
 
 
-int32 PUBLISHER_BATERY      = 0   # Publisher de batería
-int32 PUBLISHER_GPS         = 1   # Publisher de posición (no solo GPS)
-int32 PUBLISHER_ACCEL       = 2   # Publisher de acelerómetro
+int32 PUBLISHER_BATERY      = 0   # Publisher de bateria
+int32 PUBLISHER_GPS         = 1   # Publisher de posicion (no solo GPS)
+int32 PUBLISHER_ACCEL       = 2   # Publisher de acelerometro
 int32 PUBLISHER_GYRO        = 3   # Publisher de giroscopio
 int32 PUBLISHER_ANGULAR     = 4   # Publisher de velocidad angular (quat)
 int32 PUBLISHER_IMU         = 5   # Publisher de Inertial Measure Unit (ACCEL + GYRO + ANGULAR)
-int32 PUBLISHER_MAG         = 6   # Publisher de magnetómetro (brújula)
+int32 PUBLISHER_MAG         = 6   # Publisher de magnetometro (brujula)
 int32 PUBLISHER_PROXIMITY   = 7   # Publisher de proximidad
 int32 PUBLISHER_TEMPERATURE = 8   # Publisher de temperatura
-int32 PUBLISHER_ILLUMINANCE = 9   # Publisher de iluminación
-int32 PUBLISHER_PRESSURE    = 10  # Publisher de presión de fluidos (barómetro)
+int32 PUBLISHER_ILLUMINANCE = 9   # Publisher de iluminacion
+int32 PUBLISHER_PRESSURE    = 10  # Publisher de presion de fluidos (barometro)
 int32 PUBLISHER_AUDIO       = 11  # Publisher de audio
 int32 PUBLISHER_VIDEO       = 12  # Publisher de video
 
 
 Header  header
 
-int32  command # Comando. Ver constantes CMD_xxx
+int32  command  # Comando. Ver constantes CMD_xxx
 int32 publisher # Publisher para arrancar/detener
 Engines engines # Motores
-Led   led0      # Led
-Led   led1      # Led
-Led   led2      # Led
-Led   led3      # Led
-Led   led4      # Led
-Led   led5      # Led
-Led   led6      # Led
-Led   led7      # Led
-Led   led8      # Led
+Led[] leds      # Array de leds
 
 int32 param0       # Parametros opciones
 int32 param1

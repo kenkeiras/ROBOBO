@@ -1,4 +1,4 @@
-# Define un mensaje completo de acción para el robot
+# Define un mensaje completo de accion para el robot
 Header  header
 
 int32 modoMotor      # Modo motor
