@@ -23,6 +23,7 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import sensor_msgs.*;
+import udc_robot_control_java.ActionCommand;
 import udc_robot_control_java.BateryStatus;
 
 /**
@@ -43,6 +44,10 @@ public class HeadlessRobotControl implements NodeMain {
      * Subscriptores a las colas de mensajes emitidos por el robot
      */
     private GeneralSubscriber[] listaSubs;
+    /**
+     * Publicador de mensajes
+     */
+    private CommandsPublisher publisher;
 
     // Tipos de mensajes emitidos por el robot
     private String[] msgTypes = {
@@ -83,7 +88,7 @@ public class HeadlessRobotControl implements NodeMain {
 
     public HeadlessRobotControl(String rName) {
         super();
-        robotName = rName;
+        setRobotName(rName);
         listaSubs = new GeneralSubscriber[msgTypes.length];
     }
 
@@ -102,10 +107,13 @@ public class HeadlessRobotControl implements NodeMain {
             listaSubs[i] = new GeneralSubscriber(this, msgTypes[i]);
             listaSubs[i].conectar(connectedNode, nombreCola(topicNames[i]));
         }
+        publisher = new CommandsPublisher(this);
+        publisher.conectar(connectedNode, nombreCola(Constantes.TOPIC_COMMANDS));
     }
 
     @Override
     public void onShutdown(Node node) {
+        publisher.desconectar();
         for (int i = 0 ; i < listaSubs.length; i++) {
             if (listaSubs[i] != null) {
                 listaSubs[i].desconectar();
@@ -132,9 +140,25 @@ public class HeadlessRobotControl implements NodeMain {
         }
     }
 
+    public ActionCommand newCommand() {
+        return publisher.newMsg();
+    }
+
+    public void sendCommand(ActionCommand msg) {
+        publisher.publicar(msg);
+    }
 
 
     private String nombreCola(String topicName) {
-        return robotName + "/" + topicName;
+        return getRobotName() + "/" + topicName;
+    }
+
+
+    public String getRobotName() {
+        return robotName;
+    }
+
+    public void setRobotName(String robotName) {
+        this.robotName = robotName;
     }
 }

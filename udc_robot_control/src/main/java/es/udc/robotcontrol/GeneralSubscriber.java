@@ -4,7 +4,6 @@ import org.ros.internal.message.Message;
 import org.ros.message.MessageListener;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Subscriber;
-import udc_robot_control_java.BateryStatus;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +18,8 @@ public class GeneralSubscriber  {
     private HeadlessRobotControl padre;
 
     private String messageTypeName;
-    private Subscriber subscriber;
+
+    private Subscriber<Message> subscriber;
 
 
     public GeneralSubscriber(HeadlessRobotControl papa, String messageTypeName) {
@@ -32,16 +32,16 @@ public class GeneralSubscriber  {
     public void conectar(ConnectedNode cn, String tn) {
         try {
             subscriber = cn.newSubscriber(tn, messageTypeName);
-            subscriber.addMessageListener(new MessageListener() {
+            subscriber.addMessageListener(new MessageListener<Message>() {
                 @Override
-                public void onNewMessage(Object o) {
-                    Message m = (Message) o;
+                public void onNewMessage(Message m) {
                     padre.notifyMsg(m);
                 }
             });
 
         }
         catch (Exception ex) {
+            // TODO: Manejar la excepción
             ex.printStackTrace();
         }
     }
