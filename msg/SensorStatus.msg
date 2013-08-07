@@ -1,8 +1,7 @@
 # Export the sensors status of the robot
-
-
 Header  header
 
+int32 sIr0
 int32 sIr1
 int32 sIr2
 int32 sIr3
