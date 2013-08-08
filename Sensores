@@ -1,0 +1,30 @@
+
+Pendientes:
+
+-          Micrófono
+-          Intensidad señal datos*
+-          Intensidad señal GPS*
+
+
+
+
+
+Listos:
+
+-          Nivel de batería
+-          Barómetro (Fluid Pressure)
+-          Acelerómetro (IMU)
+-          Sensor de luz ambiental (Illuminance)
+-          Giróscopo (IMU)
+-          Magnetómetro (MagneticField)
+-          GPS (NavSatFix)
+-          Sensor de proximidad
+-          Cámaras
+
+
+
+
+TODO: Modificar sensores (añadir todos los de http://developer.android.com/reference/android/hardware/SensorEvent.html#values)
+TODO: Detector de choques
+TODO: Parpadeo de leds
+

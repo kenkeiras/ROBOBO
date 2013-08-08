@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Amancio Diaz
+ * Copyright (C) 2013 Amancio Díaz Suárez
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,9 +14,20 @@
  * the License.
  */
 
-/* Uncomment these and add your own packages to be gradled
-include 'my_android_project'
-include 'my_android_library_project'
-*/
+package es.udc.fic.android.robot_control.utils;
 
-include 'ros_control'
+
+/**
+ * Created by kerry on 9/07/13.
+ */
+public final class C {
+
+    // Tag for the log
+    public static final String TAG = "UDC";
+    public static final String CMD_TAG = "UDC_CMD";
+    public static final String ROBOT_TAG = "UDC_ROBOT";
+
+    // Default base name for gadgets Graphname
+    public static final String DefaultBaseNodeName = "udc_robot/";
+
+}
