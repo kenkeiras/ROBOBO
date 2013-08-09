@@ -23,10 +23,8 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import sensor_msgs.*;
-import udc_robot_control_java.ActionCommand;
-import udc_robot_control_java.BateryStatus;
-import udc_robot_control_java.Led;
-import udc_robot_control_java.SensorStatus;
+import sensor_msgs.RelativeHumidity;
+import udc_robot_control_java.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,15 +58,22 @@ public class HeadlessRobotControl implements NodeMain {
             CompressedImage._TYPE,
             CameraInfo._TYPE,
             NavSatFix._TYPE,
-            Imu._TYPE, // acelerometro
-            Imu._TYPE, // gyroscopio
-            Imu._TYPE, // quat
             Imu._TYPE, // imu
+            AndroidSensor3._TYPE, // acelerometro
             MagneticField._TYPE,
-            Range._TYPE,
-            Temperature._TYPE,
-            FluidPressure._TYPE,
+            AndroidSensor3._TYPE, // gyroscopio
             Illuminance._TYPE,
+            FluidPressure._TYPE,
+            Range._TYPE,
+            AndroidSensor3._TYPE, // gravity
+            AndroidSensor3._TYPE, // lineal acceleration
+            AndroidSensor4._TYPE,  // rotation vector
+            AndroidSensor3._TYPE, // orientacion
+            RelativeHumidity._TYPE, //
+            Temperature._TYPE,
+            MagneticField._TYPE, // Magnetic field uncalibrated
+            AndroidSensor4._TYPE, // Game Rotation Vector
+            AndroidSensor3._TYPE, // giroscope uncalibrated
             SensorStatus._TYPE
     };
 
@@ -79,15 +84,22 @@ public class HeadlessRobotControl implements NodeMain {
             Constantes.TOPIC_IMAGE,
             Constantes.TOPIC_CAMERA_INFO,
             Constantes.TOPIC_NAV_SAT_FIX,
-            Constantes.TOPIC_ACEL,
-            Constantes.TOPIC_GYRO,
-            Constantes.TOPIC_ROTATION,
             Constantes.TOPIC_IMU,
-            Constantes.TOPIC_MAGNETIC,
-            Constantes.TOPIC_RANGE,
-            Constantes.TOPIC_TEMPERATURE,
+            Constantes.TOPIC_ACCELEROMETER,
+            Constantes.TOPIC_MAGNETIC_FIELD,
+            Constantes.TOPIC_GYROSCOPE,
+            Constantes.TOPIC_LIGHT,
             Constantes.TOPIC_PRESSURE,
-            Constantes.TOPIC_ILLUMINANCE,
+            Constantes.TOPIC_PROXIMITY,
+            Constantes.TOPIC_GRAVITY,
+            Constantes.TOPIC_LINEAL_ACCELERATION,
+            Constantes.TOPIC_ROTATION_VECTOR,
+            Constantes.TOPIC_ORIENTATION,
+            Constantes.TOPIC_RELATIVE_HUMIDITY,
+            Constantes.TOPIC_AMBIENT_TEMPERATURE,
+            Constantes.TOPIC_MAGNETIC_FIELD_UNCALIBRATED,
+            Constantes.TOPIC_GAME_ROTATION_VECTOR,
+            Constantes.TOPIC_GYROSCOPE_UNCALIBRATED,
             Constantes.TOPIC_IR_SENSORS
     };
 
