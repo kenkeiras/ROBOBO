@@ -19,38 +19,39 @@ package es.udc.fic.android.robot_control.sensors;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.os.SystemClock;
 import es.udc.robotcontrol.utils.Constantes;
+import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import udc_robot_control_java.AndroidSensor3;
+import sensor_msgs.Illuminance;
+import sensor_msgs.RelativeHumidity;
 
 
-public class AccelerometerPublisher extends AbstractSensorsPublisher {
+public class RelativeHumidityPublisher extends AbstractSensorsPublisher {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_ACCELEROMETER;
+    private static String QUEUE_NAME = Constantes.TOPIC_RELATIVE_HUMIDITY;
 
-
-    public AccelerometerPublisher(Context ctx, String robotName) {
+    public RelativeHumidityPublisher(Context ctx, String robotName) {
         super(ctx, robotName);
     }
 
 
     @Override
     protected int getSensorType() {
-        return Sensor.TYPE_ACCELEROMETER;
+        return Sensor.TYPE_RELATIVE_HUMIDITY;
     }
-
 
     @Override
     protected Publisher createPublisher(ConnectedNode n) {
         String queueName = robotName + "/" + QUEUE_NAME;
-        return n.newPublisher(queueName, AndroidSensor3._TYPE);
+        return n.newPublisher(queueName, RelativeHumidity._TYPE);
     }
 
     @Override
     protected AbstractSensorEventListener createListener(Publisher p) {
         Sensor sensor = sensorManager.getDefaultSensor(getSensorType());
-        AcelSensorListener pl = new AcelSensorListener(p, sensor);
+        RelativeHumidityListener pl = new RelativeHumidityListener(sensor, p);
         return pl;
     }
 
@@ -59,16 +60,25 @@ public class AccelerometerPublisher extends AbstractSensorsPublisher {
         return QUEUE_NAME;
     }
 
-    private class AcelSensorListener extends AbstractSensorEventListener {
+    protected class RelativeHumidityListener extends AbstractSensorEventListener {
 
-        protected AcelSensorListener(Publisher publisher, Sensor s) {
-            super(s, publisher);
+        public RelativeHumidityListener(Sensor s, Publisher p) {
+            super(s,p);
         }
 
-        //	@Override
+        @Override
         public void onSensorChanged(SensorEvent event) {
-            sensorChangedSensor3(event, robotName, getSensorType());
+            if(event.sensor.getType() == getSensorType()) {
+                Illuminance msg = (Illuminance) this.publisher.newMessage();
+                long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
+                msg.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
+                msg.getHeader().setFrameId(robotName);
+                msg.setIlluminance(event.values[0]);
+                msg.setVariance(0.0);
+                publisher.publish(msg);
+            }
         }
-    }
 
+
+    }
 }

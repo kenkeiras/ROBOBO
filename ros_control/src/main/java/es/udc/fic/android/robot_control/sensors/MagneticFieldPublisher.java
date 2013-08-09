@@ -29,7 +29,7 @@ import sensor_msgs.MagneticField;
 
 public class MagneticFieldPublisher extends AbstractSensorsPublisher {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_MAGNETIC;
+    private static String QUEUE_NAME = Constantes.TOPIC_MAGNETIC_FIELD;
 
     public MagneticFieldPublisher(Context ctx, String robotName) {
         super(ctx, robotName);
@@ -77,7 +77,7 @@ public class MagneticFieldPublisher extends AbstractSensorsPublisher {
                 msg.getMagneticField().setY(event.values[1]/1e6);
                 msg.getMagneticField().setZ(event.values[2]/1e6);
 
-                double[] tmpCov = {0,0,0, 0,0,0, 0,0,0}; // TODO Make Parameter
+                double[] tmpCov = {0,0,0, 0,0,0, 0,0,0};
                 msg.setMagneticFieldCovariance(tmpCov);
 
                 publisher.publish(msg);

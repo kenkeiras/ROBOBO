@@ -24,26 +24,36 @@ import es.udc.robotcontrol.utils.Constantes;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import sensor_msgs.FluidPressure;
+import udc_robot_control_java.AndroidSensor3;
 
 
-public class FluidPressurePublisher extends AbstractSensorsPublisher {
+public class LinearAccelerationPublisher extends AbstractSensorsPublisher {
 
-    private String QUEUE_NAME = Constantes.TOPIC_PRESSURE;
+    private static String QUEUE_NAME = Constantes.TOPIC_LINEAL_ACCELERATION;
+            ;
 
-    public FluidPressurePublisher(Context ctx, String robotName) {
+    public LinearAccelerationPublisher(Context ctx, String robotName) {
         super(ctx, robotName);
     }
 
+
     @Override
     protected int getSensorType() {
-        return Sensor.TYPE_PRESSURE;
+        return Sensor.TYPE_LINEAR_ACCELERATION;
     }
+
 
     @Override
     protected Publisher createPublisher(ConnectedNode n) {
         String queueName = robotName + "/" + QUEUE_NAME;
-        return n.newPublisher(queueName, FluidPressure._TYPE);
+        return n.newPublisher(queueName, AndroidSensor3._TYPE);
+    }
+
+    @Override
+    protected AbstractSensorEventListener createListener(Publisher p) {
+        Sensor sensor = sensorManager.getDefaultSensor(getSensorType());
+        AcelSensorListener pl = new AcelSensorListener(p, sensor);
+        return pl;
     }
 
     @Override
@@ -51,36 +61,16 @@ public class FluidPressurePublisher extends AbstractSensorsPublisher {
         return QUEUE_NAME;
     }
 
-    @Override
-    protected AbstractSensorEventListener createListener(Publisher p) {
-        Sensor sensor = sensorManager.getDefaultSensor(getSensorType());
-        FluidPressureListener pl = new FluidPressureListener(sensor, p);
-        return pl;
-    }
+    private class AcelSensorListener extends AbstractSensorEventListener {
 
-
-    protected class FluidPressureListener extends AbstractSensorEventListener {
-
-        private FluidPressureListener(Sensor s, Publisher p) {
-            super(s, p);
+        protected AcelSensorListener(Publisher publisher, Sensor s) {
+            super(s, publisher);
         }
 
-
-        @Override
+        //	@Override
         public void onSensorChanged(SensorEvent event) {
-            if(event.sensor.getType() == Sensor.TYPE_PRESSURE) {
-                FluidPressure msg = (FluidPressure) this.publisher.newMessage();
-                long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
-                msg.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
-                msg.getHeader().setFrameId(robotName);
-                msg.setFluidPressure(100.0*event.values[0]); // Reported in hPa, need to output in Pa
-                msg.setVariance(0.0);
-
-                publisher.publish(msg);
-            }
+            sensorChangedSensor3(event, robotName, getSensorType());
         }
-
     }
-
 
 }

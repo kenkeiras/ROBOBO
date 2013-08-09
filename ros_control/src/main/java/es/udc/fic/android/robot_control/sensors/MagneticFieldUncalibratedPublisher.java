@@ -24,33 +24,32 @@ import es.udc.robotcontrol.utils.Constantes;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import sensor_msgs.Range;
+import sensor_msgs.MagneticField;
 
 
-public class ProximityPublisher extends AbstractSensorsPublisher {
+public class MagneticFieldUncalibratedPublisher extends AbstractSensorsPublisher {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_PROXIMITY;
+    private static String QUEUE_NAME = Constantes.TOPIC_MAGNETIC_FIELD_UNCALIBRATED;
 
-    public ProximityPublisher(Context ctx, String robotName) {
+    public MagneticFieldUncalibratedPublisher(Context ctx, String robotName) {
         super(ctx, robotName);
     }
 
-
     @Override
     protected int getSensorType() {
-        return Sensor.TYPE_PROXIMITY;
+        return Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED;
     }
 
     @Override
     protected Publisher createPublisher(ConnectedNode n) {
         String queueName = robotName + "/" + QUEUE_NAME;
-        return n.newPublisher(queueName, Range._TYPE);
+        return n.newPublisher(queueName, MagneticField._TYPE);
     }
 
     @Override
-    protected AbstractSensorEventListener createListener(Publisher p) {
-        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        ProximityListener pl = new ProximityListener(sensor, p);
+    protected AbstractSensorEventListener createListener(Publisher P) {
+        Sensor sensor = sensorManager.getDefaultSensor(getSensorType());
+        MagneticFieldListener pl = new MagneticFieldListener(sensor, P);
         return pl;
     }
 
@@ -59,26 +58,30 @@ public class ProximityPublisher extends AbstractSensorsPublisher {
         return QUEUE_NAME;
     }
 
+    protected class MagneticFieldListener extends AbstractSensorEventListener {
 
-    protected class ProximityListener extends AbstractSensorEventListener {
-
-        public ProximityListener(Sensor s, Publisher p) {
+        public MagneticFieldListener(Sensor s, Publisher p) {
             super(s, p);
         }
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                Range msg = (Range) this.publisher.newMessage();
+            if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED)
+            {
+                MagneticField msg = (MagneticField) this.publisher.newMessage();
                 long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
                 msg.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
                 msg.getHeader().setFrameId(robotName);
-                msg.setRange(event.values[0]);
-                msg.setMaxRange(event.sensor.getMaximumRange());
-                msg.setMinRange(0);
-                this.publisher.publish(msg);
+
+                msg.getMagneticField().setX(event.values[0]);
+                msg.getMagneticField().setY(event.values[1]);
+                msg.getMagneticField().setZ(event.values[2]);
+
+                double[] tmpCov = {event.values[3],event.values[4],event.values[5]};
+                msg.setMagneticFieldCovariance(tmpCov);
+
+                publisher.publish(msg);
             }
         }
     }
-
 }

@@ -29,12 +29,12 @@ import org.ros.node.topic.Publisher;
 import sensor_msgs.Temperature;
 
 
-public class TemperaturePublisher extends AbstractSensorsPublisher {
+public class AmbientTemperaturePublisher extends AbstractSensorsPublisher {
     private int sensorType;
 
-    private String QUEUE_NAME = Constantes.TOPIC_TEMPERATURE;
+    private String QUEUE_NAME = Constantes.TOPIC_AMBIENT_TEMPERATURE;
 
-    public TemperaturePublisher(Context ctx, String robotName) {
+    public AmbientTemperaturePublisher(Context ctx, String robotName) {
         super(ctx, robotName);
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 
@@ -115,11 +115,11 @@ public class TemperaturePublisher extends AbstractSensorsPublisher {
          */
         @Override
         public void onSensorChanged(SensorEvent event) {
-            if(event.sensor.getType() == sensorType) {
+            if(event.sensor.getType() == getSensorType()) {
                 Temperature msg = (Temperature) this.publisher.newMessage();
                 long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
                 msg.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
-                msg.getHeader().setFrameId(robotName);// TODO Make parameter
+                msg.getHeader().setFrameId(robotName);
                 msg.setTemperature(event.values[0]);
                 msg.setVariance(0.0);
                 this.publisher.publish(msg);

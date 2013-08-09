@@ -167,16 +167,51 @@ public class UDCAndroidControl extends RosActivity {
     }
 
     public void arrancarListener(ActionCommand actionCommand) {
-
         switch (actionCommand.getPublisher()) {
-            case ActionCommand.PUBLISHER_ACCEL:
-                pf.configureAccel(this, nodeMainExecutor);
+            case ActionCommand.PUBLISHER_ACCELEROMTER:
+                pf.configureAccelerometer(this, nodeMainExecutor);
                 break;
-            case ActionCommand.PUBLISHER_GYRO:
-                pf.configureGyro(this, nodeMainExecutor);
+            case ActionCommand.PUBLISHER_AMBIENT_TEMPERATURE:
+                pf.configureTemperature(this, nodeMainExecutor);
                 break;
-            case ActionCommand.PUBLISHER_ANGULAR:
-                pf.configureQuat(this, nodeMainExecutor);
+            case ActionCommand.PUBLISHER_GAME_ROTATION_VECTOR:
+                pf.configureGameRotationVector(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_GRAVITY:
+                pf.configureGravity(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_GYROSCOPE:
+                pf.configureGyroscope(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_GYROSCOPE_UNCALIBRATED:
+                pf.configureGyroscopeUncalibrated(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_LIGHT:
+                pf.configureLight(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_LINEAL_ACCELERATION:
+                pf.configureLinearAcceleration(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_MAGNETIC_FIELD:
+                pf.configureMagneticField(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_MAGNETIC_FIELD_UNCALIBRATED:
+                pf.configureMagneticUncalibrated(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_ORIENTATION:
+                pf.configureOrientation(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_PRESSURE:
+                pf.configurePressure(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_PROXIMITY:
+                pf.configureProximity(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_RELATIVE_HUMIDITY:
+                pf.configureRelativeHumidity(this, nodeMainExecutor);
+                break;
+            case ActionCommand.PUBLISHER_ROTATION_VECTOR:
+                pf.configureRotationVector(this, nodeMainExecutor);
                 break;
             case ActionCommand.PUBLISHER_AUDIO:
                 pf.configureAudio(this, nodeMainExecutor);
@@ -187,23 +222,8 @@ public class UDCAndroidControl extends RosActivity {
             case ActionCommand.PUBLISHER_GPS:
                 pf.configureNavSatFix(this, nodeMainExecutor);
                 break;
-            case ActionCommand.PUBLISHER_ILLUMINANCE:
-                pf.configureIlluminance(this, nodeMainExecutor);
-                break;
             case ActionCommand.PUBLISHER_IMU:
                 pf.configureImu(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_MAG:
-                pf.configureMagnetic(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_PRESSURE:
-                pf.configurePressure(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_PROXIMITY:
-                pf.configureProximity(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_TEMPERATURE:
-                pf.configureTemperature(this, nodeMainExecutor);
                 break;
             case ActionCommand.PUBLISHER_VIDEO:
                 int camaraId = actionCommand.getParam0();

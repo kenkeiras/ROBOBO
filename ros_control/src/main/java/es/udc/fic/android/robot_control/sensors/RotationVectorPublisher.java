@@ -26,13 +26,14 @@ import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import sensor_msgs.Imu;
+import udc_robot_control_java.AndroidSensor3;
+import udc_robot_control_java.AndroidSensor4;
 
 
-public class QuatPublisher extends AbstractSensorsPublisher {
-    // TODO: Check names
-    private static String QUEUE_NAME = Constantes.TOPIC_ROTATION;
+public class RotationVectorPublisher extends AbstractSensorsPublisher {
+    private static String QUEUE_NAME = Constantes.TOPIC_ROTATION_VECTOR;
 
-    public QuatPublisher(Context ctx, String robotName) {
+    public RotationVectorPublisher(Context ctx, String robotName) {
         super(ctx, robotName);
     }
 
@@ -44,7 +45,7 @@ public class QuatPublisher extends AbstractSensorsPublisher {
     @Override
     protected Publisher createPublisher(ConnectedNode n) {
         String queueName = robotName + "/" + QUEUE_NAME;
-        return n.newPublisher(queueName, Imu._TYPE);
+        return n.newPublisher(queueName, AndroidSensor4._TYPE);
     }
 
     @Override
@@ -68,27 +69,7 @@ public class QuatPublisher extends AbstractSensorsPublisher {
 
         //	@Override
         public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-                // Create a new message
-                Imu imu = (Imu) this.publisher.newMessage();
-
-                float[] quaternion = new float[4];
-                SensorManager.getQuaternionFromVector(quaternion, event.values);
-                imu.getOrientation().setW(quaternion[0]);
-                imu.getOrientation().setX(quaternion[1]);
-                imu.getOrientation().setY(quaternion[2]);
-                imu.getOrientation().setZ(quaternion[3]);
-                double[] tmpCov = {0, 0, 0, 0, 0, 0, 0, 0, 0};// TODO Make Parameter
-                imu.setOrientationCovariance(tmpCov);
-
-                // Convert event.timestamp (nanoseconds uptime) into system time, use that as the header stamp
-                long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
-                imu.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
-                imu.getHeader().setFrameId(robotName);
-
-                publisher.publish(imu);
-            }
+            sensorChangedSensor4(event, robotName, getSensorType());
         }
-
     }
 }

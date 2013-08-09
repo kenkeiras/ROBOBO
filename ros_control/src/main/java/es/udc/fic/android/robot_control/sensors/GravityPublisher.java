@@ -19,25 +19,27 @@ package es.udc.fic.android.robot_control.sensors;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.os.SystemClock;
 import es.udc.robotcontrol.utils.Constantes;
+import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import udc_robot_control_java.AndroidSensor3;
 
 
-public class AccelerometerPublisher extends AbstractSensorsPublisher {
+public class GravityPublisher extends AbstractSensorsPublisher {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_ACCELEROMETER;
+    private static String QUEUE_NAME = Constantes.TOPIC_GRAVITY;
+            ;
 
-
-    public AccelerometerPublisher(Context ctx, String robotName) {
+    public GravityPublisher(Context ctx, String robotName) {
         super(ctx, robotName);
     }
 
 
     @Override
     protected int getSensorType() {
-        return Sensor.TYPE_ACCELEROMETER;
+        return Sensor.TYPE_GRAVITY;
     }
 
 

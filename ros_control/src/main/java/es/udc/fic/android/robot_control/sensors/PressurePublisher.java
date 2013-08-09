@@ -24,34 +24,26 @@ import es.udc.robotcontrol.utils.Constantes;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import sensor_msgs.Imu;
+import sensor_msgs.FluidPressure;
 
 
-public class GyroPublisher extends AbstractSensorsPublisher {
-    // TODO: Check names
-    private static String QUEUE_NAME = Constantes.TOPIC_GYRO;
+public class PressurePublisher extends AbstractSensorsPublisher {
 
-    public GyroPublisher(Context ctx, String robotName) {
+    private String QUEUE_NAME = Constantes.TOPIC_PRESSURE;
+
+    public PressurePublisher(Context ctx, String robotName) {
         super(ctx, robotName);
     }
 
-
     @Override
     protected int getSensorType() {
-        return Sensor.TYPE_GYROSCOPE;
+        return Sensor.TYPE_PRESSURE;
     }
 
     @Override
     protected Publisher createPublisher(ConnectedNode n) {
         String queueName = robotName + "/" + QUEUE_NAME;
-        return n.newPublisher(queueName, Imu._TYPE);
-    }
-
-    @Override
-    protected AbstractSensorEventListener createListener(Publisher p) {
-        Sensor sensor = sensorManager.getDefaultSensor(getSensorType());
-        GyroSensorListener pl = new GyroSensorListener(p, sensor);
-        return pl;
+        return n.newPublisher(queueName, FluidPressure._TYPE);
     }
 
     @Override
@@ -59,30 +51,36 @@ public class GyroPublisher extends AbstractSensorsPublisher {
         return QUEUE_NAME;
     }
 
-    protected class GyroSensorListener extends AbstractSensorEventListener {
+    @Override
+    protected AbstractSensorEventListener createListener(Publisher p) {
+        Sensor sensor = sensorManager.getDefaultSensor(getSensorType());
+        FluidPressureListener pl = new FluidPressureListener(sensor, p);
+        return pl;
+    }
 
-        protected GyroSensorListener(Publisher publisher, Sensor s) {
-            super(s, publisher);
+
+    protected class FluidPressureListener extends AbstractSensorEventListener {
+
+        private FluidPressureListener(Sensor s, Publisher p) {
+            super(s, p);
         }
 
-        //	@Override
+
+        @Override
         public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-                // Create a new message
-                Imu imu = (Imu) this.publisher.newMessage();
-                imu.getAngularVelocity().setX(event.values[0]);
-                imu.getAngularVelocity().setY(event.values[1]);
-                imu.getAngularVelocity().setZ(event.values[2]);
-                double[] tmpCov = {0, 0, 0, 0, 0, 0, 0, 0, 0};// TODO Make Parameter
-                imu.setAngularVelocityCovariance(tmpCov);
-
-                // Convert event.timestamp (nanoseconds uptime) into system time, use that as the header stamp
+            if(event.sensor.getType() == Sensor.TYPE_PRESSURE) {
+                FluidPressure msg = (FluidPressure) this.publisher.newMessage();
                 long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
-                imu.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
-                imu.getHeader().setFrameId(robotName);
+                msg.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
+                msg.getHeader().setFrameId(robotName);
+                msg.setFluidPressure(event.values[0]);
+                msg.setVariance(0.0);
 
-                publisher.publish(imu);
+                publisher.publish(msg);
             }
         }
+
     }
+
+
 }

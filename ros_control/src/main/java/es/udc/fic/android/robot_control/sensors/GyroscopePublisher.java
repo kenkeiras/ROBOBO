@@ -19,27 +19,28 @@ package es.udc.fic.android.robot_control.sensors;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.os.SystemClock;
 import es.udc.robotcontrol.utils.Constantes;
+import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
+import sensor_msgs.Imu;
 import udc_robot_control_java.AndroidSensor3;
 
 
-public class AccelerometerPublisher extends AbstractSensorsPublisher {
+public class GyroscopePublisher extends AbstractSensorsPublisher {
+    // TODO: Check names
+    private static String QUEUE_NAME = Constantes.TOPIC_GYROSCOPE;
 
-    private static String QUEUE_NAME = Constantes.TOPIC_ACCELEROMETER;
-
-
-    public AccelerometerPublisher(Context ctx, String robotName) {
+    public GyroscopePublisher(Context ctx, String robotName) {
         super(ctx, robotName);
     }
 
 
     @Override
     protected int getSensorType() {
-        return Sensor.TYPE_ACCELEROMETER;
+        return Sensor.TYPE_GYROSCOPE;
     }
-
 
     @Override
     protected Publisher createPublisher(ConnectedNode n) {
@@ -50,7 +51,7 @@ public class AccelerometerPublisher extends AbstractSensorsPublisher {
     @Override
     protected AbstractSensorEventListener createListener(Publisher p) {
         Sensor sensor = sensorManager.getDefaultSensor(getSensorType());
-        AcelSensorListener pl = new AcelSensorListener(p, sensor);
+        GyroSensorListener pl = new GyroSensorListener(p, sensor);
         return pl;
     }
 
@@ -59,9 +60,9 @@ public class AccelerometerPublisher extends AbstractSensorsPublisher {
         return QUEUE_NAME;
     }
 
-    private class AcelSensorListener extends AbstractSensorEventListener {
+    protected class GyroSensorListener extends AbstractSensorEventListener {
 
-        protected AcelSensorListener(Publisher publisher, Sensor s) {
+        protected GyroSensorListener(Publisher publisher, Sensor s) {
             super(s, publisher);
         }
 
@@ -70,5 +71,4 @@ public class AccelerometerPublisher extends AbstractSensorsPublisher {
             sensorChangedSensor3(event, robotName, getSensorType());
         }
     }
-
 }

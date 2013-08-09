@@ -18,11 +18,16 @@ package es.udc.fic.android.robot_control.sensors;
 
 
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.SystemClock;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
+import org.ros.message.Time;
 import org.ros.node.topic.Publisher;
+import udc_robot_control_java.AndroidSensor3;
+import udc_robot_control_java.AndroidSensor4;
 
 public abstract class AbstractSensorEventListener implements SensorEventListener {
 
@@ -62,4 +67,73 @@ public abstract class AbstractSensorEventListener implements SensorEventListener
         currentAccuracy = accuracy;
     }
 
+
+    /**
+     * Method to fill and send an AndroidSensor3 msg
+     * @param event
+     * @param robotName
+     * @param sensorType
+     */
+    protected void sensorChangedSensor3(SensorEvent event, String robotName, int sensorType) {
+        if (event.sensor.getType() == sensorType) {
+            AndroidSensor3 imu = (AndroidSensor3) publisher.newMessage();
+
+            long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
+            imu.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
+            imu.getHeader().setFrameId(robotName);
+
+            imu.getData().setX(event.values[0]);
+            imu.getData().setY(event.values[1]);
+            imu.getData().setZ(event.values[2]);
+
+            double[] tmpCov = {};
+            if (event.values.length > 3) {
+                int size = event.values.length - 3;
+                tmpCov = new double[size];
+                for (int x = 3; x < event.values.length; x++) {
+                    tmpCov[x - 3] = event.values[x];
+                }
+            }
+            imu.setExtra(tmpCov);
+            publisher.publish(imu);
+        }
+    }
+
+
+    /**
+     * Method to fill and send an AndroidSensor4 msg
+     * @param event
+     * @param robotName
+     * @param sensorType
+     */
+    protected void sensorChangedSensor4(SensorEvent event, String robotName, int sensorType) {
+        if (event.sensor.getType() == sensorType) {
+            // Create a new message
+            AndroidSensor4 imu = (AndroidSensor4) this.publisher.newMessage();
+
+            // Convert event.timestamp (nanoseconds uptime) into system time, use that as the header stamp
+            long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
+            imu.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
+            imu.getHeader().setFrameId(robotName);
+
+            imu.getData().setW(event.values[0]);
+            imu.getData().setX(event.values[1]);
+            imu.getData().setY(event.values[2]);
+            imu.getData().setZ(event.values[3]);
+            double[] tmpCov = {};
+            if (event.values.length > 4) {
+                int size = event.values.length - 4;
+                tmpCov = new double[size];
+                for (int x = 4; x < event.values.length; x++) {
+                    tmpCov[x - 4] = event.values[x];
+                }
+            }
+            else {
+                tmpCov = new double[0];
+            }
+            imu.setExtra(tmpCov);
+
+            publisher.publish(imu);
+        }
+    }
 }

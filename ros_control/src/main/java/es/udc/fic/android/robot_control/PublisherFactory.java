@@ -50,14 +50,21 @@ public class PublisherFactory {
 
     // Drivers
     private ImuPublisher imuPub;
-    private GyroPublisher gyroPub;
-    private QuatPublisher quatPub;
+    private GyroscopePublisher gyroscopeUncalibratedPub;
+    private GyroscopePublisher gyroscopePub;
+    private RotationVectorPublisher rotationVectorPub;
+    private GameRotationVectorPublisher gameRotationVectorPub;
     private AccelerometerPublisher accelerometerPub;
+    private GravityPublisher gravityPub;
+    private LinearAccelerationPublisher linearAccelerationPub;
     private MagneticFieldPublisher magneticFieldPub;
-    private FluidPressurePublisher fluidPressurePub;
-    private IlluminancePublisher illuminancePub;
-    private TemperaturePublisher temperaturePub;
+    private MagneticFieldUncalibratedPublisher magneticFieldUncalibratedPub;
+    private PressurePublisher fluidPressurePub;
+    private LightPublisher lightPub;
+    private RelativeHumidityPublisher relativeHumidityPub;
+    private AmbientTemperaturePublisher temperaturePub;
     private ProximityPublisher proximityPub;
+    private OrientationPublisher orientationPub;
 
 
     // Camara
@@ -120,7 +127,7 @@ public class PublisherFactory {
     public void configureProximity(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating Proximity Publisher");
         NodeConfiguration ncProximity = NodeConfiguration.copyOf(nodeConfiguration);
-        ncProximity.setNodeName("/" + robotName + "/" + Constantes.NODE_RANGE);
+        ncProximity.setNodeName("/" + robotName + "/" + Constantes.NODE_PROXIMITY);
         proximityPub = new ProximityPublisher(ctx, robotName);
         nodeMainExecutor.execute(proximityPub, ncProximity);
     }
@@ -128,17 +135,17 @@ public class PublisherFactory {
     public void configurePressure(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating PressurePublisher");
         NodeConfiguration ncProximity = NodeConfiguration.copyOf(nodeConfiguration);
-        ncProximity.setNodeName("/" + robotName + "/" + Constantes.TOPIC_PRESSURE);
-        fluidPressurePub = new FluidPressurePublisher(ctx, robotName);
+        ncProximity.setNodeName("/" + robotName + "/" + Constantes.NODE_PRESSURE);
+        fluidPressurePub = new PressurePublisher(ctx, robotName);
         nodeMainExecutor.execute(fluidPressurePub, ncProximity);
     }
 
-    public void configureIlluminance(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating IlluminancePublisher");
+    public void configureLight(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating LightPublisher");
         NodeConfiguration nc= NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ILLUMINANCE);
-        illuminancePub = new IlluminancePublisher(ctx, robotName);
-        nodeMainExecutor.execute(illuminancePub, nc);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_LIGHT);
+        lightPub = new LightPublisher(ctx, robotName);
+        nodeMainExecutor.execute(lightPub, nc);
     }
 
     public void configureImu(Context ctx, NodeMainExecutor nodeMainExecutor) {
@@ -149,46 +156,103 @@ public class PublisherFactory {
         nodeMainExecutor.execute(imuPub, nc);
     }
 
-    public void configureGyro(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating GyroPublisher");
+    public void configureGyroscope(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating GyroscopePublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GYRO);
-        gyroPub = new GyroPublisher(ctx, robotName);
-        nodeMainExecutor.execute(gyroPub, nc);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GYROSCOPE);
+        gyroscopePub = new GyroscopePublisher(ctx, robotName);
+        nodeMainExecutor.execute(gyroscopePub, nc);
     }
 
-    public void configureAccel(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating AccelPublisher");
+    public void configureGyroscopeUncalibrated(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating GyroscopeUncalibratedPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ACEL);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GYROSCOPE_UNCALIBRATED);
+        gyroscopeUncalibratedPub = new GyroscopePublisher(ctx, robotName);
+        nodeMainExecutor.execute(gyroscopeUncalibratedPub, nc);
+    }
+
+    public void configureAccelerometer(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating AccelerometerPublisher");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ACCELEROMETER);
         accelerometerPub = new AccelerometerPublisher(ctx, robotName);
         nodeMainExecutor.execute(accelerometerPub, nc);
     }
 
-    public void configureQuat(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating QuatPublisher");
+    public void configureGravity(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating GraviyPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ROTATION);
-        quatPub = new QuatPublisher(ctx, robotName);
-        nodeMainExecutor.execute(quatPub, nc);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GRAVITY);
+        gravityPub = new GravityPublisher(ctx, robotName);
+        nodeMainExecutor.execute(accelerometerPub, nc);
     }
 
-    public void configureMagnetic(Context ctx, NodeMainExecutor nodeMainExecutor) {
+    public void configureLinearAcceleration(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating LinearAcceleration");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_LINEAL_ACCELERATION);
+        linearAccelerationPub = new LinearAccelerationPublisher(ctx, robotName);
+        nodeMainExecutor.execute(accelerometerPub, nc);
+    }
+
+
+    public void configureRotationVector(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating RotationVectorPublisher");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ROTATION_VECTOR);
+        rotationVectorPub = new RotationVectorPublisher(ctx, robotName);
+        nodeMainExecutor.execute(rotationVectorPub, nc);
+    }
+
+    public void configureGameRotationVector(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating GameRotationVectorPublisher");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GAME_ROTATION_VECTOR);
+        gameRotationVectorPub = new GameRotationVectorPublisher(ctx, robotName);
+        nodeMainExecutor.execute(gameRotationVectorPub, nc);
+    }
+
+    public void configureMagneticField(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating MagneticFieldPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_MAGNETIC);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_MAGNETIC_FIELD);
         magneticFieldPub = new MagneticFieldPublisher(ctx, robotName);
         nodeMainExecutor.execute(magneticFieldPub, nc);
     }
 
+    public void configureMagneticUncalibrated(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating MagneticFieldPublisher");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_MAGNETIC_FIELD_UNCALIBRATED);
+        magneticFieldUncalibratedPub = new MagneticFieldUncalibratedPublisher(ctx, robotName);
+        nodeMainExecutor.execute(magneticFieldPub, nc);
+    }
+
+    public void configureOrientation(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating OrientationPublisher");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ORIENTATION);
+        orientationPub = new OrientationPublisher(ctx, robotName);
+        nodeMainExecutor.execute(magneticFieldPub, nc);
+    }
 
     public void configureTemperature(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating TemperaturePublisher");
+        Log.i(C.TAG, "Creating AmbientTemperaturePublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_TEMPERATURE);
-        temperaturePub = new TemperaturePublisher(ctx, robotName);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_AMBIENT_TEMPERATURE);
+        temperaturePub = new AmbientTemperaturePublisher(ctx, robotName);
         nodeMainExecutor.execute(temperaturePub, nc);
     }
+
+    public void configureRelativeHumidity(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating RelativeHumidityPublisher");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_RELATIVE_HUMIDITY);
+        relativeHumidityPub = new RelativeHumidityPublisher(ctx, robotName);
+        nodeMainExecutor.execute(temperaturePub, nc);
+    }
+
 
     public void configureNavSatFix(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating NavSatFixPublisher");
@@ -223,17 +287,69 @@ public class PublisherFactory {
     public void stopPublisher(NodeMainExecutor node, int publisher) {
 
         switch (publisher) {
-            case ActionCommand.PUBLISHER_ACCEL:
+            case ActionCommand.PUBLISHER_ACCELEROMTER:
                 node.shutdownNodeMain(accelerometerPub);
                 accelerometerPub = null;
                 break;
-            case ActionCommand.PUBLISHER_GYRO:
-                node.shutdownNodeMain(gyroPub);
-                gyroPub = null;
+            case ActionCommand.PUBLISHER_AMBIENT_TEMPERATURE:
+                node.shutdownNodeMain(temperaturePub);
+                temperaturePub = null;
                 break;
-            case ActionCommand.PUBLISHER_ANGULAR:
-                node.shutdownNodeMain(quatPub);
-                quatPub = null;
+            case ActionCommand.PUBLISHER_GAME_ROTATION_VECTOR:
+                node.shutdownNodeMain(gameRotationVectorPub);
+                gameRotationVectorPub = null;
+                break;
+            case ActionCommand.PUBLISHER_GRAVITY:
+                node.shutdownNodeMain(gravityPub);
+                gravityPub = null;
+                break;
+            case ActionCommand.PUBLISHER_GYROSCOPE:
+                node.shutdownNodeMain(gyroscopePub);
+                gyroscopePub = null;
+                break;
+            case ActionCommand.PUBLISHER_GYROSCOPE_UNCALIBRATED:
+                node.shutdownNodeMain(gyroscopeUncalibratedPub);
+                gyroscopeUncalibratedPub = null;
+                break;
+            case ActionCommand.PUBLISHER_IMU:
+                node.shutdownNodeMain(imuPub);
+                imuPub = null;
+                break;
+            case ActionCommand.PUBLISHER_LIGHT:
+                node.shutdownNodeMain(lightPub);
+                lightPub = null;
+                break;
+            case ActionCommand.PUBLISHER_LINEAL_ACCELERATION:
+                node.shutdownNodeMain(linearAccelerationPub);
+                linearAccelerationPub = null;
+                break;
+            case ActionCommand.PUBLISHER_MAGNETIC_FIELD:
+                node.shutdownNodeMain(magneticFieldPub);
+                magneticFieldPub = null;
+                break;
+            case ActionCommand.PUBLISHER_MAGNETIC_FIELD_UNCALIBRATED:
+                node.shutdownNodeMain(magneticFieldUncalibratedPub);
+                magneticFieldUncalibratedPub = null;
+                break;
+            case ActionCommand.PUBLISHER_ORIENTATION:
+                node.shutdownNodeMain(orientationPub);
+                orientationPub = null;
+                break;
+            case ActionCommand.PUBLISHER_PRESSURE:
+                node.shutdownNodeMain(fluidPressurePub);
+                fluidPressurePub = null;
+                break;
+            case ActionCommand.PUBLISHER_PROXIMITY:
+                node.shutdownNodeMain(proximityPub);
+                proximityPub = null;
+                break;
+            case ActionCommand.PUBLISHER_RELATIVE_HUMIDITY:
+                node.shutdownNodeMain(relativeHumidityPub);
+                relativeHumidityPub = null;
+                break;
+            case ActionCommand.PUBLISHER_ROTATION_VECTOR:
+                node.shutdownNodeMain(rotationVectorPub);
+                rotationVectorPub = null;
                 break;
             case ActionCommand.PUBLISHER_AUDIO:
                 node.shutdownNodeMain(audioPub);
@@ -246,30 +362,6 @@ public class PublisherFactory {
             case ActionCommand.PUBLISHER_GPS:
                 node.shutdownNodeMain(navSatFixPub);
                 navSatFixPub = null;
-                break;
-            case ActionCommand.PUBLISHER_ILLUMINANCE:
-                node.shutdownNodeMain(illuminancePub);
-                illuminancePub = null;
-                break;
-            case ActionCommand.PUBLISHER_IMU:
-                node.shutdownNodeMain(imuPub);
-                imuPub = null;
-                break;
-            case ActionCommand.PUBLISHER_MAG:
-                node.shutdownNodeMain(magneticFieldPub);
-                magneticFieldPub = null;
-                break;
-            case ActionCommand.PUBLISHER_PRESSURE:
-                node.shutdownNodeMain(fluidPressurePub);
-                fluidPressurePub = null;
-                break;
-            case ActionCommand.PUBLISHER_PROXIMITY:
-                node.shutdownNodeMain(proximityPub);
-                proximityPub = null;
-                break;
-            case ActionCommand.PUBLISHER_TEMPERATURE:
-                node.shutdownNodeMain(temperaturePub);
-                temperaturePub = null;
                 break;
             case ActionCommand.PUBLISHER_VIDEO:
                 node.shutdownNodeMain(rosCameraPreviewView);
