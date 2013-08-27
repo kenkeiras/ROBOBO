@@ -12,7 +12,8 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
- */package es.udc.fic.android.robot_control;
+ */
+package es.udc.fic.android.robot_control;
 
 import android.app.Activity;
 import android.content.Intent;

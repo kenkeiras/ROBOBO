@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2013 Amancio Díaz Suárez
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package es.udc.fic.android.robot_control.robot;
 
 import android.content.Context;
@@ -114,23 +129,33 @@ public class RobotCommController {
     }
 
     public void escribir(ActionCommand comando) {
-        switch (comando.getCommand()) {
-            case ActionCommand.CMD_HARD_RESET:
-                terminar();
-                iniciarManual();
-                break;
-            case ActionCommand.CMD_RESET:
-                estadoRobot.reset();
-                conector.escribir(estadoRobot);
-                break;
-            case ActionCommand.CMD_SET_ENGINES:
-                estadoRobot.setMotores(comando.getEngines());
-                conector.escribir(estadoRobot);
-                break;
-            case ActionCommand.CMD_SET_LEDS:
-                estadoRobot.setLeds(comando.getLeds());
-                conector.escribir(estadoRobot);
-                break;
+        try {
+            switch (comando.getCommand()) {
+                case ActionCommand.CMD_HARD_RESET:
+                    terminar();
+                    iniciarManual();
+                    break;
+                case ActionCommand.CMD_RESET:
+                    estadoRobot.reset();
+                    conector.escribir(estadoRobot);
+                    break;
+                case ActionCommand.CMD_SET_ENGINES:
+                    estadoRobot.setMotores(comando.getEngines());
+                    conector.escribir(estadoRobot);
+                    break;
+                case ActionCommand.CMD_SET_LEDS:
+                    estadoRobot.setLeds(comando.getLeds());
+                    conector.escribir(estadoRobot);
+                    break;
+            }
+        }
+        catch (Exception ex) {
+            if (comando != null) {
+                Log.e(C.ROBOT_TAG, "Error ejecutando comando [ " + comando.getCommand() + " ]", ex);
+            }
+            else {
+                Log.e(C.ROBOT_TAG, "Error ejecutando comando. El comando es null", ex);
+            }
         }
     }
 

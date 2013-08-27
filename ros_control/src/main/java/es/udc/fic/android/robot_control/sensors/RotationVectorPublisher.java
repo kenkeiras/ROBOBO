@@ -19,15 +19,10 @@ package es.udc.fic.android.robot_control.sensors;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
-import android.os.SystemClock;
 import es.udc.robotcontrol.utils.Constantes;
-import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import sensor_msgs.Imu;
 import udc_robot_control_java.AndroidSensor3;
-import udc_robot_control_java.AndroidSensor4;
 
 
 public class RotationVectorPublisher extends AbstractSensorsPublisher {
@@ -45,7 +40,7 @@ public class RotationVectorPublisher extends AbstractSensorsPublisher {
     @Override
     protected Publisher createPublisher(ConnectedNode n) {
         String queueName = robotName + "/" + QUEUE_NAME;
-        return n.newPublisher(queueName, AndroidSensor4._TYPE);
+        return n.newPublisher(queueName, AndroidSensor3._TYPE);
     }
 
     @Override
@@ -69,7 +64,7 @@ public class RotationVectorPublisher extends AbstractSensorsPublisher {
 
         //	@Override
         public void onSensorChanged(SensorEvent event) {
-            sensorChangedSensor4(event, robotName, getSensorType());
+            sensorChangedSensor3(event, robotName, getSensorType());
         }
     }
 }

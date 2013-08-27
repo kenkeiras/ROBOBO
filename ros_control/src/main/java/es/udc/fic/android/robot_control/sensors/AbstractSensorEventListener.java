@@ -108,32 +108,42 @@ public abstract class AbstractSensorEventListener implements SensorEventListener
      */
     protected void sensorChangedSensor4(SensorEvent event, String robotName, int sensorType) {
         if (event.sensor.getType() == sensorType) {
-            // Create a new message
-            AndroidSensor4 imu = (AndroidSensor4) this.publisher.newMessage();
+            try {
+                // Create a new message
+                AndroidSensor4 imu = (AndroidSensor4) this.publisher.newMessage();
 
-            // Convert event.timestamp (nanoseconds uptime) into system time, use that as the header stamp
-            long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
-            imu.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
-            imu.getHeader().setFrameId(robotName);
+                // Convert event.timestamp (nanoseconds uptime) into system time, use that as the header stamp
+                long time_delta_millis = System.currentTimeMillis() - SystemClock.uptimeMillis();
+                imu.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp / 1000000));
+                imu.getHeader().setFrameId(robotName);
 
-            imu.getData().setW(event.values[0]);
-            imu.getData().setX(event.values[1]);
-            imu.getData().setY(event.values[2]);
-            imu.getData().setZ(event.values[3]);
-            double[] tmpCov = {};
-            if (event.values.length > 4) {
-                int size = event.values.length - 4;
-                tmpCov = new double[size];
-                for (int x = 4; x < event.values.length; x++) {
-                    tmpCov[x - 4] = event.values[x];
+                imu.getData().setW(event.values[0]);
+                imu.getData().setX(event.values[1]);
+                imu.getData().setY(event.values[2]);
+                imu.getData().setZ(event.values[3]);
+                double[] tmpCov = {};
+                if (event.values.length > 4) {
+                    int size = event.values.length - 4;
+                    tmpCov = new double[size];
+                    for (int x = 4; x < event.values.length; x++) {
+                        tmpCov[x - 4] = event.values[x];
+                    }
                 }
-            }
-            else {
-                tmpCov = new double[0];
-            }
-            imu.setExtra(tmpCov);
+                else {
+                    tmpCov = new double[0];
+                }
+                imu.setExtra(tmpCov);
 
-            publisher.publish(imu);
+                publisher.publish(imu);
+            }
+            catch (java.lang.ArrayIndexOutOfBoundsException obe) {
+                // A veces salta esta excepción al conectar o desconectar un array de cuatro elementos.
+                // Por alguna razón sólo vienen tres.
+                Log.w(C.TAG, "Error reading sensorType [ " + sensorType + " ] [ " + event.sensor.getName() + " ]", obe);
+                obe.printStackTrace();
+                // TODO: Notificar la excepción de alguna forma.
+                // Es posible que se deba a un bug en otra parte (mensaje mal clasificado)
+            }
         }
     }
 }
