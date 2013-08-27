@@ -1,4 +1,4 @@
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 /**
  * Interfaz que implementarán las clases que quieran suscribirse a las notificaciones de eventos de la placa.

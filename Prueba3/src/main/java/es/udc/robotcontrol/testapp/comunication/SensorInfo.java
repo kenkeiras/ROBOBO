@@ -1,4 +1,4 @@
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 /**
  * Esta clase contiene información sobre una lectura de sensores de la placa

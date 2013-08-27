@@ -1,4 +1,4 @@
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 /**
  * Esta clase encapsula un comando a enviar a la placa.

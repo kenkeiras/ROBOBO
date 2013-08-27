@@ -14,7 +14,7 @@
  * the License.
  */
 
-package net.adiaz.prueba3;
+package es.udc.robotcontrol.testapp;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -30,8 +30,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import net.adiaz.prueba3.comunication.Constantes;
-import net.adiaz.prueba3.comunication.RobotCommController;
+import es.udc.robotcontrol.testapp.comunication.Constantes;
+import es.udc.robotcontrol.testapp.comunication.RobotCommController;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,4 +1,4 @@
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 /**
  * Clase para contener valores constantes, cosas coo valores por defecto.

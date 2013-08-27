@@ -14,7 +14,7 @@
  * the License.
  */
 
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.*;
 import android.util.Log;
+
 import org.apache.http.util.ByteArrayBuffer;
 
 import java.util.HashMap;

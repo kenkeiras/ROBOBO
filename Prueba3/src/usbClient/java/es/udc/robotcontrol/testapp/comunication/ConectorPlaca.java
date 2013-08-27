@@ -14,7 +14,7 @@
  * the License.
  */
 
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -24,6 +24,10 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import com.android.future.usb.UsbAccessory;
 import com.android.future.usb.UsbManager;
+import es.udc.robotcontrol.testapp.comunication.Comando;
+import es.udc.robotcontrol.testapp.comunication.ConectorPlacaInterface;
+import es.udc.robotcontrol.testapp.comunication.Constantes;
+import es.udc.robotcontrol.testapp.comunication.TransmisionErrorException;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;

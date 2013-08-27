@@ -1,13 +1,13 @@
-package net.adiaz.prueba3.comunication;
+package es.udc.robotcontrol.testapp.comunication;
 
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+import es.udc.robotcontrol.testapp.R;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import net.adiaz.prueba3.R;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 

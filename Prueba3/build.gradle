@@ -14,33 +14,29 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:13.0.+'
-    compile files("libs/usb.jar")
 }
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion "17.0.0"
+    compileSdkVersion 18
+    buildToolsVersion "18.0.1"
 
     productFlavors {
         usbHost {
-            defaultConfig {
-                minSdkVersion 12
-                targetSdkVersion 17
-            }
+            minSdkVersion 12
+            targetSdkVersion 18
         }
 
         usbClient {
-            defaultConfig {
-                minSdkVersion 10
-                targetSdkVersion 17
+            minSdkVersion 10
+            targetSdkVersion 18
+            dependencies {
+                compile files("libs/usb.jar")
             }
         }
 
         simulacion {
-            defaultConfig {
-                minSdkVersion 9
-                targetSdkVersion 17
-            }
+            minSdkVersion 9
+            targetSdkVersion 18
         }
     }
 
