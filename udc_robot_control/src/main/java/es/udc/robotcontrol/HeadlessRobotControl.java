@@ -67,7 +67,7 @@ public class HeadlessRobotControl implements NodeMain {
             Range._TYPE,
             AndroidSensor3._TYPE, // gravity
             AndroidSensor3._TYPE, // lineal acceleration
-            AndroidSensor4._TYPE,  // rotation vector
+            AndroidSensor3._TYPE,  // rotation vector
             AndroidSensor3._TYPE, // orientacion
             RelativeHumidity._TYPE, //
             Temperature._TYPE,
