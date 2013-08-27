@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013 Amancio Díaz Suárez
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package es.udc.robot_control.gui;
 
 import audio_common_msgs.AudioData;
@@ -8,6 +24,7 @@ import es.udc.robot_control.gui.action.SensorsPanel;
 import es.udc.robot_control.gui.http_server.HttpServerProcess;
 import es.udc.robot_control.gui.robot_selector.RobotSelector;
 import es.udc.robot_control.gui.viewer.VisorEntradas;
+import es.udc.robotcontrol.BlinkingRobotControl;
 import es.udc.robotcontrol.HeadlessRobotControl;
 import es.udc.robotcontrol.RosListener;
 import org.ros.RosCore;
@@ -117,7 +134,9 @@ public class MainControlPanel implements RosListener {
             e.printStackTrace();
             return;
         }
-        nodeMain = new HeadlessRobotControl(robotName);
+        //nodeMain = new HeadlessRobotControl(robotName);
+        // Luces encendidas medio segundo y apagadas un segundo al parpadear
+        nodeMain = new BlinkingRobotControl(robotName, 500, 1000);
         nodeMain.registerNotificador(this);
         if (nodeMainExecutor == null) {
             nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
