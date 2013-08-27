@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Amancio Díaz Suárez
+ * Copyright (C) 2013 Amancio Díaz Suárez
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -103,6 +103,10 @@ public class HeadlessRobotControl implements NodeMain {
             Constantes.TOPIC_IR_SENSORS
     };
 
+
+    protected HeadlessRobotControl() {
+        super();
+    }
 
     public HeadlessRobotControl(String rName) {
         super();
