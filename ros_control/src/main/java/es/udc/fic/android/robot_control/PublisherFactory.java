@@ -50,7 +50,7 @@ public class PublisherFactory {
 
     // Drivers
     private ImuPublisher imuPub;
-    private GyroscopePublisher gyroscopeUncalibratedPub;
+    private GyroscopeUncalibratedPublisher gyroscopeUncalibratedPub;
     private GyroscopePublisher gyroscopePub;
     private RotationVectorPublisher rotationVectorPub;
     private GameRotationVectorPublisher gameRotationVectorPub;
@@ -168,7 +168,7 @@ public class PublisherFactory {
         Log.i(C.TAG, "Creating GyroscopeUncalibratedPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GYROSCOPE_UNCALIBRATED);
-        gyroscopeUncalibratedPub = new GyroscopePublisher(ctx, robotName);
+        gyroscopeUncalibratedPub = new GyroscopeUncalibratedPublisher(ctx, robotName);
         nodeMainExecutor.execute(gyroscopeUncalibratedPub, nc);
     }
 
@@ -185,7 +185,7 @@ public class PublisherFactory {
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GRAVITY);
         gravityPub = new GravityPublisher(ctx, robotName);
-        nodeMainExecutor.execute(accelerometerPub, nc);
+        nodeMainExecutor.execute(gravityPub, nc);
     }
 
     public void configureLinearAcceleration(Context ctx, NodeMainExecutor nodeMainExecutor) {
@@ -234,7 +234,7 @@ public class PublisherFactory {
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ORIENTATION);
         orientationPub = new OrientationPublisher(ctx, robotName);
-        nodeMainExecutor.execute(magneticFieldPub, nc);
+        nodeMainExecutor.execute(orientationPub, nc);
     }
 
     public void configureTemperature(Context ctx, NodeMainExecutor nodeMainExecutor) {
@@ -250,7 +250,7 @@ public class PublisherFactory {
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constantes.NODE_RELATIVE_HUMIDITY);
         relativeHumidityPub = new RelativeHumidityPublisher(ctx, robotName);
-        nodeMainExecutor.execute(temperaturePub, nc);
+        nodeMainExecutor.execute(relativeHumidityPub, nc);
     }
 
 
