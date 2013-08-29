@@ -24,6 +24,7 @@ import es.udc.robot_control.gui.action.SensorsPanel;
 import es.udc.robot_control.gui.http_server.HttpServerProcess;
 import es.udc.robot_control.gui.robot_selector.RobotSelector;
 import es.udc.robot_control.gui.viewer.VisorEntradas;
+import es.udc.robotcontrol.AbstractRobotControl;
 import es.udc.robotcontrol.BlinkingRobotControl;
 import es.udc.robotcontrol.HeadlessRobotControl;
 import es.udc.robotcontrol.RosListener;
@@ -61,7 +62,7 @@ public class MainControlPanel implements RosListener {
 
     private String actualRobot;
     private String rosCoreAddr;
-    private HeadlessRobotControl nodeMain;
+    private AbstractRobotControl nodeMain;
     private NodeMainExecutor nodeMainExecutor;
     private RosCore master;
     private HttpServerProcess httpServer;
@@ -134,9 +135,9 @@ public class MainControlPanel implements RosListener {
             e.printStackTrace();
             return;
         }
-        //nodeMain = new HeadlessRobotControl(robotName);
+        HeadlessRobotControl ctrl  = new HeadlessRobotControl(robotName);
         // Luces encendidas medio segundo y apagadas un segundo al parpadear
-        nodeMain = new BlinkingRobotControl(robotName, 500, 1000);
+        nodeMain = new BlinkingRobotControl(ctrl, 500, 1000);
         nodeMain.registerNotificador(this);
         if (nodeMainExecutor == null) {
             nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
