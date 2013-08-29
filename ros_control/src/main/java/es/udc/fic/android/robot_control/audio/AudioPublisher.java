@@ -32,6 +32,8 @@ import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import org.ros.node.topic.Publisher;
 
+import java.nio.ByteBuffer;
+
 
 public class AudioPublisher implements NodeMain {
 
@@ -101,17 +103,23 @@ public class AudioPublisher implements NodeMain {
                         System.arraycopy(data, 0, newData, 0, leido);
                         data = newData;
                     }
-                    audio_common_msgs.AudioData msg = publisher.newMessage();
-                    ChannelBuffer cb = ChannelBuffers.wrappedBuffer(data);
-                    if (cb != null) {
-                        Log.d(C.TAG, "Vamos a escribir [ " + cb.toString() + " ]");
-                        msg.setData(cb);
+                    Log.d(C.TAG, "Recibidos [ " + data.length + " ] bytes");
+                    int pos = 0;
+                    while (pos < leido) {
+                        audio_common_msgs.AudioData msg = publisher.newMessage();
+                        int max = msg.getData().writableBytes();
+                        int ini = pos;
+                        int fin = pos + max;
+                        fin = leido <  fin ? leido:fin;
+                        max = fin - ini;
+                        byte[] dataMax = new byte[max];
+                        System.arraycopy(data, ini, dataMax, 0, max);
+
+                        msg.getData().writeBytes(dataMax);
 
                         publisher.publish(msg);
-                        Log.d(C.TAG, "[ "  + connectedNode.getName() + " ] Message published [ " + QUEUE_NAME + " ]");
-                    }
-                    else {
-                        Log.w(C.TAG, "Channel buffer is null. No data written");
+                        Log.d(C.TAG, "[ " + connectedNode.getName() + " ] Message published [ " + QUEUE_NAME + " ] [ " + pos + " / " + leido + " ]");
+                        pos = fin;
                     }
                 }
                 else {
