@@ -33,14 +33,8 @@ import udc_robot_control_java.*;
  * Time: 17:56
  * To change this template use File | Settings | File Templates.
  */
-public class HeadlessRobotControl implements NodeMain {
+public class HeadlessRobotControl extends AbstractRobotControl {
 
-
-    private String robotName;
-
-    private RosListener notificador;
-
-    private ConnectedNode cn;
 
     /**
      * Subscriptores a las colas de mensajes emitidos por el robot
@@ -104,28 +98,16 @@ public class HeadlessRobotControl implements NodeMain {
     };
 
 
-    protected HeadlessRobotControl() {
-        super();
-    }
 
     public HeadlessRobotControl(String rName) {
-        super();
+        super(rName);
         setRobotName(rName);
         listaSubs = new GeneralSubscriber[msgTypes.length];
     }
 
     @Override
-    public GraphName getDefaultNodeName() {
-        return GraphName.of("panelcontrol");
-    }
-
-    public void registerNotificador(RosListener n) {
-        notificador = n;
-    }
-
-    @Override
     public void onStart(ConnectedNode connectedNode) {
-        cn = connectedNode;
+        super.onStart(connectedNode);
         for (int i = 0; i < listaSubs.length; i++) {
             listaSubs[i] = new GeneralSubscriber(this, msgTypes[i]);
             listaSubs[i].conectar(connectedNode, nombreCola(topicNames[i]));
@@ -145,47 +127,15 @@ public class HeadlessRobotControl implements NodeMain {
     }
 
     @Override
-    public void onShutdownComplete(Node node) {
-
-    }
-
-    @Override
-    public void onError(Node node, Throwable throwable) {
-        if (notificador != null) {
-            notificador.onError(node, throwable);
-        }
-    }
-
-
-    public void notifyMsg(org.ros.internal.message.Message msg) {
-        if (notificador != null) {
-            notificador.onMsgArrived(msg);
-        }
-    }
-
     public ActionCommand newCommand() {
         return publisher.newMsg();
     }
 
-    public Led newLed() {
-        return cn.getTopicMessageFactory().newFromType(Led._TYPE);
-    }
-
+    @Override
     public void sendCommand(ActionCommand msg) {
         publisher.publicar(msg);
     }
 
 
-    private String nombreCola(String topicName) {
-        return getRobotName() + "/" + topicName;
-    }
 
-
-    public String getRobotName() {
-        return robotName;
-    }
-
-    public void setRobotName(String robotName) {
-        this.robotName = robotName;
-    }
 }

@@ -35,9 +35,9 @@ import java.util.Vector;
  *
  */
 
-public class BlinkingRobotControl extends HeadlessRobotControl implements RosListener {
+public class BlinkingRobotControl extends AbstractRobotControl implements RosListener {
 
-    private HeadlessRobotControl decorado;
+    private AbstractRobotControl decorado;
 
     private long onTime;
     private long offTime;
@@ -48,13 +48,13 @@ public class BlinkingRobotControl extends HeadlessRobotControl implements RosLis
 
     /**
      * Constructor.
-     * @param rName Nombre del robot
+     * @param decor Controler a decorar
      * @param onInterval intervalo en ms para tiempo encendido
      * @param offInterval intervalo en ms para tiempo apagado
      */
-    public BlinkingRobotControl(String rName, long onInterval, long offInterval) {
-        super();
-        decorado = new HeadlessRobotControl(rName);
+    public BlinkingRobotControl(AbstractRobotControl decor, long onInterval, long offInterval) {
+
+        decorado = decor;
         onTime = onInterval;
         offTime = offInterval;
         currentOn = false;
