@@ -136,8 +136,13 @@ public class MainControlPanel implements RosListener {
             return;
         }
         HeadlessRobotControl ctrl  = new HeadlessRobotControl(robotName);
+        // Control via joystick
+        es.udc.robotcontrol.JoystickRobotControl jrc = new es.udc.robotcontrol.JoystickRobotControl(ctrl);
+
         // Luces encendidas medio segundo y apagadas un segundo al parpadear
-        nodeMain = new BlinkingRobotControl(ctrl, 500, 1000);
+        nodeMain = new BlinkingRobotControl(jrc, 500, 1000);
+
+
         nodeMain.registerNotificador(this);
         if (nodeMainExecutor == null) {
             nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
