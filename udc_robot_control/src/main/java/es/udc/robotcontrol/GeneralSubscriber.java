@@ -31,14 +31,14 @@ import org.ros.node.topic.Subscriber;
  */
 public class GeneralSubscriber  {
 
-    private HeadlessRobotControl padre;
+    private AbstractRobotControl padre;
 
     private String messageTypeName;
 
     private Subscriber<Message> subscriber;
 
 
-    public GeneralSubscriber(HeadlessRobotControl papa, String messageTypeName) {
+    public GeneralSubscriber(AbstractRobotControl papa, String messageTypeName) {
         super();
         this.padre = papa;
         this.messageTypeName = messageTypeName;
