@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="server_url">http://192.168.1.24/robot/Scripts/</string>
+
+    <string name="app_name" >Robot Tester</string>
+    <string name="action_settings">Menu</string>
+    <string name="robot_service_label">Servicio Comunicación Robot</string>
+
+    <string name="robot_service_notification">Robot!</string>
+    <string name="robot_service_stopped">Robot desconectado</string>
+    <string name="robot_service_started">Robot conectado</string>
+    <string name="robot_service_manual_started">Robot conectado manualmente</string>
+    <string name="robot_service_error_connection">Error en conexion con el robot [ %1$s ]</string>
+    <string name="robot_service_created">Servicio Robot creado</string>
+
+</resources>
