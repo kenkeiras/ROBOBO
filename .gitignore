@@ -1,0 +1,15 @@
+
+.DS_Store
+.gradle
+.classpath
+.project
+build
+build.xml
+gen
+libs
+.idea
+*.iml
+proguard/
+local.properties
+build.log
+build-log.xml
