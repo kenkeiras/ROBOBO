@@ -36,7 +36,7 @@ import org.ros.node.Node;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 import sensor_msgs.*;
-import udc_robot_control_java.*;
+import udc_robot_control_msgs.*;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -304,4 +304,3 @@ public class MainControlPanel implements RosListener {
         return txt;
     }
 }
-

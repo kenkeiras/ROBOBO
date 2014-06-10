@@ -17,7 +17,7 @@
 package es.udc.robot_control.gui.action;
 
 import es.udc.robot_control.gui.BaseComponent;
-import udc_robot_control_java.ActionCommand;
+import udc_robot_control_msgs.ActionCommand;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
