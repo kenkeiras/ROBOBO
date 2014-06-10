@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 ptm
+ * Copyright (C) 2014 ptm.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,6 +14,16 @@
  * the License.
  */
 
-include 'udc_robot_control_msgs'
-include 'udc_robot_control_java'
-include 'panel_control'
+/* 
+ Dependencies can be on external maven artifacts (such as rosjava_core
+ here) or on sibling subprojects. For external maven artifact dependencies
+ it's convenient to use an open ranged dependency, but restrict it to
+ cover the patch version only to avoid breakages due to api changes
+ which usually occur on minor and major version numbers.
+*/
+
+dependencies {
+  compile project (':udc_robot_control_java')
+  compile project (':udc_robot_control_msgs')
+}
+
