@@ -10,3 +10,9 @@ Hay cuatro artefactos diferentes en este proyecto:
 * *prototipo* Aplicación Android para controlar el robot descargando instrucciones vía HTTP desde un servidor web.
 
 
+Installation
+============
+
+Run the installation script.
+
+    bash install.sh
