@@ -15,8 +15,8 @@
  */
 package es.udc.fic.android.robot_control.robot;
 
-import udc_robot_control_java.Engines;
-import udc_robot_control_java.Led;
+import udc_robot_control_msgs.Engines;
+import udc_robot_control_msgs.Led;
 
 import java.util.List;
 

@@ -26,8 +26,8 @@ import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
 import org.ros.message.Time;
 import org.ros.node.topic.Publisher;
-import udc_robot_control_java.AndroidSensor3;
-import udc_robot_control_java.AndroidSensor4;
+import udc_robot_control_msgs.AndroidSensor3;
+import udc_robot_control_msgs.AndroidSensor4;
 
 public abstract class AbstractSensorEventListener implements SensorEventListener {
 

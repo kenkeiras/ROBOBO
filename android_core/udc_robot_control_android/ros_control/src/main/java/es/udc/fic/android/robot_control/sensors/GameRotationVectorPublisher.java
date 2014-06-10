@@ -22,7 +22,7 @@ import android.hardware.SensorEvent;
 import es.udc.robotcontrol.utils.Constantes;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import udc_robot_control_java.AndroidSensor4;
+import udc_robot_control_msgs.AndroidSensor4;
 
 
 public class GameRotationVectorPublisher extends AbstractSensorsPublisher {

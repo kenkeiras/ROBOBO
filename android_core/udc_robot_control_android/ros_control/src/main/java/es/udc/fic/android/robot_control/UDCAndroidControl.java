@@ -29,7 +29,7 @@ import es.udc.fic.android.robot_control.robot.SensorInfo;
 import es.udc.fic.android.robot_control.utils.C;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeMainExecutor;
-import udc_robot_control_java.ActionCommand;
+import udc_robot_control_msgs.ActionCommand;
 
 import java.net.URI;
 

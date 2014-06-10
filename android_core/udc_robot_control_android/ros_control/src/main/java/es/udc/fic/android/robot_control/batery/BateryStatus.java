@@ -40,7 +40,7 @@ public  class BateryStatus implements NodeMain {
     private Context context;
     private String robotName;
 
-    private Publisher<udc_robot_control_java.BateryStatus> publisher;
+    private Publisher<udc_robot_control_msgs.BateryStatus> publisher;
 
     public BateryStatus(Context context, String robotName) {
         super();
@@ -67,7 +67,7 @@ public  class BateryStatus implements NodeMain {
     public void onStart(final ConnectedNode connectedNode) {
         Log.i(C.TAG, "Starting Batery Status Monitoring");
         String queueName = robotName + "/" + QUEUE_NAME;
-        publisher = connectedNode.newPublisher(queueName, udc_robot_control_java.BateryStatus._TYPE);
+        publisher = connectedNode.newPublisher(queueName, udc_robot_control_msgs.BateryStatus._TYPE);
 
         Log.d(C.TAG, "Publisher for [ " + connectedNode.getName() + " ][ " + QUEUE_NAME + " ] created");
 
@@ -84,7 +84,7 @@ public  class BateryStatus implements NodeMain {
             @Override
             protected void loop() throws InterruptedException {
                 Log.d(C.TAG, "[ "  + connectedNode.getName() + " ] Entering loop for [ " + QUEUE_NAME + " ]");
-                udc_robot_control_java.BateryStatus msg = publisher.newMessage();
+                udc_robot_control_msgs.BateryStatus msg = publisher.newMessage();
 
                 IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
                 Intent batteryStatus = context.registerReceiver(null, ifilter);
@@ -96,14 +96,14 @@ public  class BateryStatus implements NodeMain {
 
                 if (currentBateryLevel > 0.2) {
                     msg.setDescription("OK");
-                    msg.setStatus(udc_robot_control_java.BateryStatus.STATUS_OK);
+                    msg.setStatus(udc_robot_control_msgs.BateryStatus.STATUS_OK);
                 } else {
                     if (currentBateryLevel > 0.1) {
                         msg.setDescription("WARNING");
-                        msg.setStatus(udc_robot_control_java.BateryStatus.STATUS_WARNING);
+                        msg.setStatus(udc_robot_control_msgs.BateryStatus.STATUS_WARNING);
                     } else {
                         msg.setDescription("CRITICAL");
-                        msg.setStatus(udc_robot_control_java.BateryStatus.STATUS_CRITICAL);
+                        msg.setStatus(udc_robot_control_msgs.BateryStatus.STATUS_CRITICAL);
                     }
                 }
                 msg.setLevel(currentBateryLevel);
