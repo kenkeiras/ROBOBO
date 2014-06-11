@@ -23,7 +23,7 @@ allprojects {
   version = '0.1.0'
 }
 
-ext.androidBuildToolsVersion = "17"
+ext.androidBuildToolsVersion = "18.0.1"
 
 subprojects {
     buildscript {
