@@ -26,7 +26,7 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import org.ros.node.topic.Publisher;
-import udc_robot_control_java.SensorStatus;
+import udc_robot_control_msgs.SensorStatus;
 
 /**
  * Created by kerry on 4/08/13.

@@ -20,11 +20,11 @@
    2,3) dependency from a maven repository.
 */
 dependencies {
-    compile 'ros.rosjava_core:rosjava:0.0.0-SNAPSHOT'
+    compile 'org.ros.rosjava_core:rosjava:0.1.6'
     /* Esta dependencia es para compartir las clases con nombres constantes (Comandos y colas) */
-    compile 'ros.udc_robot_control_java:udc_robot_control:0.0.0-SNAPSHOT'
-    compile 'ros.android_core:android_gingerbread_mr1:0.0.0-SNAPSHOT'
-    compile 'ros.android_core:android_honeycomb_mr2:0.0.0-SNAPSHOT'
+    compile 'robobo:udc_robot_control_java:0.1.0'
+    compile 'org.ros.android_core:android_gingerbread_mr1:0.1.2'
+    compile 'org.ros.android_core:android_honeycomb_mr2:0.1.2'
 }
 
 apply plugin: 'android'

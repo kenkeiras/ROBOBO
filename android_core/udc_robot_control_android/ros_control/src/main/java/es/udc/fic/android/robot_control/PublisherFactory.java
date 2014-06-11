@@ -31,7 +31,7 @@ import es.udc.robotcontrol.utils.Constantes;
 import org.ros.address.InetAddressFactory;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
-import udc_robot_control_java.ActionCommand;
+import udc_robot_control_msgs.ActionCommand;
 
 import java.net.URI;
 

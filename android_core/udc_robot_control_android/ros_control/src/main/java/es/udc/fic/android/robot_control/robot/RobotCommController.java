@@ -22,7 +22,7 @@ import android.widget.Toast;
 import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.utils.C;
-import udc_robot_control_java.ActionCommand;
+import udc_robot_control_msgs.ActionCommand;
 
 
 /**

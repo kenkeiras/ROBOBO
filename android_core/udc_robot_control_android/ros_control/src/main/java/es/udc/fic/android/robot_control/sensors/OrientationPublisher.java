@@ -24,7 +24,7 @@ import es.udc.robotcontrol.utils.Constantes;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import udc_robot_control_java.AndroidSensor3;
+import udc_robot_control_msgs.AndroidSensor3;
 
 
 public class OrientationPublisher extends AbstractSensorsPublisher {

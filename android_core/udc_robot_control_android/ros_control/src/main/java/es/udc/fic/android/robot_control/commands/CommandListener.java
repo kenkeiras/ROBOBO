@@ -27,7 +27,7 @@ import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Subscriber;
-import udc_robot_control_java.ActionCommand;
+import udc_robot_control_msgs.ActionCommand;
 
 /**
  * Este es el nodo encargado de recibir instrucciones desde el exterior y ejecutarlas.
