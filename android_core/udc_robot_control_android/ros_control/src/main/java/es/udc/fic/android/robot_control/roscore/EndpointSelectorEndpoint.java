@@ -125,13 +125,7 @@ public class EndpointSelectorEndpoint implements Endpoint {
 
         System.out.println(callName + " -> " + selector.get(callName));
 
-        try {
-            return selector.get(callName).call(call);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+        return selector.get(callName).call(call);
     }
 
 }
