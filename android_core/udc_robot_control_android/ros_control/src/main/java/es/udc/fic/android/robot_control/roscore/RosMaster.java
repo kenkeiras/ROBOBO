@@ -212,10 +212,16 @@ public class RosMaster {
      * Unregister the caller as a publisher of the topic.
      *
      */
-    public static void unregisterSubscriber(String callerId, String topic,
+    @XRMethod(value = "unregisterSubscriber",
+              help = "Unregister the caller as a publisher of the topic")
+    public static Object[] unregisterSubscriber(String callerId, String topic,
                                             String callerApi){
 
-        /// @TODO Implement
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] = 0;
+        return response;
     }
 
 
@@ -260,6 +266,8 @@ public class RosMaster {
      * Unregister the caller as a publisher of the topic.
      *
      */
+    @XRMethod(value = "unregisterPublisher",
+              help = "Register the caller as a provider of the specified service.")
     public static Object[] unregisterPublisher(String callerId, String topic,
                                                String callerApi){
 
@@ -348,9 +356,16 @@ public class RosMaster {
      * Retrieve list topic names and their types.
      *
      */
-    public static void getTopicTypes(String callerId){
+    @XRMethod(value = "getTopicTypes",
+              help = "Retrieve list topic names and their types")
+    public static Object[] getTopicTypes(String callerId){
 
-        /// @TODO Implement
+        List<Object[]> topics = new ArrayList<Object[]>();
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] = topics;
+        return response;
     }
 
 
@@ -383,9 +398,15 @@ public class RosMaster {
      * Get the URI of the the master.
      *
      */
-    public static void getUri(String callerId){
+    @XRMethod(value = "getUri",
+              help = "Get the URI of the the master")
+    public static Object[] getUri(String callerId){
 
-        /// @TODO Implement
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] = "";
+        return response;
     }
 
 

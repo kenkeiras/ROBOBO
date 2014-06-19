@@ -31,23 +31,40 @@ public class EndpointSelectorEndpoint implements Endpoint {
         selector = new HashMap<String, Endpoint>();
 
         // Master selectors
-        selector.put("registerService",     master);
-        selector.put("unregisterService",   master);
-        selector.put("registerSubscriber",  master);
-        selector.put("registerPublisher",   master);
-        selector.put("unregisterPublisher", master);
-        selector.put("lookupNode",          master);
-        selector.put("getPublishedTopics",  master);
-        selector.put("getSystemState",      master);
-        selector.put("lookupService",       master);
+        selector.put("registerService",      master);
+        selector.put("unregisterService",    master);
+        selector.put("registerSubscriber",   master);
+        selector.put("unregisterSubscriber", master);
+        selector.put("registerPublisher",    master);
+        selector.put("unregisterPublisher",  master);
+        selector.put("lookupNode",           master);
+        selector.put("getPublishedTopics",   master);
+        selector.put("getTopicTypes",        master);
+        selector.put("getSystemState",       master);
+        selector.put("getUri",               master);
+        selector.put("lookupService",        master);
 
         // Slave selectors
-        selector.put("getPid", slave);
+        selector.put("getBusStats",     slave);
+        selector.put("getBusInfo",      slave);
+        selector.put("getMasterUri",    slave);
+        selector.put("shutdown",        slave);
+        selector.put("getPid",          slave);
+        selector.put("getSubscritions", slave);
+        selector.put("getPublications", slave);
+        selector.put("paramUpdate",     slave);
+        selector.put("publisherUpdate", slave);
+        selector.put("requestTopic",    slave);
 
         // Param server selectors
-        selector.put("setParam", paramServer);
-        selector.put("getParam", paramServer);
-        selector.put("hasParam", paramServer);
+        selector.put("deleteParam",      paramServer);
+        selector.put("setParam",         paramServer);
+        selector.put("getParam",         paramServer);
+        selector.put("searchParam",      paramServer);
+        selector.put("subscribeParam",   paramServer);
+        selector.put("unsubscribeParam", paramServer);
+        selector.put("hasParam",         paramServer);
+        selector.put("getParamNames",    paramServer);
     }
 
 

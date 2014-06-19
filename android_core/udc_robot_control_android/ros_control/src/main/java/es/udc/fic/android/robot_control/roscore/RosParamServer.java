@@ -2,6 +2,11 @@ package es.udc.fic.android.robot_control.roscore;
 
 import com.nmote.xr.XRMethod;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Implements ROS <a href="http://wiki.ros.org/ROS/Parameter%20Server%20API">parameter server API</a>.
  *
@@ -15,6 +20,23 @@ public class RosParamServer {
 
 
     /**
+     * Delete parameter.
+     *
+     */
+    @XRMethod(value = "deleteParam", help = "Delete parameter")
+    public static Object[] deleteParam(String callerId, String key){
+
+        /// @TODO Implement
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] =  0;  // Ignore
+
+        return response;
+    }
+
+
+    /**
      * Set parameter.
      *
      */
@@ -25,7 +47,7 @@ public class RosParamServer {
         Object[] response = new Object[3];
         response[0] = RosCoreXmlRpcServer.SUCCESS_STATUS;
         response[1] = "";
-        response[2] = "";  // Ignore
+        response[2] =  0;  // Ignore
 
         paramHierarchy.set(key.split(HIERARCHYCAL_SEPARATOR), value);
 
@@ -74,6 +96,59 @@ public class RosParamServer {
 
 
     /**
+     * Search for parameter key on the Parameter Server.
+     * Search starts in caller's namespace and proceeds upwards through parent
+     * namespaces until Parameter Server finds a matching key.
+     *
+     * searchParam()'s behavior is to search for the first partial match.
+     *
+     */
+    @XRMethod(value = "searchParam", help = "Delete parameter")
+    public static Object[] searchParam(String callerId, String key){
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] = "";
+
+        return response;
+    }
+
+
+    /**
+     * Retrieve parameter value from server and subscribe to updates to that param.
+     *
+     */
+    @XRMethod(value = "subscribeParam",
+              help = "Retrieve parameter value from server and subscribe to updates to that param")
+    public static Object[] subscribeParam(String callerId, String callerApi, String key){
+
+        Map<String, Object> parameterValue = new HashMap<String, Object>();
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] = parameterValue;
+
+        return response;
+    }
+
+
+    /**
+     * Unsubscribe to updates to that param.
+     *
+     */
+    @XRMethod(value = "unsubscribeParam",
+              help = "Unsubscribe to updates to that param")
+    public static Object[] unsubscribeParam(String callerId, String callerApi, String key){
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] = 0;
+
+        return response;
+    }
+
+
+    /**
      * Check if parameter is stored on server.
      *
      */
@@ -85,6 +160,24 @@ public class RosParamServer {
         response[0] = RosCoreXmlRpcServer.SUCCESS_STATUS;
         response[1] = "";
         response[2] = paramHierarchy.has(key.split(HIERARCHYCAL_SEPARATOR));
+
+        return response;
+    }
+
+
+    /**
+     * Get list of all parameter names stored on this server.
+     *
+     */
+    @XRMethod(value = "getParamNames",
+              help = "Get list of all parameter names stored on this server")
+    public static Object[] getParamNames(String callerId){
+
+        List<String> paramNames = new ArrayList<String>();
+        Object[] response = new Object[3];
+        response[0] = RosCoreXmlRpcServer.ERROR_STATUS;
+        response[1] = "Not implemented";  /// @TODO Implement
+        response[2] = paramNames;
 
         return response;
     }
