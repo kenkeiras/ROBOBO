@@ -64,3 +64,8 @@ subprojects {
         }
     }
 }
+
+
+task tdd (dependsOn: [':ros_control:build', ':test:unit']) << {
+    println "Tests executed"
+}
