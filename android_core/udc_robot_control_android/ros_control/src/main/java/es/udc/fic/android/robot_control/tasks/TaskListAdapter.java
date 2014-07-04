@@ -22,44 +22,57 @@ import java.io.File;
 import java.util.List;
 
 public class TaskListAdapter extends BaseAdapter implements ListAdapter {
-    private static final int DISABLED_COLOR = Color.DKGRAY;
+    private static final int STOP_COLOR = Color.DKGRAY;
     private static final int RUNNING_COLOR = Color.WHITE;
     private static final int ERROR_COLOR = Color.RED;
 
 
     private Context _context;
-    private File[] _tasks;
+    private List<Task> _tasks;
+
+    public class TaskChangedReceiver extends BroadcastReceiver{
+        public TaskChangedReceiver(){}
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            TaskListAdapter.this.notifyDataSetChanged();
+        }
+    }
+    BroadcastReceiver changedReceiver = new TaskChangedReceiver();
 
 
-    public TaskListAdapter(Context context, File[] tasks) {
+    public TaskListAdapter(Context context, List<Task> tasks) {
         /// @TODO filter non runnable tasks
         _context = context;
         _tasks = tasks;
+
+        IntentFilter filter = new IntentFilter(TaskManagerService.TASKS_CHANGED_TAG);
+        context.registerReceiver(changedReceiver, filter);
     }
 
 
     @Override
     public boolean areAllItemsEnabled() {
-        return false;
+        return true;
     }
 
 
     @Override
     public boolean isEnabled(int i) {
-        return false;
+        return true;
     }
 
 
     @Override
     public int getCount() {
-        return _tasks.length;
+        return _tasks.size();
     }
 
 
     @Override
-    public File getItem(int i) {
-        if (i <= _tasks.length){
-            return _tasks[i];
+    public Task getItem(int i) {
+        if (i < _tasks.size()){
+            return _tasks.get(i);
         }
 
         return null;
@@ -68,8 +81,8 @@ public class TaskListAdapter extends BaseAdapter implements ListAdapter {
 
     @Override
     public long getItemId(int i) {
-        if (i < _tasks.length){
-            return _tasks[i].hashCode();
+        if (i < _tasks.size()){
+            return _tasks.get(i).hashCode();
         }
 
         return 0;
@@ -85,10 +98,10 @@ public class TaskListAdapter extends BaseAdapter implements ListAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         // Initialice all the stuff
-        if (i >= _tasks.length){
+        if (i >= _tasks.size()){
             return null;
         }
-        File task = _tasks[i];
+        Task task = _tasks.get(i);
 
         View v = view;
         if (v == null) {
@@ -105,7 +118,20 @@ public class TaskListAdapter extends BaseAdapter implements ListAdapter {
 
         // Set color indicator
         View colorBlock = v.findViewById(R.id.color_block);
-        colorBlock.setBackgroundColor(DISABLED_COLOR);
+        switch(task.getState()){
+        case Task.STOP:
+            colorBlock.setBackgroundColor(STOP_COLOR);
+            break;
+
+        case Task.RUNNING:
+            colorBlock.setBackgroundColor(RUNNING_COLOR);
+            break;
+
+        case Task.CRASHED:
+            colorBlock.setBackgroundColor(ERROR_COLOR);
+            break;
+        }
+
 
         return v;
     }
@@ -125,6 +151,6 @@ public class TaskListAdapter extends BaseAdapter implements ListAdapter {
 
     @Override
     public boolean isEmpty() {
-        return _tasks.length != 0;
+        return _tasks.size() != 0;
     }
 }

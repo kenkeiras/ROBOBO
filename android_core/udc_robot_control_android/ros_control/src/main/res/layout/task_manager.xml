@@ -11,6 +11,7 @@
         android:clickable="true"
         android:divider="@drawable/divider"
         android:dividerHeight="2px"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:longClickable="true" />
 
 </LinearLayout>
