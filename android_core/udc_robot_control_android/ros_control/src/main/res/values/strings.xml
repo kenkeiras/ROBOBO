@@ -7,10 +7,11 @@
     <string name="conectar">Conectar</string>
     <string name="title_activity_config">Configuración</string>
     <string name="action_settings">Acciones Menú</string>
+    <string name="title_task_manager">Gestor de tareas</string>
 
     <string name="robot_service_started">Robot conectado</string>
     <string name="robot_service_error_connection">Error en conexion con robot</string>
     <string name="robot_service_manual_started">Robot conectado manualmente</string>
     <string name="robot_service_manual_not_start">Aplicación arrancada manualmente. No habrá robot</string>
-
+    <string name="no_tasks">No hay tareas</string>
 </resources>
