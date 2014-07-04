@@ -58,7 +58,7 @@ public class TaskManagerService extends Service {
         switch(task.getState()){
         case Task.STOP: case Task.CRASHED:
             Log.v("UDC", "Resuming task");
-            task.run();
+            task.run(this);
             break;
 
         case Task.RUNNING:
@@ -67,6 +67,11 @@ public class TaskManagerService extends Service {
             break;
         }
 
+        refreshTaskInfo();
+    }
+
+
+    public void refreshTaskInfo(){
         this.sendBroadcast(tasksChangedIntent);
     }
 
