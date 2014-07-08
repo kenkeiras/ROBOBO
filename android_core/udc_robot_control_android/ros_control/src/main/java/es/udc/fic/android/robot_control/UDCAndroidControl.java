@@ -22,14 +22,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.common.base.Preconditions;
+
 import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.robot.SensorInfo;
+import es.udc.fic.android.robot_control.tasks.TaskManagerActivity;
+
 import es.udc.fic.android.robot_control.utils.C;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeMainExecutor;
 import udc_robot_control_msgs.ActionCommand;
+
 
 import java.net.URI;
 
@@ -158,6 +162,9 @@ public class UDCAndroidControl extends RosActivity {
 //        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
 //        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 //        registerReceiver(receiver, filter);
+
+        Intent i = new Intent(this, TaskManagerActivity.class);
+        startActivity(i);
     }
 
     @Override
