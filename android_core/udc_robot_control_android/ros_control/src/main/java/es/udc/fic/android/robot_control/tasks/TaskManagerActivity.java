@@ -16,8 +16,11 @@ import android.util.Log;
 
 import java.util.List;
 
+import es.udc.fic.android.robot_control.ConfigActivity;
 import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.tasks.TaskManagerService.SimpleBinder;
+
+import org.ros.node.NodeConfiguration;
 
 public class TaskManagerActivity extends Activity {
 
@@ -50,13 +53,17 @@ public class TaskManagerActivity extends Activity {
         lv.setAdapter(adapter);
 
         final TaskManagerService tService = taskService;
+        final String masterUri = getPreferences(MODE_PRIVATE).getString(
+            ConfigActivity.PREFS_KEY_URI,
+            NodeConfiguration.DEFAULT_MASTER_URI.toString());
+
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
                 public boolean onItemLongClick(AdapterView<?> arg0,
                                                View arg1, int pos, long id) {
 
                     Log.v("long clicked","pos: " + pos);
-                    tService.toogle(adapter.getItem(pos));
+                    tService.toggle(adapter.getItem(pos), masterUri);
                     return true;
                 }
             });

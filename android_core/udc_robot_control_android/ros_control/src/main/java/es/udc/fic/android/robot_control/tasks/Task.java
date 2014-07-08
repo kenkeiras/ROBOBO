@@ -41,13 +41,13 @@ public class Task {
     }
 
 
-    public void run(final TaskManagerService context){
+    public void run(final TaskManagerService context, final String masterUri){
         final Task task = this;
         this.service = context;
         thread = new Thread() {
                 public void run(){
                     try {
-                        TaskRunner.run(task, context);
+                        TaskRunner.run(task, context, masterUri);
                     }
                     catch (Exception e){
                         e.printStackTrace();

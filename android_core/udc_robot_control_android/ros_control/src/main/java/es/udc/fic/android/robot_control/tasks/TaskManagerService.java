@@ -52,13 +52,14 @@ public class TaskManagerService extends Service {
         return _taskList;
     }
 
-    public void toogle(Task task){
+    public void toggle(Task task, String masterUri){
         Log.v("UDC", task + "");
 
         switch(task.getState()){
         case Task.STOP: case Task.CRASHED:
             Log.v("UDC", "Resuming task");
-            task.run(this);
+
+            task.run(this, masterUri);
             break;
 
         case Task.RUNNING:
