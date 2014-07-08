@@ -30,9 +30,14 @@ import es.udc.fic.android.robot_control.robot.SensorInfo;
 import es.udc.fic.android.robot_control.tasks.TaskManagerActivity;
 
 import es.udc.fic.android.robot_control.utils.C;
+import org.ros.RosCore;
 import org.ros.android.RosActivity;
+import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 import udc_robot_control_msgs.ActionCommand;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 import java.net.URI;
@@ -42,6 +47,8 @@ public class UDCAndroidControl extends RosActivity {
 
     private static int MASTER_CHOOSER_REQUEST_CODE = 0;
     private static int MASTER_CHOOSER_REQUEST_CODE_FAKE = 99;
+    private static final int DEFAULT_MASTER_PORT = 11311;
+    private RosCore core = null;
 
     private RosCameraPreviewView rosCameraPreviewView;
     private PublisherFactory pf;
@@ -256,14 +263,39 @@ public class UDCAndroidControl extends RosActivity {
         }
     }
 
+    private RosCore spawnCoreFromUri(URI masterUri){
+        int port = masterUri.getPort();
+        if (port < 0){
+            port = DEFAULT_MASTER_PORT;
+        }
+        return RosCore.newPublic(masterUri.getHost(), port);
+    }
+
     private void initRobot() {
         if (robot == null) {
             Log.i(C.TAG, "Creando robot en initRobot");
             robot = new RobotCommController(this);
+
+            try {
+                URI masterUri = new URI(getPreferences(MODE_PRIVATE).getString(
+                                            ConfigActivity.PREFS_KEY_URI,
+                                            NodeConfiguration.DEFAULT_MASTER_URI.toString()));
+
+                String host = masterUri.getHost();
+
+                if ((host != null) && (host.equals("localhost")
+                                       || host.equals("[::1]")
+                                       || host.startsWith("127."))){
+                    core = spawnCoreFromUri(masterUri);
+                    core.start();
+                }
+            }
+            catch (URISyntaxException e){
+                e.printStackTrace();
+            }
         }
         else {
             Log.i(C.TAG, "ignorando initRobot. el robot ya esta creado");
         }
     }
-
 }

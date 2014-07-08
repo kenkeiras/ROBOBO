@@ -32,8 +32,8 @@ public class ConfigActivity extends Activity {
      * The key with which the last used {@link java.net.URI} will be stored as a
      * preference.
      */
-    private static final String PREFS_KEY_URI  = "URI_KEY";
-    private static final String PREFS_KEY_ROBOT_NAME = "ROBOT_NAME_KEY";
+    public static final String PREFS_KEY_URI  = "URI_KEY";
+    public static final String PREFS_KEY_ROBOT_NAME = "ROBOT_NAME_KEY";
     private static final String DEFAULT_ROBOT_NAME = "robot1";
 
     private String masterUri;
@@ -109,5 +109,5 @@ public class ConfigActivity extends Activity {
             finish();
         }
     }
-    
+
 }
