@@ -104,9 +104,8 @@ public class UDCAndroidControl extends RosActivity {
         }
         this.nodeMainExecutor = nodeMainExecutor;
 
-//        initRobot();
-//        robot.iniciarManual();
-
+        Intent i = new Intent(this, TaskManagerActivity.class);
+        startActivity(i);
     }
 
 
@@ -193,9 +192,6 @@ public class UDCAndroidControl extends RosActivity {
 //        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
 //        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 //        registerReceiver(receiver, filter);
-
-        // Intent i = new Intent(this, TaskManagerActivity.class);
-        // startActivity(i);
     }
 
     @Override
