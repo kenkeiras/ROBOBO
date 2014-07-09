@@ -1,1 +1,6 @@
 apply plugin: 'java'
+
+dependencies {
+    compile 'org.ros.rosjava_core:rosjava:0.1.6'
+    compile 'robobo:udc_robot_control_java:0.1.0'
+}
