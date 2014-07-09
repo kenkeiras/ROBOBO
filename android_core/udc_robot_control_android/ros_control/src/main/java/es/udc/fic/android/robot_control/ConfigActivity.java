@@ -96,7 +96,8 @@ public class ConfigActivity extends Activity {
             masterUri = userUri;
             robotName = userRobotName;
 
-            SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getSharedPreferences(
+                ConfigActivity.class.getName(), MODE_PRIVATE).edit();
             editor.putString(PREFS_KEY_URI, masterUri);
             editor.putString(PREFS_KEY_ROBOT_NAME, robotName);
             editor.commit();

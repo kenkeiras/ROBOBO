@@ -53,14 +53,16 @@ public class TaskManagerActivity extends Activity {
         lv.setAdapter(adapter);
 
         final TaskManagerService tService = taskService;
-        final String masterUri = getPreferences(MODE_PRIVATE).getString(
-            ConfigActivity.PREFS_KEY_URI,
-            NodeConfiguration.DEFAULT_MASTER_URI.toString());
-
+        final Activity ctx = this;
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
                 public boolean onItemLongClick(AdapterView<?> arg0,
                                                View arg1, int pos, long id) {
+
+                    String masterUri = ctx.getSharedPreferences(
+                        ConfigActivity.class.getName(), MODE_PRIVATE).getString(
+                            ConfigActivity.PREFS_KEY_URI,
+                            NodeConfiguration.DEFAULT_MASTER_URI.toString());
 
                     Log.v("long clicked","pos: " + pos);
                     tService.toggle(adapter.getItem(pos), masterUri);
