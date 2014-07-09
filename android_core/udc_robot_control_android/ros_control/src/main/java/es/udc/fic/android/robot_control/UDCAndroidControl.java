@@ -16,29 +16,28 @@
 
 package es.udc.fic.android.robot_control;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.common.base.Preconditions;
 
 import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
+import es.udc.fic.android.robot_control.robot.RobotCommController.SimpleBinder;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.robot.SensorInfo;
 import es.udc.fic.android.robot_control.tasks.TaskManagerActivity;
 
 import es.udc.fic.android.robot_control.utils.C;
-import org.ros.RosCore;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 import udc_robot_control_msgs.ActionCommand;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
 
 import java.net.URI;
 
@@ -47,40 +46,58 @@ public class UDCAndroidControl extends RosActivity {
 
     private static int MASTER_CHOOSER_REQUEST_CODE = 0;
     private static int MASTER_CHOOSER_REQUEST_CODE_FAKE = 99;
-    private static final int DEFAULT_MASTER_PORT = 11311;
-    private RosCore core = null;
-
-    private RosCameraPreviewView rosCameraPreviewView;
-    private PublisherFactory pf;
+    private RosCameraPreviewView cameraPreview;
+    private URI masterURI;
+    private Intent robotControllerIntent;
     private NodeMainExecutor nodeMainExecutor;
+    private Intent usbIntent;
 
-    private String robotName;
+    private String robotName = "no_robot_name";
     private RobotCommController robot;
-    private RobotSensorPublisher rsp;
 
     public UDCAndroidControl() {
         super("UDC Android Control", "UDC Android Control");
     }
+
+    private ServiceConnection mConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName arg0, IBinder bind) {
+            SimpleBinder sBinder = (SimpleBinder) bind;
+            robot = sBinder.getService();
+            if (masterURI != null){
+                robot.setMasterUri(masterURI);
+            }
+            if (usbIntent != null){
+                robot.iniciar(UDCAndroidControl.this, usbIntent);
+            }
+            robot.setCameraPreview(cameraPreview);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
 
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    rosCameraPreviewView = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view);
-    robotName = "no_robot_name";
+    cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view);
+    robotControllerIntent = new Intent(this, RobotCommController.class);
+
+    startService(robotControllerIntent);
+    bindService(robotControllerIntent, mConn, 0);
   }
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
-        URI masterURI = getMasterUri();
+        masterURI = getMasterUri();
+        if (robot != null){
+            robot.setMasterUri(masterURI);
+        }
         this.nodeMainExecutor = nodeMainExecutor;
-        pf = new PublisherFactory();
-        pf.setRobotName(robotName);
-        pf.setMasterUri(masterURI);
-        // Configurar nodo inicial. Un listener. Es el encargado de recibir instrucciones desde el exterior
-        pf.configureCommandListener(this, nodeMainExecutor);
-        rsp = pf.configureIRSensorPublisher(this, nodeMainExecutor);
+
 //        initRobot();
 //        robot.iniciarManual();
 
@@ -104,6 +121,9 @@ public class UDCAndroidControl extends RosActivity {
             if (requestCode == MASTER_CHOOSER_REQUEST_CODE) {
                 if (data != null) {
                     robotName = data.getStringExtra("ROS_ROBOT_NAME");
+                    if (robot != null){
+                        robot.setRobotName(robotName);
+                    }
                 }
             }
         }
@@ -151,11 +171,12 @@ public class UDCAndroidControl extends RosActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
 
-        initRobot();
-
         if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
             Log.i(C.ROBOT_TAG, "OnResume por dispositivo conectado");
-            robot.iniciar(this, intent);
+            usbIntent = intent;
+            if (robot != null){
+                robot.iniciar(this, intent);
+            }
         }
         else {
             // Ha sido arrancada manualmente
@@ -181,121 +202,15 @@ public class UDCAndroidControl extends RosActivity {
     }
 
     public void arrancarListener(ActionCommand actionCommand) {
-        switch (actionCommand.getPublisher()) {
-            case ActionCommand.PUBLISHER_ACCELEROMTER:
-                pf.configureAccelerometer(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_AMBIENT_TEMPERATURE:
-                pf.configureTemperature(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_GAME_ROTATION_VECTOR:
-                pf.configureGameRotationVector(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_GRAVITY:
-                pf.configureGravity(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_GYROSCOPE:
-                pf.configureGyroscope(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_GYROSCOPE_UNCALIBRATED:
-                pf.configureGyroscopeUncalibrated(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_LIGHT:
-                pf.configureLight(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_LINEAL_ACCELERATION:
-                pf.configureLinearAcceleration(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_MAGNETIC_FIELD:
-                pf.configureMagneticField(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_MAGNETIC_FIELD_UNCALIBRATED:
-                pf.configureMagneticUncalibrated(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_ORIENTATION:
-                pf.configureOrientation(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_PRESSURE:
-                pf.configurePressure(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_PROXIMITY:
-                pf.configureProximity(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_RELATIVE_HUMIDITY:
-                pf.configureRelativeHumidity(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_ROTATION_VECTOR:
-                pf.configureRotationVector(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_AUDIO:
-                pf.configureAudio(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_BATERY:
-                pf.configureBatery(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_GPS:
-                pf.configureNavSatFix(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_IMU:
-                pf.configureImu(this, nodeMainExecutor);
-                break;
-            case ActionCommand.PUBLISHER_VIDEO:
-                int camaraId = actionCommand.getParam0();
-                int orientation = actionCommand.getParam1();
-                pf.configureCamara(this, nodeMainExecutor, rosCameraPreviewView, camaraId, orientation);
-                break;
-            default:
-                Log.w(C.CMD_TAG, "Publisher desconocido [ " + actionCommand.getPublisher() + " ]");
-        }
+        robot.arrancarListener(actionCommand);
     }
 
     public void detenerListener(ActionCommand actionCommand) {
-        pf.stopPublisher(nodeMainExecutor, actionCommand.getPublisher());
+        robot.stop(actionCommand);
     }
 
     public void enviarRobot(ActionCommand comando) {
         robot.escribir(comando);
     }
 
-    public void enviarRos(SensorInfo inf) {
-        if (rsp != null) {
-            rsp.sendInfo(inf);
-        }
-    }
-
-    private RosCore spawnCoreFromUri(URI masterUri){
-        int port = masterUri.getPort();
-        if (port < 0){
-            port = DEFAULT_MASTER_PORT;
-        }
-        return RosCore.newPublic(masterUri.getHost(), port);
-    }
-
-    private void initRobot() {
-        if (robot == null) {
-            Log.i(C.TAG, "Creando robot en initRobot");
-            robot = new RobotCommController(this);
-
-            try {
-                URI masterUri = new URI(getPreferences(MODE_PRIVATE).getString(
-                                            ConfigActivity.PREFS_KEY_URI,
-                                            NodeConfiguration.DEFAULT_MASTER_URI.toString()));
-
-                String host = masterUri.getHost();
-
-                if ((host != null) && (host.equals("localhost")
-                                       || host.equals("[::1]")
-                                       || host.startsWith("127."))){
-                    core = spawnCoreFromUri(masterUri);
-                    core.start();
-                }
-            }
-            catch (URISyntaxException e){
-                e.printStackTrace();
-            }
-        }
-        else {
-            Log.i(C.TAG, "ignorando initRobot. el robot ya esta creado");
-        }
-    }
 }

@@ -57,6 +57,7 @@
         </activity>
 
         <service android:name="es.udc.fic.android.robot_control.tasks.TaskManagerService" />
+        <service android:name="es.udc.fic.android.robot_control.robot.RobotCommController" />
 
     </application>
 
