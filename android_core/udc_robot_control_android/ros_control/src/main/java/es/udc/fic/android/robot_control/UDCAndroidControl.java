@@ -64,8 +64,12 @@ public class UDCAndroidControl extends RosActivity {
         public void onServiceConnected(ComponentName arg0, IBinder bind) {
             SimpleBinder sBinder = (SimpleBinder) bind;
             robot = sBinder.getService();
+            robot.setRobotName(robotName);
             if (masterURI != null){
                 robot.setMasterUri(masterURI);
+            }
+            if (nodeMainExecutor != null){
+                robot.setNodeMainExecutor(nodeMainExecutor);
             }
             if (usbIntent != null){
                 robot.iniciar(UDCAndroidControl.this, usbIntent);
@@ -94,7 +98,9 @@ public class UDCAndroidControl extends RosActivity {
     protected void init(NodeMainExecutor nodeMainExecutor) {
         masterURI = getMasterUri();
         if (robot != null){
+            robot.setRobotName(robotName);
             robot.setMasterUri(masterURI);
+            robot.setNodeMainExecutor(nodeMainExecutor);
         }
         this.nodeMainExecutor = nodeMainExecutor;
 
@@ -121,9 +127,6 @@ public class UDCAndroidControl extends RosActivity {
             if (requestCode == MASTER_CHOOSER_REQUEST_CODE) {
                 if (data != null) {
                     robotName = data.getStringExtra("ROS_ROBOT_NAME");
-                    if (robot != null){
-                        robot.setRobotName(robotName);
-                    }
                 }
             }
         }
@@ -191,8 +194,8 @@ public class UDCAndroidControl extends RosActivity {
 //        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 //        registerReceiver(receiver, filter);
 
-        Intent i = new Intent(this, TaskManagerActivity.class);
-        startActivity(i);
+        // Intent i = new Intent(this, TaskManagerActivity.class);
+        // startActivity(i);
     }
 
     @Override

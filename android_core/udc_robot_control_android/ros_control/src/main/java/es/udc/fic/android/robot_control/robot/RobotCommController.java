@@ -45,6 +45,7 @@ import java.net.URISyntaxException;
 public class RobotCommController extends Service {
 
     public boolean continuar;
+    public UDCAndroidControl androidControl;
 
     private EstadoRobot estadoRobot;
     private long readSleepTime;
@@ -52,7 +53,6 @@ public class RobotCommController extends Service {
     private ConectorPlaca conector;
     private String robotName;
     private URI masterURI;
-    public UDCAndroidControl androidControl;
 
     private PublisherFactory pf;
     private RobotSensorPublisher rsp;
@@ -99,6 +99,13 @@ public class RobotCommController extends Service {
 
 
     private void createInitialNodes(){
+        if ((masterURI == null)
+            || (nodeMainExecutor == null)
+            || (androidControl == null)){
+
+            return;
+        }
+
         createdInitialNodes = true;
         // Configurar nodo inicial. Un listener. Es el encargado de recibir instrucciones desde el exterior
         pf.configureCommandListener(androidControl, nodeMainExecutor);
@@ -110,6 +117,21 @@ public class RobotCommController extends Service {
         rosCameraPreviewView = cameraPreview;
     }
 
+
+    /// @TODO Couple this methods?
+    public void setNodeMainExecutor(NodeMainExecutor node){
+        nodeMainExecutor = node;
+        if (!createdInitialNodes){
+            createInitialNodes();
+        }
+    }
+
+    public void setAndroidControl(UDCAndroidControl androidControl){
+        this.androidControl = androidControl;
+        if (!createdInitialNodes){
+            createInitialNodes();
+        }
+    }
 
     public void setRobotName(String robotName){
         this.robotName = robotName;
@@ -134,9 +156,9 @@ public class RobotCommController extends Service {
             core.start();
         }
 
+        masterURI = mu;
         pf.setMasterUri(masterURI);
 
-        masterURI = mu;
         if (!createdInitialNodes){
             createInitialNodes();
         }

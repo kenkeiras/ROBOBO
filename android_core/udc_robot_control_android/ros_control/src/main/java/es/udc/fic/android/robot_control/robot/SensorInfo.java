@@ -41,7 +41,7 @@ public class SensorInfo {
     }
 
     public SensorInfo(byte[] lectura) throws IllegalArgumentException{
-        if (lectura.length != MSG_LENGTH) {
+        if (lectura.length < MSG_LENGTH) {
             throw new IllegalArgumentException("Lectura incorrecta");
         }
         else {
@@ -55,9 +55,11 @@ public class SensorInfo {
                 checksum += lectura[x];
                 checksum += lectura[x+1];
             }
-            if (lectura[23] != checksum) {
-                throw new IllegalArgumentException("Lectura incorrecta. Checksum incorrecto");
-            }
+
+            // Checksum doesn't seem to be implemented as of now
+            // if (lectura[23] != checksum) {
+            //     throw new IllegalArgumentException("Lectura incorrecta. Checksum incorrecto");
+            // }
         }
     }
 
