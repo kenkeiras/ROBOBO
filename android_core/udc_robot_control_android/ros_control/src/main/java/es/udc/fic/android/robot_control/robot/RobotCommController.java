@@ -27,6 +27,7 @@ import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.PublisherFactory;
 import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.utils.C;
 import udc_robot_control_msgs.ActionCommand;
 
@@ -62,7 +63,7 @@ public class RobotCommController extends Service {
     private static final int DEFAULT_MASTER_PORT = 11311;
     private RosCore core = null;
     private boolean createdInitialNodes = false;
-
+    private EngineManager engineManager;
 
     private final IBinder sBinder = (IBinder) new SimpleBinder();
 
@@ -81,7 +82,8 @@ public class RobotCommController extends Service {
 
     @Override
     public void onCreate(){
-        this.estadoRobot = new EstadoRobot();
+        estadoRobot = new EstadoRobot();
+        engineManager = new EngineManager();
         continuar = false;
 
         pf = new PublisherFactory();
@@ -109,6 +111,7 @@ public class RobotCommController extends Service {
         createdInitialNodes = true;
         // Configurar nodo inicial. Un listener. Es el encargado de recibir instrucciones desde el exterior
         pf.configureCommandListener(androidControl, nodeMainExecutor);
+        pf.configureEngineListener(engineManager, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
     }
 
@@ -323,10 +326,6 @@ public class RobotCommController extends Service {
                     estadoRobot.reset();
                     conector.escribir(estadoRobot);
                     break;
-                case ActionCommand.CMD_SET_ENGINES:
-                    estadoRobot.setMotores(comando.getEngines());
-                    conector.escribir(estadoRobot);
-                    break;
                 case ActionCommand.CMD_SET_LEDS:
                     estadoRobot.setLeds(comando.getLeds());
                     conector.escribir(estadoRobot);
@@ -348,6 +347,7 @@ public class RobotCommController extends Service {
     }
 
     public void refreshRobot(){
+        engineManager.refresh(estadoRobot);
         conector.escribir(estadoRobot);
     }
 
