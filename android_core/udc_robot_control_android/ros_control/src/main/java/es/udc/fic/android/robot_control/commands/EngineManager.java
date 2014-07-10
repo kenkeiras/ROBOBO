@@ -14,7 +14,7 @@ public class EngineManager {
 
     public EngineManager(){
         reset();
-        speed_x = 0.5f;
+        speed_x = 0.0f;
         turn_x = 0.0f;
     }
 
@@ -41,6 +41,8 @@ public class EngineManager {
 
 
     public void setTwist(Twist twist){
+        System.out.print("(" + speed_x + ", " + turn_y + ") -> ");
+
         Vector3 linear = twist.getLinear();
         speed_x = linear.getX();
         speed_y = linear.getY();
@@ -51,5 +53,6 @@ public class EngineManager {
         turn_y = angular.getY();
         turn_z = angular.getZ();
 
+        System.out.println("(" + speed_x + ", " + turn_y + ")");
     }
 }

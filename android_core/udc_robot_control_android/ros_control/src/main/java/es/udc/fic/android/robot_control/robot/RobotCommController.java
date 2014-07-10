@@ -101,18 +101,23 @@ public class RobotCommController extends Service {
 
 
     private void createInitialNodes(){
+        Log.d("UDC", "Creating initial nodes...");
+
         if ((masterURI == null)
             || (nodeMainExecutor == null)
             || (androidControl == null)){
 
+            Log.d("UDC", "NOT! NodeMainExec=" + nodeMainExecutor + " masterUri=" + masterURI + " androidControl=" + androidControl);
             return;
         }
+        Log.d("UDC", "OK");
 
         createdInitialNodes = true;
         // Configurar nodo inicial. Un listener. Es el encargado de recibir instrucciones desde el exterior
         pf.configureCommandListener(androidControl, nodeMainExecutor);
         pf.configureEngineListener(engineManager, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
+        Log.d("UDC", "Let's check...");
     }
 
 
@@ -415,14 +420,6 @@ class HiloControl extends Thread {
         catch (Exception ex) {
             Log.w(C.ROBOT_TAG, "Exception en hilo lector", ex);
             parent.continuar = false;
-        }
-
-        // TODO: Quitar esto en función de cómo funcionen las lecturas (si es que funcionan)
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Log.w(C.ROBOT_TAG, "Error al dormir el hilo lector" + e.getMessage());
-            e.printStackTrace();
         }
     }
 }
