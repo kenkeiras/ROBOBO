@@ -14,6 +14,8 @@ public class EngineManager {
 
     public EngineManager(){
         reset();
+        speed_x = 0.5f;
+        turn_x = 0.0f;
     }
 
 
@@ -24,9 +26,17 @@ public class EngineManager {
 
 
     public void refresh(EstadoRobot robotState){
-        byte running = (byte) (speed_x >= 0.5f? 1 : 0);
+        byte runningLeft = (byte) (speed_x >= 0.5f? 1 : 0);
+        byte runningRight = runningLeft;
 
-        robotState.setEngines(running, running);
+        if (turn_y >= 0.5f){
+            runningRight = 0;
+        }
+        else if (turn_y <= -0.5f){
+            runningLeft = 0;
+        }
+
+        robotState.setEngines(runningLeft, runningRight);
     }
 
 
