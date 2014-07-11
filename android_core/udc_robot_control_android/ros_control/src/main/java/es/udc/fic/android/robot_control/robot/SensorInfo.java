@@ -40,8 +40,16 @@ public class SensorInfo {
 
     }
 
+
+    /// @TODO move to a utilities class
+    private int toUnsignedInt(byte b){
+        int result = 256 + b;
+        return result & 0xFF;
+    }
+
+
     public SensorInfo(byte[] lectura) throws IllegalArgumentException{
-        if (lectura.length != MSG_LENGTH) {
+        if (lectura.length < MSG_LENGTH) {
             throw new IllegalArgumentException("Lectura incorrecta");
         }
         else {
@@ -50,14 +58,16 @@ public class SensorInfo {
             }
             byte checksum = 0;
             for (int x = 1; x < 22; x += 2) {
-                int valor = lectura[x] << 8 + lectura[x+1];
+                int valor = (toUnsignedInt(lectura[x]) << 8) + toUnsignedInt(lectura[x+1]);
                 setValor(x, valor);
                 checksum += lectura[x];
                 checksum += lectura[x+1];
             }
-            if (lectura[23] != checksum) {
-                throw new IllegalArgumentException("Lectura incorrecta. Checksum incorrecto");
-            }
+
+            // Checksum doesn't seem to be implemented as of now
+            // if (lectura[23] != checksum) {
+            //     throw new IllegalArgumentException("Lectura incorrecta. Checksum incorrecto");
+            // }
         }
     }
 
