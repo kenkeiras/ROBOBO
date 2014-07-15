@@ -239,7 +239,7 @@ public class RobotCommController extends Service {
 
 
     public void iniciar(UDCAndroidControl androidControl, Intent intent) {
-        this.androidControl = androidControl;
+        setAndroidControl(androidControl);
         Log.i(C.ROBOT_TAG, "Iniciando controlador de robot");
         try {
 
@@ -268,7 +268,8 @@ public class RobotCommController extends Service {
         }
     }
 
-    public void iniciarManual() {
+    public void iniciarManual(UDCAndroidControl androidControl) {
+        setAndroidControl(androidControl);
         try {
             Log.v("UDC", "Iniciando manual, continuado? " + continuar);
             if(continuar) { // Ya conectado
@@ -320,7 +321,7 @@ public class RobotCommController extends Service {
             switch (comando.getCommand()) {
                 case ActionCommand.CMD_HARD_RESET:
                     terminar();
-                    iniciarManual();
+                    iniciarManual(androidControl);
                     break;
                 case ActionCommand.CMD_RESET:
                     estadoRobot.reset();

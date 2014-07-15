@@ -184,6 +184,9 @@ public class UDCAndroidControl extends RosActivity {
             // Ha sido arrancada manualmente
             Log.w(C.ROBOT_TAG, "Se ha arrancado manualmente SIN robot");
             Toast.makeText(this, R.string.robot_service_manual_not_start, Toast.LENGTH_SHORT).show();
+            if (robot != null){
+                robot.iniciarManual(this);
+            }
         }
 
         // Temporalmente "pasamos" del inicio manual. Solo funcionara si se lanza al conectar el robot
