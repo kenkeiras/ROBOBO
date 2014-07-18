@@ -20,4 +20,4 @@ include 'my_android_library_project'
 */
 
 include 'ros_control'
-include 'example_task'
+include 'follow_example'
