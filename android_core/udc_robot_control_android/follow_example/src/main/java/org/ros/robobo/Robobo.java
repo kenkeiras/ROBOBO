@@ -32,6 +32,11 @@ import java.net.URISyntaxException;
 import org.ros.message.Time;
 
 public class Robobo implements NodeMain {
+    public static final String taskName = "Follower example";
+    public static final String taskDescription = "Follows the object in front "
+        + "by turning left or right based on the IR sensors";
+
+
     private Publisher<Twist> publisher;
     private String robotName;
     private NodeMainExecutor nodeMainExecutor;

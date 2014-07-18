@@ -116,6 +116,9 @@ public class TaskListAdapter extends BaseAdapter implements ListAdapter {
         TextView nameTv = (TextView) v.findViewById(R.id.task_name);
         nameTv.setText(task.getName());
 
+        TextView descTv = (TextView) v.findViewById(R.id.task_desc);
+        descTv.setText(task.getDescription());
+
         // Set color indicator
         View colorBlock = v.findViewById(R.id.color_block);
         switch(task.getState()){
