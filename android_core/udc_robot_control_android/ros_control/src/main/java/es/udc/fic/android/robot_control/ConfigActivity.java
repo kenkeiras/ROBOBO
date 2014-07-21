@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import org.ros.node.NodeConfiguration;
+import android.util.Log;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -98,6 +99,7 @@ public class ConfigActivity extends Activity {
 
             SharedPreferences.Editor editor = getSharedPreferences(
                 ConfigActivity.class.getName(), MODE_PRIVATE).edit();
+            Log.v("UDC", "MASTER URI: " + masterUri);
             editor.putString(PREFS_KEY_URI, masterUri);
             editor.putString(PREFS_KEY_ROBOT_NAME, robotName);
             editor.commit();

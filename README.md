@@ -18,7 +18,7 @@ Dependencias
 * [Android SDK](https://developer.android.com/sdk/index.html) para los apps de
 Android, habiendo apuntado $ANDROID_HOME a la raíz del SDK, desde este se ha
 de instalar los siguientes paquetes:
- + Android SDK Build-tools v18.0.1
+ + Android SDK Build-tools v19.1.0
  + Android 4.3 (API 18) - SDK Platform
  + Android Support Repository
  + Android Support Library

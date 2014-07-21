@@ -23,6 +23,8 @@ import es.udc.fic.android.robot_control.audio.AudioPublisher;
 import es.udc.fic.android.robot_control.batery.BateryStatus;
 import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.commands.CommandListener;
+import es.udc.fic.android.robot_control.commands.EngineListener;
+import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.gps.NavSatFixPublisher;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.sensors.*;
@@ -80,6 +82,7 @@ public class PublisherFactory {
     // ROBOT
     private RobotSensorPublisher rsp;
     private CommandListener cmdl;
+    private EngineListener engineListener;
 
 
     public void setRobotName(String r) {
@@ -92,10 +95,12 @@ public class PublisherFactory {
     }
 
     private void checkConfig() {
+            Log.v("UDC_FACTORY", "ROBOT NAME: " + robotName + "  URI: " + masterUri);
         if ((robotName != null) && (masterUri != null)) {
             nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress());
             nodeConfiguration.setMasterUri(masterUri);
             nodeConfiguration.setNodeName("/" + robotName);
+            Log.v("UDC_FACTORY", "NODE: " + nodeConfiguration);
         }
     }
 
@@ -105,6 +110,14 @@ public class PublisherFactory {
         nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_COMMANDS);
         cmdl = new CommandListener(ctx, robotName, nodeMainExecutor);
         nodeMainExecutor.execute(cmdl, nc0);
+    }
+
+    public void configureEngineListener(EngineManager manager, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating Engine Listener");
+        NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
+        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_ENGINES);
+        engineListener = new EngineListener(manager, robotName, nodeMainExecutor);
+        nodeMainExecutor.execute(engineListener, nc0);
     }
 
     public RobotSensorPublisher configureIRSensorPublisher(UDCAndroidControl ctx, NodeMainExecutor nodeMainExecutor) {

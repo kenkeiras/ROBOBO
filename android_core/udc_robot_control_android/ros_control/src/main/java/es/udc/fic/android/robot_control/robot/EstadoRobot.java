@@ -15,7 +15,6 @@
  */
 package es.udc.fic.android.robot_control.robot;
 
-import udc_robot_control_msgs.Engines;
 import udc_robot_control_msgs.Led;
 
 import java.util.List;
@@ -29,15 +28,18 @@ public class EstadoRobot {
 
     public static int NUM_LEDS = 8;
 
-    public Engines motores;
+    public byte engineMode;
+    public byte leftEngine, rightEngine;
     public Led[] leds;
 
     public EstadoRobot() {
         leds = new Led[NUM_LEDS];
+        leftEngine = rightEngine = 0;
     }
 
-    public void setMotores(Engines m) {
-        motores = m;
+    public void setEngines(byte leftEngine, byte rightEngine) {
+        this.leftEngine = leftEngine;
+        this.rightEngine = rightEngine;
     }
 
     public void setLeds(List<Led> ledList) {
@@ -56,69 +58,52 @@ public class EstadoRobot {
     }
 
     public void reset() {
-        motores = null;
+        leftEngine = rightEngine = 0;
         leds = new Led[NUM_LEDS];
     }
+
+
+    private byte checksum(byte[] buff, int from, int limit){
+        byte sum = 0;
+        for (int i = from; i < limit; i++){
+            sum += buff[i];
+        }
+
+        return sum;
+    }
+
 
     /**
      * Este método se encarga de generar un mensaje para enviar
      * @return
      */
     public byte[] mensaje() {
-        byte[] salida = new byte[31];
+        byte[] out = new byte[31];
 
         int pos = 0;
-        byte checksum = 0;
-        salida[pos++] = 0x37;
-        if (motores != null) {
-            salida[pos] = (byte) motores.getMotorMode();
-            checksum += salida[pos++];
-            byte[] mi = motorIntToBytes(motores.getLeftEngine());
-            salida[pos] = mi[0];
-            checksum += salida[pos++];
-            salida[pos] = mi[1];
-            checksum += salida[pos++];
-            byte[] md = motorIntToBytes(motores.getRightEngine());
-            salida[pos] = md[0];
-            checksum += salida[pos++];
-            salida[pos] = md[1];
-            checksum += salida[pos++];
+        out[0] = 0x37;
+        out[1] = engineMode;
+        out[2] = leftEngine;
+        out[3] = rightEngine;
+
+        try {
+            Led led = leds[0];
+            out[4] = (byte) led.getRed();
+            out[5] = (byte) led.getGreen();
+            out[6] = (byte) led.getBlue();
         }
-        else {
-            // No hay valor para motores. Estamos parados
-            for (int x = 0; x < 5; x++) {
-                salida[pos] = 0;
-                checksum += salida[pos++];
-            }
+        catch (NullPointerException e){
+            out[4] = 0;
+            out[5] = 0;
+            out[6] = 0;
         }
 
-        for (int x = 0; x < leds.length; x++) {
-            if (leds[x] != null) {
-                byte r = (byte) leds[x].getRed();
-                byte g = (byte) leds[x].getGreen();
-                byte b = (byte) leds[x].getBlue();
-                salida[pos] = r;
-                checksum += salida[pos++];
-                salida[pos] = g;
-                checksum += salida[pos++];
-                salida[pos] = b;
-                checksum += salida[pos++];
-            }
-            else {
-                salida[pos] = 0;
-                checksum += salida[pos++];
-                salida[pos] = 0;
-                checksum += salida[pos++];
-                salida[pos] = 0;
-                checksum += salida[pos++];
-            }
-        }
         // Checksum
-        salida[pos] = checksum;
-        return salida;
+        out[7] = checksum(out, 1, 7);
+        return out;
     }
 
-    private byte[] motorIntToBytes(int motorValue) {
+    private byte[] engineIntToBytes(int motorValue) {
         byte bajo = (byte) motorValue;
         byte alto = (byte) (motorValue >> 8);
         byte[] salida = {alto, bajo};

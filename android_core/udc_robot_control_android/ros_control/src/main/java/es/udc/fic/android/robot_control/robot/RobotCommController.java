@@ -27,6 +27,7 @@ import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.PublisherFactory;
 import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.utils.C;
 import udc_robot_control_msgs.ActionCommand;
 
@@ -62,7 +63,7 @@ public class RobotCommController extends Service {
     private static final int DEFAULT_MASTER_PORT = 11311;
     private RosCore core = null;
     private boolean createdInitialNodes = false;
-
+    private EngineManager engineManager;
 
     private final IBinder sBinder = (IBinder) new SimpleBinder();
 
@@ -81,7 +82,8 @@ public class RobotCommController extends Service {
 
     @Override
     public void onCreate(){
-        this.estadoRobot = new EstadoRobot();
+        estadoRobot = new EstadoRobot();
+        engineManager = new EngineManager();
         continuar = false;
 
         pf = new PublisherFactory();
@@ -99,17 +101,23 @@ public class RobotCommController extends Service {
 
 
     private void createInitialNodes(){
+        Log.d("UDC", "Creating initial nodes...");
+
         if ((masterURI == null)
             || (nodeMainExecutor == null)
             || (androidControl == null)){
 
+            Log.d("UDC", "NOT! NodeMainExec=" + nodeMainExecutor + " masterUri=" + masterURI + " androidControl=" + androidControl);
             return;
         }
+        Log.d("UDC", "OK");
 
         createdInitialNodes = true;
         // Configurar nodo inicial. Un listener. Es el encargado de recibir instrucciones desde el exterior
         pf.configureCommandListener(androidControl, nodeMainExecutor);
+        pf.configureEngineListener(engineManager, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
+        Log.d("UDC", "Let's check...");
     }
 
 
@@ -236,7 +244,7 @@ public class RobotCommController extends Service {
 
 
     public void iniciar(UDCAndroidControl androidControl, Intent intent) {
-        this.androidControl = androidControl;
+        setAndroidControl(androidControl);
         Log.i(C.ROBOT_TAG, "Iniciando controlador de robot");
         try {
 
@@ -265,7 +273,8 @@ public class RobotCommController extends Service {
         }
     }
 
-    public void iniciarManual() {
+    public void iniciarManual(UDCAndroidControl androidControl) {
+        setAndroidControl(androidControl);
         try {
             Log.v("UDC", "Iniciando manual, continuado? " + continuar);
             if(continuar) { // Ya conectado
@@ -317,14 +326,10 @@ public class RobotCommController extends Service {
             switch (comando.getCommand()) {
                 case ActionCommand.CMD_HARD_RESET:
                     terminar();
-                    iniciarManual();
+                    iniciarManual(androidControl);
                     break;
                 case ActionCommand.CMD_RESET:
                     estadoRobot.reset();
-                    conector.escribir(estadoRobot);
-                    break;
-                case ActionCommand.CMD_SET_ENGINES:
-                    estadoRobot.setMotores(comando.getEngines());
                     conector.escribir(estadoRobot);
                     break;
                 case ActionCommand.CMD_SET_LEDS:
@@ -348,6 +353,7 @@ public class RobotCommController extends Service {
     }
 
     public void refreshRobot(){
+        engineManager.refresh(estadoRobot);
         conector.escribir(estadoRobot);
     }
 
@@ -414,14 +420,6 @@ class HiloControl extends Thread {
         catch (Exception ex) {
             Log.w(C.ROBOT_TAG, "Exception en hilo lector", ex);
             parent.continuar = false;
-        }
-
-        // TODO: Quitar esto en función de cómo funcionen las lecturas (si es que funcionan)
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Log.w(C.ROBOT_TAG, "Error al dormir el hilo lector" + e.getMessage());
-            e.printStackTrace();
         }
     }
 }

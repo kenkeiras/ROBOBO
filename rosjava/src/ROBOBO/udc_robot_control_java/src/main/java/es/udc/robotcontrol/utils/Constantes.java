@@ -26,6 +26,7 @@ package es.udc.robotcontrol.utils;
 public abstract class Constantes {
 
     // Nombres para los nodos
+    public static final String NODE_ENGINES     = "cmd_vel";
     public static final String NODE_COMMANDS    = "commands";
     public static final String NODE_IR_SENSORS  = "irsensors";
     public static final String NODE_AUDIO       = "audio";
@@ -53,6 +54,7 @@ public abstract class Constantes {
     public static final String NODE_GYROSCOPE_UNCALIBRATED      = "gyroscope_uncalibrated";
 
     // Nombres para las colas
+    public static final String TOPIC_ENGINES       = "cmd_vel";
     public static final String TOPIC_COMMANDS      = "commands";
     public static final String TOPIC_IR_SENSORS    = "irsensors";
     public static final String TOPIC_AUDIO         = "audio";
