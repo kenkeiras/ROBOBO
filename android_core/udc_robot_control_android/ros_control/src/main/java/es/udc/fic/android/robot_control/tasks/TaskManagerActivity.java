@@ -18,23 +18,42 @@ import java.util.List;
 
 import es.udc.fic.android.robot_control.ConfigActivity;
 import es.udc.fic.android.robot_control.R;
-import es.udc.fic.android.robot_control.tasks.TaskManagerService.SimpleBinder;
+import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.robot.RobotCommController;
 
 import org.ros.node.NodeConfiguration;
 
 public class TaskManagerActivity extends Activity {
 
+
+    private RobotCommController robot;
+    private RosCameraPreviewView cameraPreview;
     private Intent taskServiceIntent;
     private TaskManagerService taskService;
     private ServiceConnection mConn = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder bind) {
-            SimpleBinder sBinder = (SimpleBinder) bind;
+            TaskManagerService.SimpleBinder sBinder = (TaskManagerService.SimpleBinder) bind;
             taskService = sBinder.getService();
             if (!populateList()){
-            setContentView(R.layout.task_manager_no_tasks);
+                setContentView(R.layout.task_manager_no_tasks);
             }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
+
+
+    private Intent robotControllerIntent;
+    private ServiceConnection rConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName arg0, IBinder bind) {
+            RobotCommController.SimpleBinder sBinder = (RobotCommController.SimpleBinder) bind;
+            robot = sBinder.getService();
+            robot.setCameraPreview(cameraPreview);
         }
 
         @Override
@@ -79,6 +98,7 @@ public class TaskManagerActivity extends Activity {
         super.onDestroy();
 
         unbindService(mConn);
+        unbindService(rConn);
     }
 
 
@@ -87,6 +107,12 @@ public class TaskManagerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState){
         super.onResume();
         setContentView(R.layout.task_manager);
+
+
+        cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view_task_manager);
+        robotControllerIntent = new Intent(this, RobotCommController.class);
+        bindService(robotControllerIntent, rConn, 0);
+
 
         taskServiceIntent = new Intent(this, TaskManagerService.class);
         startService(taskServiceIntent);
