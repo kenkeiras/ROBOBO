@@ -66,7 +66,7 @@ public abstract class Constantes {
 
 
     public static final String TOPIC_ACCELEROMETER               = "accelerometer";
-    public static final String TOPIC_MAGNETIC_FIELD              = "magnetic_fied";
+    public static final String TOPIC_MAGNETIC_FIELD              = "magnetic_filed";
     public static final String TOPIC_GYROSCOPE                   = "gyroscope";
     public static final String TOPIC_LIGHT                       = "light";
     public static final String TOPIC_PRESSURE                    = "pressure";
