@@ -62,6 +62,7 @@ public class TaskManagerService extends Service {
         case Task.STOP: case Task.CRASHED:
             Log.v("UDC", "Resuming task");
 
+            task.stop();
             task.run(masterUri);
             break;
 

@@ -94,10 +94,13 @@ public class Task {
     }
 
 
-    public void stop(){
+    public synchronized void stop(){
         state = STOP;
-        thread.interrupt();
-        thread = null;
+
+        if (thread != null){
+            thread.interrupt();
+            thread = null;
+        }
 
         if (this.service != null){
             service.refreshTaskInfo();
