@@ -57,6 +57,7 @@ public class RobotCommController extends Service {
 
     private PublisherFactory pf;
     private RobotSensorPublisher rsp;
+    private RobotSensorDistancePublisher rsdp;
     private NodeMainExecutor nodeMainExecutor;
     private RosCameraPreviewView rosCameraPreviewView;
 
@@ -126,6 +127,7 @@ public class RobotCommController extends Service {
         pf.configureCommandListener(androidControl, nodeMainExecutor);
         pf.configureEngineListener(engineManager, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
+        rsdp = pf.configureIRSensorDistancePublisher(androidControl, nodeMainExecutor);
         Log.d("UDC", "Let's check...");
         pf.configureCamera(androidControl, nodeMainExecutor,
                            rosCameraPreviewView, 0, 90);
@@ -369,6 +371,7 @@ public class RobotCommController extends Service {
 
     public void sendToRos(SensorInfo ss) {
         rsp.sendInfo(ss);
+        rsdp.sendInfo(ss);
     }
 
     public void refreshRobot(){

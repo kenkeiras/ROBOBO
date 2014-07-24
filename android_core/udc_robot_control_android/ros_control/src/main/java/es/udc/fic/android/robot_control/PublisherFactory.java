@@ -29,6 +29,7 @@ import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.gps.NavSatFixPublisher;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
+import es.udc.fic.android.robot_control.robot.RobotSensorDistancePublisher;
 import es.udc.fic.android.robot_control.screen.ScreenListener;
 import es.udc.fic.android.robot_control.sensors.*;
 import es.udc.fic.android.robot_control.utils.C;
@@ -85,6 +86,7 @@ public class PublisherFactory {
 
     // ROBOT
     private RobotSensorPublisher rsp;
+    private RobotSensorDistancePublisher rsdp;
     private CommandListener cmdl;
     private EngineListener engineListener;
 
@@ -135,8 +137,17 @@ public class PublisherFactory {
         return rsp;
     }
 
-    public void configureBattery(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating BatteryStatus Publisher");
+    public RobotSensorDistancePublisher configureIRSensorDistancePublisher(UDCAndroidControl ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating IR Sensor publisher");
+        NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
+        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_IR_SENSORS_DISTANCES);
+        rsdp = new RobotSensorDistancePublisher(ctx, robotName);
+        nodeMainExecutor.execute(rsp, nc0);
+        return rsdp;
+    }
+
+    public void configureBatery(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating BateryStatus Publisher");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
         nc0.setNodeName("/" + robotName + "/" + Constants.NODE_BATTERY);
         batteryStatusPublisher = new BatteryStatus(ctx, robotName);

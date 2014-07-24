@@ -28,7 +28,8 @@ public abstract class Constants {
     // Node names
     public static final String NODE_ENGINES     = "cmd_vel";
     public static final String NODE_COMMANDS    = "commands";
-    public static final String NODE_IR_SENSORS  = "irsensors";
+    public static final String NODE_IR_SENSORS  = "range";
+    public static final String NODE_IR_SENSORS_DISTANCES  = "irsensors";
     public static final String NODE_AUDIO       = "audio";
     public static final String NODE_TEXT_TO_SPEECH = "text_to_speech";
     public static final String NODE_BATTERY     = "battery";
@@ -59,7 +60,8 @@ public abstract class Constants {
     // Queue names
     public static final String TOPIC_ENGINES       = "cmd_vel";
     public static final String TOPIC_COMMANDS      = "commands";
-    public static final String TOPIC_IR_SENSORS    = "irsensors";
+    public static final String TOPIC_IR_SENSORS    = "range";
+    public static final String TOPIC_IR_SENSORS_DISTANCES = "irsensors";
     public static final String TOPIC_AUDIO         = "audio";
     public static final String TOPIC_TEXT_TO_SPEECH = "text_to_speech";
     public static final String TOPIC_BATTERY       = "battery";
