@@ -17,17 +17,42 @@ public class Task {
     private String fileName;
     private int state;
     private Thread thread;
+    private String name;
+    private String description;
+    private Context context;
 
-    public Task(File file){
+    public Task(File file, Context context) throws NotATaskException {
+        this.context = context;
         this.file = file;
         this.fileName = file.getName();
         this.state = STOP;
+
+        String path = file.getAbsolutePath();
+        try {
+            this.name = TaskRunner.getName(path, context);
+            this.description = TaskRunner.getDescription(path, context);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            throw new NotATaskException();
+        }
         thread = null;
     }
 
 
     public String getName(){
+        if (name != null){
+            return name;
+        }
         return fileName;
+    }
+
+
+    public String getDescription(){
+        if (description != null){
+            return description;
+        }
+        return "";
     }
 
 
@@ -41,13 +66,13 @@ public class Task {
     }
 
 
-    public void run(final TaskManagerService context, final String masterUri){
+    public void run(final String masterUri){
         final Task task = this;
-        this.service = context;
         thread = new Thread() {
                 public void run(){
                     try {
-                        TaskRunner.run(task, context, masterUri);
+                        TaskRunner.run(file.getAbsolutePath(),
+                                       context, masterUri);
                     }
                     catch (Exception e){
                         e.printStackTrace();
@@ -69,10 +94,13 @@ public class Task {
     }
 
 
-    public void stop(){
+    public synchronized void stop(){
         state = STOP;
-        thread.interrupt();
-        thread = null;
+
+        if (thread != null){
+            thread.interrupt();
+            thread = null;
+        }
 
         if (this.service != null){
             service.refreshTaskInfo();

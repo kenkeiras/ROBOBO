@@ -19,6 +19,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -118,10 +119,24 @@ public class RobotCommController extends Service {
         pf.configureEngineListener(engineManager, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
         Log.d("UDC", "Let's check...");
+        pf.configureCamara(androidControl, nodeMainExecutor,
+                           rosCameraPreviewView, 0, 90);
     }
 
 
-    public void setCameraPreview(RosCameraPreviewView cameraPreview){
+    int cam= 0;
+    public synchronized void setCameraPreview(RosCameraPreviewView cameraPreview){
+        Log.d("UDC", "CAM NUM: " + (cam++));
+        if (rosCameraPreviewView != null){
+            rosCameraPreviewView.releaseCamera();
+            nodeMainExecutor.shutdownNodeMain(rosCameraPreviewView);
+
+            if (createdInitialNodes){
+                pf.configureCamara(androidControl, nodeMainExecutor,
+                                   cameraPreview, 0, 90);
+            }
+        }
+
         rosCameraPreviewView = cameraPreview;
     }
 

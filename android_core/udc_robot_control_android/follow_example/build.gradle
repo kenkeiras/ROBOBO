@@ -23,5 +23,5 @@ task installExamples(type: Exec, dependsOn: examples) {
 
     def adb = "$System.env.ANDROID_HOME/platform-tools/adb"
 
-    commandLine "$adb", 'push', "$exDir/follow_example.dex", '/sdcard/ros'
+    commandLine "$adb", 'push', "$exDir/follow_example.dex", '/sdcard/ros/follow_example.dex'
 }

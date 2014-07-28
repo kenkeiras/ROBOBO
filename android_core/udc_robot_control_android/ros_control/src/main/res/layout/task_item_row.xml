@@ -14,16 +14,26 @@
         android:orientation="vertical"
         android:layout_width="10px"
         android:layout_height="fill_parent"
-        android:layout_alignBottom="@+id/task_name" />
+        android:layout_alignBottom="@+id/task_desc" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:id="@+id/task_name"
         android:paddingLeft="15dp"
+        android:paddingTop="5dp"
         android:text="File name"
         android:textStyle="bold"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/color_block" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:id="@+id/task_desc"
+        android:paddingLeft="25dp"
+        android:text="Description"
+        android:layout_below="@+id/task_name"
         android:layout_toRightOf="@+id/color_block" />
 
 </RelativeLayout>

@@ -1,17 +1,28 @@
-<LinearLayout
-    android:orientation="vertical"
+<FrameLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/task_list"
-        android:clickable="true"
-        android:divider="@drawable/divider"
-        android:dividerHeight="2px"
-        android:layout_gravity="center_horizontal"
-        android:longClickable="true" />
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
 
-</LinearLayout>
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/task_list"
+              android:clickable="true"
+              android:divider="@drawable/divider"
+              android:dividerHeight="2px"
+              android:layout_gravity="center_horizontal"
+              android:longClickable="true" />
+
+  </LinearLayout>
+
+  <es.udc.fic.android.robot_control.camara.RosCameraPreviewView
+      android:id="@+id/ros_camera_preview_view_task_manager"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent" />
+
+</FrameLayout>

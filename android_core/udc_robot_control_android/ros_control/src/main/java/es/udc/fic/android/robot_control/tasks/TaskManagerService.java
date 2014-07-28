@@ -41,7 +41,10 @@ public class TaskManagerService extends Service {
 
         List<Task> taskList = new ArrayList<Task>();
         for (File f : files){
-            taskList.add(new Task(f));
+            try {
+                taskList.add(new Task(f, this));
+            }
+            catch (NotATaskException e){}
         }
 
         _taskList = taskList;
@@ -59,7 +62,8 @@ public class TaskManagerService extends Service {
         case Task.STOP: case Task.CRASHED:
             Log.v("UDC", "Resuming task");
 
-            task.run(this, masterUri);
+            task.stop();
+            task.run(masterUri);
             break;
 
         case Task.RUNNING:

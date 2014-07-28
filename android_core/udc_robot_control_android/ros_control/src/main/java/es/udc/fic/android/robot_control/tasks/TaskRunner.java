@@ -3,8 +3,10 @@ package es.udc.fic.android.robot_control.tasks;
 import android.content.Context;
 import android.util.Log;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 
 import dalvik.system.DexClassLoader;
 
@@ -13,19 +15,29 @@ public class TaskRunner {
 
     public final static String TASK_NAME = "org.ros.robobo.Robobo";
     public final static String CALLED_METHOD_NAME = "main";
+    public final static String NAME_PROPERTY = "taskName";
+    public final static String DESCRIPTION_PROPERTY = "taskDescription";
 
-    public static void run(Task task, Context context, String masterUri)
+
+    public static Class<?> getMainClass(String path, Context context)
         throws ClassNotFoundException, NoSuchMethodException,
         IllegalAccessException, InvocationTargetException {
 
         ClassLoader loader = new DexClassLoader(
-            task.getPath(), context.getCacheDir().getAbsolutePath(),
+            path, context.getCacheDir().getAbsolutePath(),
             null, TaskRunner.class.getClassLoader());
 
-        Log.v("UDC", "Loader " + loader);
-        Class<?> clazz = Class.forName(TASK_NAME, true, loader);
+        return Class.forName(TASK_NAME, true, loader);
+    }
 
-        String[] args = new String[]{ task.getPath(), masterUri };
+
+    public static void run(String path, Context context, String masterUri)
+        throws ClassNotFoundException, NoSuchMethodException,
+        IllegalAccessException, InvocationTargetException {
+
+        Class<?> clazz = getMainClass(path, context);
+
+        String[] args = new String[]{ path, masterUri };
 
         for (Method m : clazz.getDeclaredMethods()){
             if (m.getName().equals(CALLED_METHOD_NAME)){
@@ -35,5 +47,41 @@ public class TaskRunner {
         }
 
         throw new NoSuchMethodException(CALLED_METHOD_NAME);
+    }
+
+
+    public static String getStringProperty(String path,
+                                           Context context,
+                                           String prop)
+        throws ClassNotFoundException, NoSuchMethodException,
+        IllegalAccessException, InvocationTargetException {
+
+        Class<?> clazz = getMainClass(path, context);
+        Field field = null;
+
+        try {
+            field = clazz.getDeclaredField(prop);
+        }
+        catch (NoSuchFieldException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return (String) field.get(null);
+    }
+
+    public static String getName(String path, Context context)
+        throws ClassNotFoundException, NoSuchMethodException,
+        IllegalAccessException, InvocationTargetException {
+
+        return getStringProperty(path, context, NAME_PROPERTY);
+    }
+
+
+    public static String getDescription(String path, Context context)
+        throws ClassNotFoundException, NoSuchMethodException,
+        IllegalAccessException, InvocationTargetException {
+
+        return getStringProperty(path, context, DESCRIPTION_PROPERTY);
     }
 }

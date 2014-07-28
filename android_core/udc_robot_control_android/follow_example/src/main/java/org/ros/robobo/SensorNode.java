@@ -1,22 +1,24 @@
 package org.ros.robobo;
 
+import es.udc.robotcontrol.RosListener;
 import es.udc.robotcontrol.utils.Constantes;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
 import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.Node;
+import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Subscriber;
 import org.ros.address.InetAddressFactory;
-import org.ros.node.NodeConfiguration;
 
-import es.udc.robotcontrol.RosListener;
 import sensor_msgs.*;
 import udc_robot_control_msgs.ActionCommand;
 import udc_robot_control_msgs.SensorStatus;
@@ -77,7 +79,6 @@ public class SensorNode implements NodeMain {
     @Override
     public void onStart(ConnectedNode connectedNode) {
         cn = connectedNode;
-        System.out.println("Starting...");
 
         String topicName = robotName + "/" + Constantes.TOPIC_IR_SENSORS;
         subscriber = connectedNode.newSubscriber(topicName, SensorStatus._TYPE);
@@ -85,17 +86,19 @@ public class SensorNode implements NodeMain {
     }
 
 
-    @Override
     public void onShutdown(Node node) {
+    }
+
+
+    public void onShutdownComplete(Node node) {
+    }
+
+
+    public void shutdown(){
         if (subscriber != null) {
             subscriber.shutdown();
             subscriber = null;
         }
-    }
-
-
-    @Override
-    public void onShutdownComplete(Node node) {
     }
 
 

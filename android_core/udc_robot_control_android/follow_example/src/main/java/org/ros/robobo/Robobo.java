@@ -1,69 +1,76 @@
 package org.ros.robobo;
 
-import org.ros.node.DefaultNodeMainExecutor;
-import org.ros.node.NodeMainExecutor;
-
 import geometry_msgs.Twist;
 
-
-import org.ros.message.MessageListener;
-import org.ros.namespace.GraphName;
-import org.ros.node.ConnectedNode;
-import org.ros.node.Node;
-import org.ros.node.NodeMain;
-import org.ros.node.NodeMainExecutor;
-import org.ros.node.topic.Subscriber;
-import org.ros.node.DefaultNodeMainExecutor;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import es.udc.robotcontrol.utils.Constantes;
 
 import org.ros.RosCore;
 import org.ros.address.InetAddressFactory;
 import org.ros.internal.message.Message;
+import org.ros.message.Time;
+import org.ros.message.MessageListener;
+import org.ros.namespace.GraphName;
+import org.ros.node.ConnectedNode;
 import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.Node;
 import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Publisher;
-import es.udc.robotcontrol.utils.Constantes;
+import org.ros.node.topic.Subscriber;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import org.ros.message.Time;
 
 public class Robobo implements NodeMain {
+
+    public static final String taskName = "Follower example";
+    public static final String taskDescription = "Follows the object in front "
+        + "by turning left or right based on the IR sensors";
+
+
     private Publisher<Twist> publisher;
     private String robotName;
-    private NodeMainExecutor nodeMainExecutor;
+    private static NodeMainExecutor executor;
     private static float speed = 0;
     private static float turn = 0;
+    private static final int REFRESH_TIME = 100; // In millis
 
 
     public static void main(String args[]){
-        NodeMainExecutor ex = DefaultNodeMainExecutor.newDefault();
+        executor = DefaultNodeMainExecutor.newDefault();
 
         final String master = args[1];
-        new Thread() {
-            public void run(){
-                NodeMainExecutor ex = DefaultNodeMainExecutor.newDefault();
-                new Robobo("robot1", master, ex);
-            }
-        }.start();
-
         System.out.println("Connecting to master [URI: " + master + " ]");
 
-        new SensorNode("robot1", master, ex, new SensorListener(ex));
+        Robobo robot = new Robobo("robot1", master);
+        SensorNode sensor = new SensorNode("robot1", master, executor,
+                                           new SensorListener(executor));
 
-       System.out.println("Exiting [ " + args[0] + " ]");
+        waitForShutdown();
+        sensor.shutdown();
+        robot.shutdown();
+        System.out.println("Done stopping");
     }
 
 
-    public Robobo(String robotName, String master, NodeMainExecutor nodeMainExecutor) {
+    private static void waitForShutdown(){
+        try {
+            while (true){
+                Thread.sleep(Integer.MAX_VALUE);
+            }
+        }
+        catch(InterruptedException e){}
+
+        executor.shutdown();
+    }
+
+
+    public Robobo(String robotName, String master) {
         super();
         System.out.println("Creando Command Publisher");
         this.robotName = robotName;
-        this.nodeMainExecutor = nodeMainExecutor;
-
 
         String host = InetAddressFactory.newNonLoopback().getHostAddress();
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(host);
@@ -76,7 +83,7 @@ public class Robobo implements NodeMain {
             e.printStackTrace();
             return;
         }
-        nodeMainExecutor.execute(this, nodeConfiguration);
+        executor.execute(this, nodeConfiguration);
     }
 
     @Override
@@ -87,18 +94,29 @@ public class Robobo implements NodeMain {
     @Override
     public void onStart(ConnectedNode connectedNode) {
         System.out.println("Starting...");
+        String topicName = robotName + "/" + Constantes.TOPIC_ENGINES;
+        publisher = connectedNode.newPublisher(topicName, Twist._TYPE);
+
         try {
 
-            while (true){
-                String topicName = robotName + "/" + Constantes.TOPIC_ENGINES;
-                publisher = connectedNode.newPublisher(topicName, Twist._TYPE);
+            while (publisher != null){
 
                 Twist msg = publisher.newMessage();
                 msg.getLinear().setX(speed);
                 msg.getAngular().setY(turn);
 
-                publisher.publish(msg);
-                System.out.println("Published! " + speed + " * " + turn);
+
+                // If publisher may be set to null from asynchronously
+                // keep it's value on a local references across the check
+                Publisher<Twist> oncePublisher = publisher;
+                if (oncePublisher != null){
+                    oncePublisher.publish(msg);
+
+                    System.out.println("Published! " + speed + " * " + turn);
+
+                    Thread.sleep(REFRESH_TIME);
+                }
+
             }
         }
         catch (Exception e){
@@ -127,18 +145,20 @@ public class Robobo implements NodeMain {
     }
 
 
-    @Override
     public void onShutdown(Node node) {
+    }
+
+    public void onShutdownComplete(Node node) {
+    }
+
+
+    public void shutdown(){
         if (publisher != null) {
             publisher.shutdown();
             publisher = null;
         }
     }
 
-    @Override
-    public void onShutdownComplete(Node node) {
-
-    }
 
     @Override
     public void onError(Node node, Throwable throwable) {
