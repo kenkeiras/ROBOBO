@@ -1,4 +1,4 @@
-# Mensaje para definir un led
+# Message to set a led
 
 int32 ALL_LEDS = 99
 

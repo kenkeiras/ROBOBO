@@ -48,7 +48,7 @@ public class HeadlessRobotControl extends AbstractRobotControl {
     // Tipos de mensajes emitidos por el robot
     private String[] msgTypes = {
             AudioData._TYPE,
-            BateryStatus._TYPE,
+            BatteryStatus._TYPE,
             CompressedImage._TYPE,
             CameraInfo._TYPE,
             NavSatFix._TYPE,
@@ -74,7 +74,7 @@ public class HeadlessRobotControl extends AbstractRobotControl {
     // Nombres de las colas en las que escribe el robot.
     private String[] topicNames = {
             Constantes.TOPIC_AUDIO,
-            Constantes.TOPIC_BATERY,
+            Constantes.TOPIC_BATTERY,
             Constantes.TOPIC_IMAGE,
             Constantes.TOPIC_CAMERA_INFO,
             Constantes.TOPIC_NAV_SAT_FIX,

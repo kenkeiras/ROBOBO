@@ -64,7 +64,7 @@ public class SensorsPanel extends BaseComponent {
         DefaultComboBoxModel<SensorModel> model = new DefaultComboBoxModel<SensorModel>();
 
 
-        model.addElement(new SensorModel(ActionCommand.PUBLISHER_BATERY, "Batería"));
+        model.addElement(new SensorModel(ActionCommand.PUBLISHER_BATTERY, "Batería"));
         model.addElement(new SensorModel(ActionCommand.PUBLISHER_GPS, "GPS"));
         model.addElement(new SensorModel(ActionCommand.PUBLISHER_IMU, "IMU"));
         model.addElement(new SensorModel(ActionCommand.PUBLISHER_ACCELEROMTER, "Accelerometer"));

@@ -132,7 +132,7 @@ public class PublisherFactory {
     public void configureBatery(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating BateryStatus Publisher");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
-        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_BATERY);
+        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_BATTERY);
         bateryStatusPublisher = new BateryStatus(ctx, robotName);
         nodeMainExecutor.execute(bateryStatusPublisher, nc0);
     }
@@ -368,7 +368,7 @@ public class PublisherFactory {
                 node.shutdownNodeMain(audioPub);
                 audioPub = null;
                 break;
-            case ActionCommand.PUBLISHER_BATERY:
+            case ActionCommand.PUBLISHER_BATTERY:
                 node.shutdownNodeMain(bateryStatusPublisher);
                 bateryStatusPublisher = null;
                 break;

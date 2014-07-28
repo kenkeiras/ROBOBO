@@ -183,7 +183,7 @@ public class MainControlPanel implements RosListener {
         ac.setCommand(ActionCommand.CMD_SET_ENGINES);
         ac.getEngines().setLeftEngine(0);
         ac.getEngines().setRightEngine(0);
-        ac.getEngines().setMotorMode(0);
+        ac.getEngines().setEngineMode(0);
         nodeMain.sendCommand(ac);
     }
 
@@ -198,7 +198,7 @@ public class MainControlPanel implements RosListener {
         ac.getEngines().setLeftEngine(i);
         ac.getEngines().setRightEngine(r);
         // TODO: MODO MOTOR?
-        ac.getEngines().setMotorMode(0);
+        ac.getEngines().setEngineMode(0);
         nodeMain.sendCommand(ac);
     }
 
@@ -258,8 +258,8 @@ public class MainControlPanel implements RosListener {
                     "Angular (" + imu.getAngularVelocity().getX() + ", " + imu.getAngularVelocity().getY() + ", " + imu.getAngularVelocity().getZ() + ") " +
                     "Orientacion (" + imu.getOrientation().getX() + ", " + imu.getOrientation().getY() + ", " + imu.getOrientation().getZ() + ")";
         }
-        if (message instanceof BateryStatus) {
-            BateryStatus bat = (BateryStatus) message;
+        if (message instanceof BatteryStatus) {
+            BatteryStatus bat = (BatteryStatus) message;
             txt = "Bateria [ " + bat.getHeader().getFrameId() + " ][ " + bat.getDescription() + " ] [ " + bat.getLevel() + " ] [ " + bat.getStatus() + " ]";
         }
         if (message instanceof NavSatFix) {

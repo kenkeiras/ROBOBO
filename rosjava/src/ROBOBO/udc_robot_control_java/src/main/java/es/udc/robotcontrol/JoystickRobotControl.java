@@ -127,7 +127,7 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
                 // Estamos en situacion de parada
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(0);
                 ac.getEngines().setRightEngine(0);
                 sendCommand(ac);
@@ -135,7 +135,7 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
                 // Avanzar ambas
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(1);
                 ac.getEngines().setRightEngine(1);
                 sendCommand(ac);
@@ -143,7 +143,7 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
                 // Queremos girar a la izquierda
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(0);
                 ac.getEngines().setRightEngine(1);
                 sendCommand(ac);
@@ -151,7 +151,7 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
                 // Queremos girar a la derecha
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(1);
                 ac.getEngines().setRightEngine(0);
                 sendCommand(ac);
@@ -159,7 +159,7 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
                 // Queremos retroceder
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(-1);
                 ac.getEngines().setRightEngine(-1);
                 sendCommand(ac);

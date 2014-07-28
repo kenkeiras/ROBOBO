@@ -1,7 +1,6 @@
-## Comandos para manejar los motores
+# Commands to operate the engines
 
 
-int32 motorMode
+int32 engineMode
 int32 leftEngine
 int32 rightEngine
-

@@ -238,7 +238,7 @@ public class RobotCommController extends Service {
             case ActionCommand.PUBLISHER_AUDIO:
                 pf.configureAudio(this, nodeMainExecutor);
                 break;
-            case ActionCommand.PUBLISHER_BATERY:
+            case ActionCommand.PUBLISHER_BATTERY:
                 pf.configureBatery(this, nodeMainExecutor);
                 break;
             case ActionCommand.PUBLISHER_GPS:
