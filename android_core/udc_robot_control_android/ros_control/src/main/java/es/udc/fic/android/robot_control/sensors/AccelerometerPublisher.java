@@ -19,7 +19,7 @@ package es.udc.fic.android.robot_control.sensors;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import udc_robot_control_msgs.AndroidSensor3;
@@ -27,7 +27,7 @@ import udc_robot_control_msgs.AndroidSensor3;
 
 public class AccelerometerPublisher extends AbstractSensorsPublisher {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_ACCELEROMETER;
+    private static String QUEUE_NAME = Constants.TOPIC_ACCELEROMETER;
 
 
     public AccelerometerPublisher(Context ctx, String robotName) {

@@ -29,7 +29,7 @@ import es.udc.fic.android.robot_control.gps.NavSatFixPublisher;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.sensors.*;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.address.InetAddressFactory;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
@@ -107,7 +107,7 @@ public class PublisherFactory {
     public void configureCommandListener(UDCAndroidControl ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating Commands Listener");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
-        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_COMMANDS);
+        nc0.setNodeName("/" + robotName + "/" + Constants.NODE_COMMANDS);
         cmdl = new CommandListener(ctx, robotName, nodeMainExecutor);
         nodeMainExecutor.execute(cmdl, nc0);
     }
@@ -115,7 +115,7 @@ public class PublisherFactory {
     public void configureEngineListener(EngineManager manager, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating Engine Listener");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
-        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_ENGINES);
+        nc0.setNodeName("/" + robotName + "/" + Constants.NODE_ENGINES);
         engineListener = new EngineListener(manager, robotName, nodeMainExecutor);
         nodeMainExecutor.execute(engineListener, nc0);
     }
@@ -123,7 +123,7 @@ public class PublisherFactory {
     public RobotSensorPublisher configureIRSensorPublisher(UDCAndroidControl ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating IR Sensor publisher");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
-        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_IR_SENSORS);
+        nc0.setNodeName("/" + robotName + "/" + Constants.NODE_IR_SENSORS);
         rsp = new RobotSensorPublisher(ctx, robotName);
         nodeMainExecutor.execute(rsp, nc0);
         return rsp;
@@ -132,7 +132,7 @@ public class PublisherFactory {
     public void configureBatery(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating BateryStatus Publisher");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
-        nc0.setNodeName("/" + robotName + "/" + Constantes.NODE_BATTERY);
+        nc0.setNodeName("/" + robotName + "/" + Constants.NODE_BATTERY);
         bateryStatusPublisher = new BateryStatus(ctx, robotName);
         nodeMainExecutor.execute(bateryStatusPublisher, nc0);
     }
@@ -140,7 +140,7 @@ public class PublisherFactory {
     public void configureProximity(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating Proximity Publisher");
         NodeConfiguration ncProximity = NodeConfiguration.copyOf(nodeConfiguration);
-        ncProximity.setNodeName("/" + robotName + "/" + Constantes.NODE_PROXIMITY);
+        ncProximity.setNodeName("/" + robotName + "/" + Constants.NODE_PROXIMITY);
         proximityPub = new ProximityPublisher(ctx, robotName);
         nodeMainExecutor.execute(proximityPub, ncProximity);
     }
@@ -148,7 +148,7 @@ public class PublisherFactory {
     public void configurePressure(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating PressurePublisher");
         NodeConfiguration ncProximity = NodeConfiguration.copyOf(nodeConfiguration);
-        ncProximity.setNodeName("/" + robotName + "/" + Constantes.NODE_PRESSURE);
+        ncProximity.setNodeName("/" + robotName + "/" + Constants.NODE_PRESSURE);
         fluidPressurePub = new PressurePublisher(ctx, robotName);
         nodeMainExecutor.execute(fluidPressurePub, ncProximity);
     }
@@ -156,7 +156,7 @@ public class PublisherFactory {
     public void configureLight(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating LightPublisher");
         NodeConfiguration nc= NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_LIGHT);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_LIGHT);
         lightPub = new LightPublisher(ctx, robotName);
         nodeMainExecutor.execute(lightPub, nc);
     }
@@ -164,7 +164,7 @@ public class PublisherFactory {
     public void configureImu(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating ImuPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_IMU);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_IMU);
         imuPub = new ImuPublisher(ctx, robotName);
         nodeMainExecutor.execute(imuPub, nc);
     }
@@ -172,7 +172,7 @@ public class PublisherFactory {
     public void configureGyroscope(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating GyroscopePublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GYROSCOPE);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_GYROSCOPE);
         gyroscopePub = new GyroscopePublisher(ctx, robotName);
         nodeMainExecutor.execute(gyroscopePub, nc);
     }
@@ -180,7 +180,7 @@ public class PublisherFactory {
     public void configureGyroscopeUncalibrated(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating GyroscopeUncalibratedPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GYROSCOPE_UNCALIBRATED);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_GYROSCOPE_UNCALIBRATED);
         gyroscopeUncalibratedPub = new GyroscopeUncalibratedPublisher(ctx, robotName);
         nodeMainExecutor.execute(gyroscopeUncalibratedPub, nc);
     }
@@ -188,7 +188,7 @@ public class PublisherFactory {
     public void configureAccelerometer(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating AccelerometerPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ACCELEROMETER);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_ACCELEROMETER);
         accelerometerPub = new AccelerometerPublisher(ctx, robotName);
         nodeMainExecutor.execute(accelerometerPub, nc);
     }
@@ -196,7 +196,7 @@ public class PublisherFactory {
     public void configureGravity(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating GraviyPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GRAVITY);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_GRAVITY);
         gravityPub = new GravityPublisher(ctx, robotName);
         nodeMainExecutor.execute(gravityPub, nc);
     }
@@ -204,7 +204,7 @@ public class PublisherFactory {
     public void configureLinearAcceleration(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating LinearAcceleration");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_LINEAL_ACCELERATION);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_LINEAL_ACCELERATION);
         linearAccelerationPub = new LinearAccelerationPublisher(ctx, robotName);
         nodeMainExecutor.execute(accelerometerPub, nc);
     }
@@ -213,7 +213,7 @@ public class PublisherFactory {
     public void configureRotationVector(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating RotationVectorPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ROTATION_VECTOR);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_ROTATION_VECTOR);
         rotationVectorPub = new RotationVectorPublisher(ctx, robotName);
         nodeMainExecutor.execute(rotationVectorPub, nc);
     }
@@ -221,7 +221,7 @@ public class PublisherFactory {
     public void configureGameRotationVector(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating GameRotationVectorPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_GAME_ROTATION_VECTOR);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_GAME_ROTATION_VECTOR);
         gameRotationVectorPub = new GameRotationVectorPublisher(ctx, robotName);
         nodeMainExecutor.execute(gameRotationVectorPub, nc);
     }
@@ -229,7 +229,7 @@ public class PublisherFactory {
     public void configureMagneticField(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating MagneticFieldPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_MAGNETIC_FIELD);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_MAGNETIC_FIELD);
         magneticFieldPub = new MagneticFieldPublisher(ctx, robotName);
         nodeMainExecutor.execute(magneticFieldPub, nc);
     }
@@ -237,7 +237,7 @@ public class PublisherFactory {
     public void configureMagneticUncalibrated(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating MagneticFieldPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_MAGNETIC_FIELD_UNCALIBRATED);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_MAGNETIC_FIELD_UNCALIBRATED);
         magneticFieldUncalibratedPub = new MagneticFieldUncalibratedPublisher(ctx, robotName);
         nodeMainExecutor.execute(magneticFieldPub, nc);
     }
@@ -245,7 +245,7 @@ public class PublisherFactory {
     public void configureOrientation(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating OrientationPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_ORIENTATION);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_ORIENTATION);
         orientationPub = new OrientationPublisher(ctx, robotName);
         nodeMainExecutor.execute(orientationPub, nc);
     }
@@ -253,7 +253,7 @@ public class PublisherFactory {
     public void configureTemperature(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating AmbientTemperaturePublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_AMBIENT_TEMPERATURE);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_AMBIENT_TEMPERATURE);
         temperaturePub = new AmbientTemperaturePublisher(ctx, robotName);
         nodeMainExecutor.execute(temperaturePub, nc);
     }
@@ -261,7 +261,7 @@ public class PublisherFactory {
     public void configureRelativeHumidity(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating RelativeHumidityPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_RELATIVE_HUMIDITY);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_RELATIVE_HUMIDITY);
         relativeHumidityPub = new RelativeHumidityPublisher(ctx, robotName);
         nodeMainExecutor.execute(relativeHumidityPub, nc);
     }
@@ -270,7 +270,7 @@ public class PublisherFactory {
     public void configureNavSatFix(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating NavSatFixPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_NAV_SAT_FIX);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_NAV_SAT_FIX);
         navSatFixPub = new NavSatFixPublisher(ctx, robotName);
         nodeMainExecutor.execute(navSatFixPub, nc);
     }
@@ -284,7 +284,7 @@ public class PublisherFactory {
         rosCameraPreviewView.setCamera(c);
         Log.i(C.TAG, "Creando configuracion video");
         NodeConfiguration ncCamara = NodeConfiguration.copyOf(nodeConfiguration);
-        ncCamara.setNodeName("/" + robotName + "/" + Constantes.NODE_IMAGE);
+        ncCamara.setNodeName("/" + robotName + "/" + Constants.NODE_IMAGE);
         rosCameraPreviewView.setRobotName(robotName);
         nodeMainExecutor.execute(rosCameraPreviewView, ncCamara);
     }
@@ -292,7 +292,7 @@ public class PublisherFactory {
     public void configureAudio(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating AudioPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
-        nc.setNodeName("/" + robotName + "/" + Constantes.NODE_AUDIO);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_AUDIO);
         audioPub = new AudioPublisher(ctx, robotName);
         nodeMainExecutor.execute(audioPub, nc);
     }

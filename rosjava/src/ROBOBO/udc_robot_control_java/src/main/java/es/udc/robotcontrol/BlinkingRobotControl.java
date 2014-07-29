@@ -30,14 +30,14 @@ import udc_robot_control_msgs.Led;
 
 /**
  *
- * Esta clase es un decorador que añade la funcionalidad necesaria para implementar un controlador de parpadeos de
- * los leds.
+ * This class is a decorator which adds the needed functionality to implement
+ * the leds blinking control.
  *
  */
 
 public class BlinkingRobotControl extends AbstractRobotControl implements RosListener {
 
-    private AbstractRobotControl decorado;
+    private AbstractRobotControl decorated;
 
     private long onTime;
     private long offTime;
@@ -48,26 +48,26 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
 
     /**
      * Constructor.
-     * @param decor Controler a decorar
-     * @param onInterval intervalo en ms para tiempo encendido
-     * @param offInterval intervalo en ms para tiempo apagado
+     * @param decor Controller to decorate
+     * @param onInterval time in ms to be on
+     * @param offInterval time in ms to be off
      */
-    public BlinkingRobotControl(AbstractRobotControl decor, long onInterval, long offInterval) {
+    public BlinkingRobotControl(AbstractRobotControl decorated, long onInterval, long offInterval) {
 
-        decorado = decor;
+        this.decorated = decorated;
         onTime = onInterval;
         offTime = offInterval;
         currentOn = false;
         stateStorage = new Vector<Led>();
         timer = new Timer(true);
-        // Somos el interfaz del decorado. Las notificaciones pasan por nosotros.
-        decorado.registerNotificador(this);
+        // BlinkingRobotControl acts as the notifier
+        decorated.registerNotifier(this);
         sendOn();
     }
 
     /**
-     * Metodo decorado. Envia el comando al HeadlessRobotControl decorado y retiene el estado de los
-     * leds si es preciso.
+     * Decorated method. Sends the command to the decorated HeadlessRobotControl
+     * and retains the led state if needed.
      * @param msg
      */
     @Override
@@ -76,35 +76,35 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
             case ActionCommand.CMD_SET_LEDS:
                 processLeds(msg.getLeds());
         }
-        decorado.sendCommand(msg);
+        decorated.sendCommand(msg);
     }
 
 
 
     @Override
     public GraphName getDefaultNodeName() {
-        return decorado.getDefaultNodeName();
+        return decorated.getDefaultNodeName();
     }
 
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        decorado.onStart(connectedNode);
+        decorated.onStart(connectedNode);
     }
 
     @Override
     public void onShutdown(Node node) {
-        decorado.onShutdown(node);
+        decorated.onShutdown(node);
     }
 
     @Override
     public void onShutdownComplete(Node node) {
-        decorado.onShutdownComplete(node);
+        decorated.onShutdownComplete(node);
     }
 
 
     /**
-     * Somos el interfaz del decorado. Notificamos los mensajes a nuestro listener
+     * As a decorator interface. Pass the messages to the listener
      * @param message
      */
     @Override
@@ -114,32 +114,32 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
 
     @Override
     public void onError(Node node, Throwable throwable) {
-        decorado.onError(node, throwable);
+        decorated.onError(node, throwable);
     }
 
     @Override
     public void notifyMsg(Message msg) {
-        decorado.notifyMsg(msg);
+        decorated.notifyMsg(msg);
     }
 
     @Override
     public ActionCommand newCommand() {
-        return decorado.newCommand();
+        return decorated.newCommand();
     }
 
     @Override
     public Led newLed() {
-        return decorado.newLed();
+        return decorated.newLed();
     }
 
     @Override
     public String getRobotName() {
-        return decorado.getRobotName();
+        return decorated.getRobotName();
     }
 
     @Override
     public void setRobotName(String robotName) {
-        decorado.setRobotName(robotName);
+        decorated.setRobotName(robotName);
     }
 
 
@@ -151,12 +151,12 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
     }
 
     private void processOneLed(Led led) {
-        // Si viene un ALL LEDS hay que eliminar el estado
+        // Restart the state on ALL LEDS
         if (Led.ALL_LEDS == led.getLedNumber()) {
             stateStorage.removeAllElements();
         }
         else {
-            // Si viene un led concrecto hay que quitarlo de la lista
+            // If it's a specific led, remove it from the list
             Led toRemove = null;
             for(Led mLed: stateStorage) {
                 if (mLed.getLedNumber() == led.getLedNumber()) {
@@ -168,8 +168,8 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
         }
 
         if (led.getBlinking()) {
-            System.out.println("Guardando led [ " + led.getLedNumber() + " ] as blinking ( " + led.getRed() + "," + led.getGreen() + "," + led.getBlue() + ")");
-            // Si el led está parpadeando lo ponemos en la lista
+            System.out.println("Saving led [ " + led.getLedNumber() + " ] as blinking ( " + led.getRed() + "," + led.getGreen() + "," + led.getBlue() + ")");
+            // If the led is blinking, add it to the list
             stateStorage.addElement(led);
         }
     }
@@ -177,15 +177,16 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
 
 
     /**
-     * Enviar un mensaje de on a todos los leds de la lista
+     * Send a 'turn on' message to all the leds on the list
      */
     void sendOn() {
         if (stateStorage.size() > 0) {
             ActionCommand ac = newCommand();
             ac.setCommand(ActionCommand.CMD_SET_LEDS);
             ac.getLeds().addAll(stateStorage);
-            // Enviamos directamente a traves del decorado para no entrar en un bucle infinito.
-            decorado.sendCommand(ac);
+            // Send it directly through the decorated class to avoid
+            // entering an infinite loop
+            decorated.sendCommand(ac);
         }
         TimerTask tt = new TimerTask() {
             @Override
@@ -197,7 +198,7 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
     }
 
     /**
-     * Enviar un mensaje de off a todos los leds de la lista
+     * Send a 'turn off' message to all the leds on the list
      */
     void sendOff() {
         if (stateStorage.size() > 0) {
@@ -212,7 +213,7 @@ public class BlinkingRobotControl extends AbstractRobotControl implements RosLis
                 ll.setBlue(0);
                 ac.getLeds().add(ll);
             }
-            decorado.sendCommand(ac);
+            decorated.sendCommand(ac);
         }
 
         TimerTask tt = new TimerTask() {

@@ -23,7 +23,7 @@ import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class ImuPublisher extends AbstractSensorsPublisher {
     // TODO: Check names
-    private static String QUEUE_NAME = Constantes.TOPIC_IMU;
+    private static String QUEUE_NAME = Constants.TOPIC_IMU;
 
     public ImuPublisher(Context ctx, String robotName) {
         super(ctx, robotName);

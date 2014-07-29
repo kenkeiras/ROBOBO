@@ -4,7 +4,7 @@ import android.util.Log;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
@@ -42,7 +42,7 @@ public class EngineListener implements NodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of(C.DefaultBaseNodeName + "/" + Constantes.TOPIC_ENGINES);
+        return GraphName.of(C.DefaultBaseNodeName + "/" + Constants.TOPIC_ENGINES);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class EngineListener implements NodeMain {
         cn = connectedNode;
         cml = new CommandMessageListener(manager, nodeMainExecutor);
 
-        String topicName = robotName + "/" + Constantes.TOPIC_ENGINES;
+        String topicName = robotName + "/" + Constants.TOPIC_ENGINES;
         subscriber = connectedNode.newSubscriber(topicName, Twist._TYPE);
         subscriber.addMessageListener(cml);
     }

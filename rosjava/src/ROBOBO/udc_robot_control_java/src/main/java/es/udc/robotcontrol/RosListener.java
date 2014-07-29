@@ -29,14 +29,15 @@ import org.ros.node.Node;
 public interface RosListener {
 
     /**
-     * Método llamado cuando llega un mensaje que proviene de uno de los sensores del robot
+     * Called when a message comes from a robot sensor
      * @param message
      */
     public void onMsgArrived(Message message);
 
     /**
-     * Método llamado cuando llega un error desde uno de los lectores y/o escritores de las colas.
-     * Se deja al implementador la decisión de reiniciar el servicio, pararlo o ignorar el error y continuar.
+     * Called when a error arrives from one of the queues publisher and/or subscriber.
+     * The decision to take, whether restart the service, stop it or ignore and
+     * continue is left to the implementer.
      *
      * @param node
      * @param throwable

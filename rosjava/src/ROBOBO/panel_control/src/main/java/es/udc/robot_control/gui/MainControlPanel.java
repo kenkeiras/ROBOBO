@@ -143,7 +143,7 @@ public class MainControlPanel implements RosListener {
         nodeMain = new BlinkingRobotControl(jrc, 500, 1000);
 
 
-        nodeMain.registerNotificador(this);
+        nodeMain.registerNotifier(this);
         if (nodeMainExecutor == null) {
             nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         }

@@ -22,7 +22,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.ros.concurrent.CancellableLoop;
@@ -37,7 +37,7 @@ import java.nio.ByteBuffer;
 
 public class AudioPublisher implements NodeMain {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_AUDIO;
+    private static String QUEUE_NAME = Constants.TOPIC_AUDIO;
     private static int PUBLISH_SLEEP = 1000;
 
     private int bsib;

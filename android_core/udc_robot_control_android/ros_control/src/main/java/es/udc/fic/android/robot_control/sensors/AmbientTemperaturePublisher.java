@@ -22,7 +22,7 @@ import android.hardware.SensorEvent;
 import android.os.SystemClock;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
@@ -32,7 +32,7 @@ import sensor_msgs.Temperature;
 public class AmbientTemperaturePublisher extends AbstractSensorsPublisher {
     private int sensorType;
 
-    private String QUEUE_NAME = Constantes.TOPIC_AMBIENT_TEMPERATURE;
+    private String QUEUE_NAME = Constants.TOPIC_AMBIENT_TEMPERATURE;
 
     public AmbientTemperaturePublisher(Context ctx, String robotName) {
         super(ctx, robotName);

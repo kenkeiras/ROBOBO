@@ -23,7 +23,7 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera.Size;
 import com.google.common.base.Preconditions;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
 import org.ros.internal.message.MessageBuffers;
 import org.ros.message.Time;
@@ -37,8 +37,8 @@ import org.ros.node.topic.Publisher;
  */
 class CompressedImagePublisher implements RawImageListener {
 
-    private final String IMAGE_QUEUE_NAME = Constantes.TOPIC_IMAGE;
-    private final String CAMERA_INFO_QUEUE_NAME = Constantes.TOPIC_CAMERA_INFO;
+    private final String IMAGE_QUEUE_NAME = Constants.TOPIC_IMAGE;
+    private final String CAMERA_INFO_QUEUE_NAME = Constants.TOPIC_CAMERA_INFO;
 
   private final ConnectedNode connectedNode;
   private final Publisher<sensor_msgs.CompressedImage> imagePublisher;

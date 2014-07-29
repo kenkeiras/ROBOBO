@@ -20,7 +20,7 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
@@ -30,7 +30,7 @@ import udc_robot_control_msgs.AndroidSensor3;
 
 public class GyroscopePublisher extends AbstractSensorsPublisher {
     // TODO: Check names
-    private static String QUEUE_NAME = Constantes.TOPIC_GYROSCOPE;
+    private static String QUEUE_NAME = Constants.TOPIC_GYROSCOPE;
 
     public GyroscopePublisher(Context ctx, String robotName) {
         super(ctx, robotName);

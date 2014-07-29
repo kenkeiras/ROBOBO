@@ -21,11 +21,11 @@ package es.udc.robotcontrol.utils;
  * User: kerry
  * Date: 1/08/13
  * Time: 19:39
- * Esta clase se utiliza para definir utils compartidas entre el robot y la librería de control (nombres de colas y comandos)
+ * This class is used to define shared Strings between the robot and the control library (node, topic and command names)
  */
-public abstract class Constantes {
+public abstract class Constants {
 
-    // Nombres para los nodos
+    // Node names
     public static final String NODE_ENGINES     = "cmd_vel";
     public static final String NODE_COMMANDS    = "commands";
     public static final String NODE_IR_SENSORS  = "irsensors";
@@ -53,7 +53,7 @@ public abstract class Constantes {
     public static final String NODE_GAME_ROTATION_VECTOR        = "game_rotation_vector";
     public static final String NODE_GYROSCOPE_UNCALIBRATED      = "gyroscope_uncalibrated";
 
-    // Nombres para las colas
+    // Queue names
     public static final String TOPIC_ENGINES       = "cmd_vel";
     public static final String TOPIC_COMMANDS      = "commands";
     public static final String TOPIC_IR_SENSORS    = "irsensors";

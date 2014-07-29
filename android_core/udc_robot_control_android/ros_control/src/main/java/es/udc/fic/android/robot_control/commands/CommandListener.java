@@ -19,7 +19,7 @@ import android.util.Log;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
@@ -56,7 +56,7 @@ public class CommandListener implements NodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of(C.DefaultBaseNodeName + "/" + Constantes.TOPIC_COMMANDS);
+        return GraphName.of(C.DefaultBaseNodeName + "/" + Constants.TOPIC_COMMANDS);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CommandListener implements NodeMain {
         cn = connectedNode;
         cml = new CommandMessageListener(this, context, nodeMainExecutor);
 
-        String topicName = robotName + "/" + Constantes.TOPIC_COMMANDS;
+        String topicName = robotName + "/" + Constants.TOPIC_COMMANDS;
         subscriber = connectedNode.newSubscriber(topicName, ActionCommand._TYPE);
         subscriber.addMessageListener(cml);
 

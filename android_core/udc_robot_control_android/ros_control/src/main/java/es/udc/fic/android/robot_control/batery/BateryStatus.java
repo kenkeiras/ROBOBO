@@ -22,7 +22,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.concurrent.CancellableLoop;
 import org.ros.message.Time;
 import org.ros.namespace.GraphName;
@@ -34,7 +34,7 @@ import org.ros.node.topic.Publisher;
 
 public  class BateryStatus implements NodeMain {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_BATTERY;
+    private static String QUEUE_NAME = Constants.TOPIC_BATTERY;
     private static int BATERY_PUBLISH_SLEEP = 30000;
 
     private Context context;
