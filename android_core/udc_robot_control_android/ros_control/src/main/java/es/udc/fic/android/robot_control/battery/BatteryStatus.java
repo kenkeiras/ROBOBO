@@ -14,7 +14,7 @@
  * the License.
  */
 
-package es.udc.fic.android.robot_control.batery;
+package es.udc.fic.android.robot_control.battery;
 
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +32,7 @@ import org.ros.node.NodeMain;
 import org.ros.node.topic.Publisher;
 
 
-public  class BateryStatus implements NodeMain {
+public  class BatteryStatus implements NodeMain {
 
     private static String QUEUE_NAME = Constants.TOPIC_BATTERY;
     private static int BATERY_PUBLISH_SLEEP = 30000;
@@ -42,9 +42,9 @@ public  class BateryStatus implements NodeMain {
 
     private Publisher<udc_robot_control_msgs.BatteryStatus> publisher;
 
-    public BateryStatus(Context context, String robotName) {
+    public BatteryStatus(Context context, String robotName) {
         super();
-        Log.d(C.TAG, "Creando Batery Status");
+        Log.d(C.TAG, "Creating Batery Status publisher");
         this.context = context;
         this.robotName = robotName;
 

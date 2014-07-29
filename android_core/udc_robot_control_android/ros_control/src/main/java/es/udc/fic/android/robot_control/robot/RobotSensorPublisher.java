@@ -42,7 +42,7 @@ public class RobotSensorPublisher implements NodeMain {
 
     public RobotSensorPublisher(Context context, String robotName) {
         super();
-        Log.d(C.TAG, "Creando IrSensorPublisher");
+        Log.d(C.TAG, "Creating IrSensorPublisher");
         this.context = context;
         this.robotName = robotName;
     }

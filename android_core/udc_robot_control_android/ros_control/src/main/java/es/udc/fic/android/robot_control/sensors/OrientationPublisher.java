@@ -30,7 +30,6 @@ import udc_robot_control_msgs.AndroidSensor3;
 public class OrientationPublisher extends AbstractSensorsPublisher {
 
     private static String QUEUE_NAME = Constants.TOPIC_ORIENTATION;
-            ;
 
     public OrientationPublisher(Context ctx, String robotName) {
         super(ctx, robotName);

@@ -2,7 +2,7 @@ package es.udc.fic.android.robot_control.commands;
 
 import android.util.Log;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
-import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.MessageListener;
@@ -15,12 +15,7 @@ import org.ros.node.topic.Subscriber;
 import org.ros.message.MessageListener;
 import geometry_msgs.Twist;
 
-/**
- * Este es el nodo encargado de recibir instrucciones desde el exterior y ejecutarlas.
- *
- *
- * Created by kerry on 1/08/13.
- */
+
 public class EngineListener implements NodeMain {
 
     private EngineManager manager;
@@ -34,7 +29,7 @@ public class EngineListener implements NodeMain {
 
     public EngineListener(EngineManager manager, String robotName, NodeMainExecutor nodeMainExecutor) {
         super();
-        Log.d(C.TAG, "Creando Engine Listener");
+        Log.d(C.TAG, "Creating Engine Listener");
         this.manager = manager;
         this.robotName = robotName;
         this.nodeMainExecutor = nodeMainExecutor;

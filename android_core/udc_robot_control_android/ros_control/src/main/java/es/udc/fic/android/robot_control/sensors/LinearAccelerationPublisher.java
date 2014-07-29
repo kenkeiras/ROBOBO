@@ -30,7 +30,6 @@ import udc_robot_control_msgs.AndroidSensor3;
 public class LinearAccelerationPublisher extends AbstractSensorsPublisher {
 
     private static String QUEUE_NAME = Constants.TOPIC_LINEAL_ACCELERATION;
-            ;
 
     public LinearAccelerationPublisher(Context ctx, String robotName) {
         super(ctx, robotName);

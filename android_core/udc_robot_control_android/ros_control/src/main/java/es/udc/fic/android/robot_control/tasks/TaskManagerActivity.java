@@ -18,7 +18,7 @@ import java.util.List;
 
 import es.udc.fic.android.robot_control.ConfigActivity;
 import es.udc.fic.android.robot_control.R;
-import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
 
 import org.ros.node.NodeConfiguration;

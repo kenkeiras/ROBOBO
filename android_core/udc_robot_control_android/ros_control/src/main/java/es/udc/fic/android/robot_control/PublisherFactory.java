@@ -20,8 +20,8 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
 import es.udc.fic.android.robot_control.audio.AudioPublisher;
-import es.udc.fic.android.robot_control.batery.BateryStatus;
-import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.battery.BatteryStatus;
+import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.commands.CommandListener;
 import es.udc.fic.android.robot_control.commands.EngineListener;
 import es.udc.fic.android.robot_control.commands.EngineManager;
@@ -69,15 +69,15 @@ public class PublisherFactory {
     private OrientationPublisher orientationPub;
 
 
-    // Camara
+    // Camera
     private RosCameraPreviewView rosCameraPreviewView;
     // Audio
     private AudioPublisher audioPub;
     // GPS
     private NavSatFixPublisher navSatFixPub;
 
-    // Bateria
-    private BateryStatus bateryStatusPublisher;
+    // Battery
+    private BatteryStatus batteryStatusPublisher;
 
     // ROBOT
     private RobotSensorPublisher rsp;
@@ -129,12 +129,12 @@ public class PublisherFactory {
         return rsp;
     }
 
-    public void configureBatery(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating BateryStatus Publisher");
+    public void configureBattery(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating BatteryStatus Publisher");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
         nc0.setNodeName("/" + robotName + "/" + Constants.NODE_BATTERY);
-        bateryStatusPublisher = new BateryStatus(ctx, robotName);
-        nodeMainExecutor.execute(bateryStatusPublisher, nc0);
+        batteryStatusPublisher = new BatteryStatus(ctx, robotName);
+        nodeMainExecutor.execute(batteryStatusPublisher, nc0);
     }
 
     public void configureProximity(Context ctx, NodeMainExecutor nodeMainExecutor) {
@@ -275,14 +275,14 @@ public class PublisherFactory {
         nodeMainExecutor.execute(navSatFixPub, nc);
     }
 
-    public void configureCamara(Context ctx, NodeMainExecutor nodeMainExecutor, RosCameraPreviewView rcp, int camaraId, int displayOrientation) {
-        Log.i(C.TAG, "Iniciando la camara");
+    public void configureCamera(Context ctx, NodeMainExecutor nodeMainExecutor, RosCameraPreviewView rcp, int cameraId, int displayOrientation) {
+        Log.i(C.TAG, "Starting the preview");
         rosCameraPreviewView = rcp;
-        Camera c = Camera.open(camaraId);
+        Camera c = Camera.open(cameraId);
         c.setDisplayOrientation(displayOrientation);
 
         rosCameraPreviewView.setCamera(c);
-        Log.i(C.TAG, "Creando configuracion video");
+        Log.i(C.TAG, "Creating video configuration");
         NodeConfiguration ncCamara = NodeConfiguration.copyOf(nodeConfiguration);
         ncCamara.setNodeName("/" + robotName + "/" + Constants.NODE_IMAGE);
         rosCameraPreviewView.setRobotName(robotName);
@@ -369,8 +369,8 @@ public class PublisherFactory {
                 audioPub = null;
                 break;
             case ActionCommand.PUBLISHER_BATTERY:
-                node.shutdownNodeMain(bateryStatusPublisher);
-                bateryStatusPublisher = null;
+                node.shutdownNodeMain(batteryStatusPublisher);
+                batteryStatusPublisher = null;
                 break;
             case ActionCommand.PUBLISHER_GPS:
                 node.shutdownNodeMain(navSatFixPub);

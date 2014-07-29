@@ -30,7 +30,6 @@ import udc_robot_control_msgs.AndroidSensor3;
 public class GravityPublisher extends AbstractSensorsPublisher {
 
     private static String QUEUE_NAME = Constants.TOPIC_GRAVITY;
-            ;
 
     public GravityPublisher(Context ctx, String robotName) {
         super(ctx, robotName);

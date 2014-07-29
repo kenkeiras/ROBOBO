@@ -1,4 +1,4 @@
-package es.udc.fic.android.robot_control.camara;
+package es.udc.fic.android.robot_control.camera;
 
 import android.hardware.Camera.Size;
 
