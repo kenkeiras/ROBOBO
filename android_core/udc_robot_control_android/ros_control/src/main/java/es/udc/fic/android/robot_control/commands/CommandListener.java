@@ -17,9 +17,9 @@ package es.udc.fic.android.robot_control.commands;
 
 import android.util.Log;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
-import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
@@ -48,7 +48,7 @@ public class CommandListener implements NodeMain {
 
     public CommandListener(UDCAndroidControl ctx, String robotName, NodeMainExecutor nodeMainExecutor) {
         super();
-        Log.d(C.TAG, "Creando Command Listener");
+        Log.d(C.TAG, "Creating Command Listener");
         this.context = ctx;
         this.robotName = robotName;
         this.nodeMainExecutor = nodeMainExecutor;
@@ -56,7 +56,7 @@ public class CommandListener implements NodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of(C.DefaultBaseNodeName + "/" + Constantes.TOPIC_COMMANDS);
+        return GraphName.of(C.DefaultBaseNodeName + "/" + Constants.TOPIC_COMMANDS);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CommandListener implements NodeMain {
         cn = connectedNode;
         cml = new CommandMessageListener(this, context, nodeMainExecutor);
 
-        String topicName = robotName + "/" + Constantes.TOPIC_COMMANDS;
+        String topicName = robotName + "/" + Constants.TOPIC_COMMANDS;
         subscriber = connectedNode.newSubscriber(topicName, ActionCommand._TYPE);
         subscriber.addMessageListener(cml);
 
@@ -105,22 +105,22 @@ public class CommandListener implements NodeMain {
         @Override
         public void onNewMessage(ActionCommand actionCommand) {
 
-            Log.d(C.CMD_TAG, "Recibido comando [ " + actionCommand.getCommand() + " ]");
+            Log.d(C.CMD_TAG, "Received command [ " + actionCommand.getCommand() + " ]");
             switch (actionCommand.getCommand()) {
                 case ActionCommand.CMD_HARD_RESET:
                 case ActionCommand.CMD_RESET:
                 case ActionCommand.CMD_SET_ENGINES:
                 case ActionCommand.CMD_SET_LEDS:
-                    context.enviarRobot(actionCommand);
+                    context.sendRobot(actionCommand);
                     break;
                 case ActionCommand.CMD_START_PUBLISHER:
-                    ctx.arrancarListener(actionCommand);
+                    ctx.startListener(actionCommand);
                     break;
                 case ActionCommand.CMD_STOP_PUBLISHER:
-                    ctx.detenerListener(actionCommand);
+                    ctx.stopListener(actionCommand);
                     break;
                 default:
-                    Log.w(C.CMD_TAG, "Commando no reconocido [ " + actionCommand.getCommand() + " ]");
+                    Log.w(C.CMD_TAG, "Unknown command [ " + actionCommand.getCommand() + " ]");
             }
         }
     }

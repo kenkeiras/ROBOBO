@@ -24,7 +24,7 @@ import java.util.List;
  * Esta clase representa el estado interno del robot. Se utiliza para implementar el protocolo de envio al robot
  *
  */
-public class EstadoRobot {
+public class RobotState {
 
     public static int NUM_LEDS = 8;
 
@@ -32,7 +32,7 @@ public class EstadoRobot {
     public byte leftEngine, rightEngine;
     public Led[] leds;
 
-    public EstadoRobot() {
+    public RobotState() {
         leds = new Led[NUM_LEDS];
         leftEngine = rightEngine = 0;
     }
@@ -45,13 +45,13 @@ public class EstadoRobot {
     public void setLeds(List<Led> ledList) {
         for (Led l:ledList) {
             if (l.getLedNumber() == Led.ALL_LEDS) {
-                // Todos los leds iguales
+                // Set all the leds equal
                 for (int x = 0; x < leds.length; x++) {
                     leds[x] = l;
                 }
             }
             else {
-                // Un unico led
+                // Just one led
                 leds[l.getLedNumber()] = l;
             }
         }
@@ -74,10 +74,10 @@ public class EstadoRobot {
 
 
     /**
-     * Este método se encarga de generar un mensaje para enviar
+     * This method generates the message to send
      * @return
      */
-    public byte[] mensaje() {
+    public byte[] message() {
         byte[] out = new byte[31];
 
         int pos = 0;
@@ -104,10 +104,10 @@ public class EstadoRobot {
     }
 
     private byte[] engineIntToBytes(int motorValue) {
-        byte bajo = (byte) motorValue;
-        byte alto = (byte) (motorValue >> 8);
-        byte[] salida = {alto, bajo};
-        return salida;
+        byte low = (byte) motorValue;
+        byte high = (byte) (motorValue >> 8);
+        byte[] output = {high, low};
+        return output;
     }
 
 

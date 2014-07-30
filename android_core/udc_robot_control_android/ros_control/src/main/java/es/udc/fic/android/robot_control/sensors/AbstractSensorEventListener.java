@@ -137,12 +137,12 @@ public abstract class AbstractSensorEventListener implements SensorEventListener
                 publisher.publish(imu);
             }
             catch (java.lang.ArrayIndexOutOfBoundsException obe) {
-                // A veces salta esta excepción al conectar o desconectar un array de cuatro elementos.
-                // Por alguna razón sólo vienen tres.
+                // Sometimes this exception happens when connecting or disconnecting a four element array.
+                // For some reason only three come.
                 Log.w(C.TAG, "Error reading sensorType [ " + sensorType + " ] [ " + event.sensor.getName() + " ]", obe);
                 obe.printStackTrace();
-                // TODO: Notificar la excepción de alguna forma.
-                // Es posible que se deba a un bug en otra parte (mensaje mal clasificado)
+                // TODO: Notify the exception.
+                // Is posible to be due a bug somewhere else (a wrongly classified message)
             }
         }
     }

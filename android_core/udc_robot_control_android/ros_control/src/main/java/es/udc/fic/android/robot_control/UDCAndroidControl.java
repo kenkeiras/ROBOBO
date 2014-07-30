@@ -26,7 +26,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.google.common.base.Preconditions;
 
-import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotCommController.SimpleBinder;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
@@ -72,7 +72,7 @@ public class UDCAndroidControl extends RosActivity {
                 robot.setNodeMainExecutor(nodeMainExecutor);
             }
             if (usbIntent != null){
-                robot.iniciar(UDCAndroidControl.this, usbIntent);
+                robot.start(UDCAndroidControl.this, usbIntent);
             }
             robot.setCameraPreview(cameraPreview);
         }
@@ -144,20 +144,20 @@ public class UDCAndroidControl extends RosActivity {
 //            String action = intent.getAction();
 //
 //            if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-//                Log.i(C.ROBOT_TAG, "Dispositivo Desconectado");
-//                // Se ha desconectado un dispositivo.
+//                Log.i(C.ROBOT_TAG, "Disconnected device");
+//                // A device has been disconnected
 //                if (robot != null) {
-//                    Log.i(C.ROBOT_TAG, "Dispositivo desconectado... Terminando");
-//                    robot.terminar();
+//                    Log.i(C.ROBOT_TAG, "Disconnected device... stopping");
+//                    robot.stop();
 //                }
 //            }
 //
 //            if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-//                Log.i(C.ROBOT_TAG, "Dispositivo Conectado");
-//                // Se ha conectado un dispositivo
+//                Log.i(C.ROBOT_TAG, "Device connected");
+//                // A device has been connected
 //                if (robot != null) {
-//                    Log.i(C.ROBOT_TAG, "Dispositivo conectado... Iniciando");
-//                    robot.iniciar(context, intent);
+//                    Log.i(C.ROBOT_TAG, "Device connected... starting");
+//                    robot.start(context, intent);
 //                }
 //            }
 //        }
@@ -174,23 +174,22 @@ public class UDCAndroidControl extends RosActivity {
         String action = intent.getAction();
 
         if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-            Log.i(C.ROBOT_TAG, "OnResume por dispositivo conectado");
+            Log.i(C.ROBOT_TAG, "OnResume by connected device");
             usbIntent = intent;
             if (robot != null){
-                robot.iniciar(this, intent);
+                robot.start(this, intent);
             }
         }
         else {
             // Ha sido arrancada manualmente
-            Log.w(C.ROBOT_TAG, "Se ha arrancado manualmente SIN robot");
+            Log.w(C.ROBOT_TAG, "Manually started WITHOUT robot");
             Toast.makeText(this, R.string.robot_service_manual_not_start, Toast.LENGTH_SHORT).show();
             if (robot != null){
-                robot.iniciarManual(this);
+                robot.manualStart(this);
             }
         }
 
-        // Temporalmente "pasamos" del inicio manual. Solo funcionara si se lanza al conectar el robot
-        //Registramos para escuchar los eventos USB
+        //Register to listen the USB events
 //        IntentFilter filter = new IntentFilter();
 //        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
 //        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
@@ -203,16 +202,16 @@ public class UDCAndroidControl extends RosActivity {
 //        unregisterReceiver(receiver);
     }
 
-    public void arrancarListener(ActionCommand actionCommand) {
-        robot.arrancarListener(actionCommand);
+    public void startListener(ActionCommand actionCommand) {
+        robot.startListener(actionCommand);
     }
 
-    public void detenerListener(ActionCommand actionCommand) {
+    public void stopListener(ActionCommand actionCommand) {
         robot.stop(actionCommand);
     }
 
-    public void enviarRobot(ActionCommand comando) {
-        robot.escribir(comando);
+    public void sendRobot(ActionCommand comando) {
+        robot.write(comando);
     }
 
 }

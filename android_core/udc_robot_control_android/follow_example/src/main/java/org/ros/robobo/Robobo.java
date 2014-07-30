@@ -5,7 +5,7 @@ import geometry_msgs.Twist;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 
 import org.ros.RosCore;
 import org.ros.address.InetAddressFactory;
@@ -94,7 +94,7 @@ public class Robobo implements NodeMain {
     @Override
     public void onStart(ConnectedNode connectedNode) {
         System.out.println("Starting...");
-        String topicName = robotName + "/" + Constantes.TOPIC_ENGINES;
+        String topicName = robotName + "/" + Constants.TOPIC_ENGINES;
         publisher = connectedNode.newPublisher(topicName, Twist._TYPE);
 
         try {

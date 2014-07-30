@@ -1,6 +1,6 @@
 package es.udc.fic.android.robot_control.commands;
 
-import es.udc.fic.android.robot_control.robot.EstadoRobot;
+import es.udc.fic.android.robot_control.robot.RobotState;
 
 import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
@@ -25,7 +25,7 @@ public class EngineManager {
     }
 
 
-    public void refresh(EstadoRobot robotState){
+    public void refresh(RobotState robotState){
         byte runningLeft = (byte) (speed_x >= 0.5f? 1 : 0);
         byte runningRight = runningLeft;
 

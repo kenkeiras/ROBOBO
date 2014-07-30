@@ -29,11 +29,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Esta clase simula la lectura y escritura del conector de la placa.
+ * This class simulates the read/write from the board connector.
  *
  * Created by kerry on 4/06/13.
  */
-public class ConectorPlaca  {
+public class BoardConnector  {
     private static final String ACTION_USB_PERMISSION = "es.udc.fic.android.robot_control.USB_PERMISSION";
 
 
@@ -44,71 +44,71 @@ public class ConectorPlaca  {
     private UsbEndpoint endpointOUT;
     private UsbEndpoint endpointIN;
 
-    public boolean escribir(EstadoRobot c) {
-        boolean salida = false;
+    public boolean write(RobotState c) {
+        boolean output = false;
         if (c != null) {
-            Log.i(C.ROBOT_TAG, "Enviando Comando [ " + c.toString() + " ]");
+            Log.i(C.ROBOT_TAG, "Sending Command [ " + c.toString() + " ]");
             try {
-                byte[] m = c.mensaje();
+                byte[] m = c.message();
                 StringBuffer sb = new StringBuffer();
                 for (int x = 0; x < m.length; x++) {
                     sb.append(String.valueOf(m[x]));
                     sb.append(" ");
                 }
-                Log.i(C.ROBOT_TAG, "En el cable [ " + sb.toString() + " ]");
+                Log.i(C.ROBOT_TAG, "In the wire [ " + sb.toString() + " ]");
                 int result = connection.bulkTransfer(endpointOUT, m, m.length, 1000);
-                Log.i(C.ROBOT_TAG, "Resultado de escritura [ " + result + " ]");
-                salida = (result >= 0);
+                Log.i(C.ROBOT_TAG, "Result of the write [ " + result + " ]");
+                output = (result >= 0);
             }
             catch (Exception ex) {
-                Log.w("Error enviando datos al robot ", ex);
-                salida = false;
+                Log.w("Error sending data to the robot ", ex);
+                output = false;
             }
         }
         else {
-            Log.w(C.ROBOT_TAG, "Nada que enviar. Se ha intentado enviar un estado nulo");
+            Log.w(C.ROBOT_TAG, "Noting to send. Attempted to send a null state");
         }
-        return salida;
+        return output;
     }
 
-    public byte[] leer() {
+    public byte[] read() {
         int BUFFER_LENGHT = 64;
-        byte[] salida = new byte[BUFFER_LENGHT];
+        byte[] output = new byte[BUFFER_LENGHT];
         int result = -1;
 
-        result = connection.bulkTransfer(endpointIN, salida, salida.length, 1000);
-        Log.d(C.ROBOT_TAG, "Resultado de lectura [ " + result + " ]");
+        result = connection.bulkTransfer(endpointIN, output, output.length, 1000);
+        Log.d(C.ROBOT_TAG, "Read result [ " + result + " ]");
 
         StringBuffer sb = new StringBuffer();
         for (int x = 0; x < BUFFER_LENGHT; x++) {
-            sb.append(String.valueOf(salida[x]));
+            sb.append(String.valueOf(output[x]));
             sb.append(" ");
         }
-        Log.i(C.ROBOT_TAG, "Leido en el cable [ " + sb.toString() + " ]");
+        Log.i(C.ROBOT_TAG, "Read from the wire [ " + sb.toString() + " ]");
         if (result > 0) {
             ByteArrayBuffer bas = new ByteArrayBuffer(result);
-            bas.append(salida, 0, result);
+            bas.append(output, 0, result);
             bas.setLength(result);
             return bas.toByteArray();
         }
         else {
-            Log.i(C.ROBOT_TAG, "Resultado de lectura [ " + result + " ]");
+            Log.i(C.ROBOT_TAG, "Result of the read [ " + result + " ]");
             return null;
         }
     }
 
-    public void conectar(Context ctx, Intent intent) throws TransmisionErrorException {
+    public void connect(Context ctx, Intent intent) throws TransmisionErrorException {
 
-        Log.i(C.ROBOT_TAG, "Conectando a [ " + intent.getAction() + " ]. modo - Host");
+        Log.i(C.ROBOT_TAG, "Connected to [ " + intent.getAction() + " ]. mode - Host");
         device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-        Log.i(C.ROBOT_TAG, "Conectando a [ " + device.getDeviceName() + " ]. modo - Host");
+        Log.i(C.ROBOT_TAG, "Connected to [ " + device.getDeviceName() + " ]. mode - Host");
 		/* Get the USB manager from the requesting context */
         this.manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
-        conectar();
+        connect();
     }
 
-    public void conectarManual(Context ctx) throws TransmisionErrorException {
-        Log.i(C.ROBOT_TAG, "Conectando manualmente. modo - Host");
+    public void manualConnect(Context ctx) throws TransmisionErrorException {
+        Log.i(C.ROBOT_TAG, "Manually connected. mode - Host");
 		/* Get the USB manager from the requesting context */
         this.manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
 
@@ -122,16 +122,16 @@ public class ConectorPlaca  {
         if (it.hasNext()) {
             device = it.next();
             manager.requestPermission(device, mPermissionIntent);
-            //conectar();
+            //connect();
         }
         else {
-            Log.i(C.ROBOT_TAG, "No se han encontrado dispositivos");
-            throw new TransmisionErrorException("No se han encontrado dispositivos");
+            Log.i(C.ROBOT_TAG, "No devices found");
+            throw new TransmisionErrorException("No devices found");
         }
     }
 
-    public void desconectar() {
-        Log.i(C.ROBOT_TAG, "Desconectando a [ " + device.getDeviceName() + " ] modo - Host");
+    public void disconnect() {
+        Log.i(C.ROBOT_TAG, "Disconnected from [ " + device.getDeviceName() + " ] mode - Host");
         if (connection != null) {
             connection.close();
         }
@@ -150,14 +150,14 @@ public class ConectorPlaca  {
                         if(mDevice != null){
                             //call method to set up device communication
                             device = mDevice;
-                            conectar();
+                            connect();
                         }
                         else {
-                            Log.i(C.ROBOT_TAG, "No hay accesorio para conectar");
+                            Log.i(C.ROBOT_TAG, "No accesory to connect");
                         }
                     }
                     else {
-                        Log.w(C.ROBOT_TAG, "Permiso denegado para el accesorio " + mDevice);
+                        Log.w(C.ROBOT_TAG, "Permission denied for device " + mDevice);
                     }
                 }
             }
@@ -168,8 +168,8 @@ public class ConectorPlaca  {
         }
     };
 
-    private void conectar() throws TransmisionErrorException {
-        Log.i(C.ROBOT_TAG, "Conectando a [ " + device.getDeviceName() + " ]. modo - Host");
+    private void connect() throws TransmisionErrorException {
+        Log.i(C.ROBOT_TAG, "Connected to [ " + device.getDeviceName() + " ]. mode - Host");
             /*
              * Get the required interface from the USB device.  In this case
              * we are hard coding the interface number to 0.  In a dynamic example
@@ -182,7 +182,7 @@ public class ConectorPlaca  {
             /* Open a connection to the USB device */
         connection = manager.openDevice(device);
 
-        Log.i(C.ROBOT_TAG, "Dispositivo abierto");
+        Log.i(C.ROBOT_TAG, "Device openned");
 
             /* Claim the required interface to gain access to it */
         if(connection.claimInterface(intf, true) == true) {
@@ -190,14 +190,14 @@ public class ConectorPlaca  {
             endpointOUT = intf.getEndpoint(1);
             /* Get the IN endpoint.  It is the first endpoint in the interface */
             endpointIN = intf.getEndpoint(0);
-            Log.i(C.ROBOT_TAG, "Conexion realizada");
+            Log.i(C.ROBOT_TAG, "Connection established");
         } else {
                 /* if the interface claim failed, we should close the
                  * connection and exit.
                  */
             connection.close();
-            Log.i(C.ROBOT_TAG, "No se puede reclamar el interfaz");
-            throw new TransmisionErrorException("No se puede reclamar el interfaz");
+            Log.i(C.ROBOT_TAG, "Interface couldn't be claimed");
+            throw new TransmisionErrorException("Interface couldn't be claimed");
         }
     }
 

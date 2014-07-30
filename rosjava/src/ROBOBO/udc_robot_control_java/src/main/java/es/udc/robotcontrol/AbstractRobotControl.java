@@ -1,6 +1,6 @@
 package es.udc.robotcontrol;
 
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
@@ -17,7 +17,7 @@ import udc_robot_control_msgs.Led;
  */
 public abstract  class AbstractRobotControl implements NodeMain {
     private String robotName;
-    private RosListener notificador;
+    private RosListener notifier;
     private ConnectedNode cn;
 
     protected AbstractRobotControl() {
@@ -31,11 +31,11 @@ public abstract  class AbstractRobotControl implements NodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("panelcontrol");
+        return GraphName.of("controlpanel");
     }
 
-    public void registerNotificador(RosListener n) {
-        notificador = n;
+    public void registerNotifier(RosListener n) {
+        notifier = n;
     }
 
     @Override
@@ -51,14 +51,14 @@ public abstract  class AbstractRobotControl implements NodeMain {
 
     @Override
     public void onError(Node node, Throwable throwable) {
-        if (notificador != null) {
-            notificador.onError(node, throwable);
+        if (notifier != null) {
+            notifier.onError(node, throwable);
         }
     }
 
     public void notifyMsg(org.ros.internal.message.Message msg) {
-        if (notificador != null) {
-            notificador.onMsgArrived(msg);
+        if (notifier != null) {
+            notifier.onMsgArrived(msg);
         }
     }
 
@@ -76,7 +76,7 @@ public abstract  class AbstractRobotControl implements NodeMain {
     public abstract void sendCommand(ActionCommand msg);
 
 
-    protected String nombreCola(String topicName) {
+    protected String queueName(String topicName) {
         return getRobotName() + "/" + topicName;
     }
 

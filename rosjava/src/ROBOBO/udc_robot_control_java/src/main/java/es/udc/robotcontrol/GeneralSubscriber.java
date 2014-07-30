@@ -26,43 +26,43 @@ import org.ros.node.topic.Subscriber;
  * User: kerry
  * Date: 1/08/13
  * Time: 19:56
- * Esta clase implementa un subscriptor general, que se configura desde el HeadlessRobotControl
+ * This class implements a general subscriptor, configured from the HeadlessRobotControl
  *
  */
 public class GeneralSubscriber  {
 
-    private AbstractRobotControl padre;
+    private AbstractRobotControl parent;
 
     private String messageTypeName;
 
     private Subscriber<Message> subscriber;
 
 
-    public GeneralSubscriber(AbstractRobotControl papa, String messageTypeName) {
+    public GeneralSubscriber(AbstractRobotControl parent, String messageTypeName) {
         super();
-        this.padre = papa;
+        this.parent = parent;
         this.messageTypeName = messageTypeName;
     }
 
 
-    public void conectar(ConnectedNode cn, String tn) {
+    public void connect(ConnectedNode cn, String tn) {
         try {
             subscriber = cn.newSubscriber(tn, messageTypeName);
             subscriber.addMessageListener(new MessageListener<Message>() {
                 @Override
                 public void onNewMessage(Message m) {
-                    padre.notifyMsg(m);
+                    parent.notifyMsg(m);
                 }
             });
 
         }
         catch (Exception ex) {
-            // TODO: Manejar la excepción
+            // TODO: Handle the exception
             ex.printStackTrace();
         }
     }
 
-    public void desconectar() {
+    public void disconnect() {
         subscriber.shutdown();
     }
 

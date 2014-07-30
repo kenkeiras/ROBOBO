@@ -22,7 +22,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.ros.concurrent.CancellableLoop;
@@ -37,7 +37,7 @@ import java.nio.ByteBuffer;
 
 public class AudioPublisher implements NodeMain {
 
-    private static String QUEUE_NAME = Constantes.TOPIC_AUDIO;
+    private static String QUEUE_NAME = Constants.TOPIC_AUDIO;
     private static int PUBLISH_SLEEP = 1000;
 
     private int bsib;
@@ -50,7 +50,7 @@ public class AudioPublisher implements NodeMain {
 
     public AudioPublisher(Context context, String robotName) {
         super();
-        Log.d(C.TAG, "Creando Audio Publisher");
+        Log.d(C.TAG, "Creating Audio Publisher");
         this.context = context;
         this.robotName = robotName;
         this.bsib = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
@@ -95,31 +95,31 @@ public class AudioPublisher implements NodeMain {
                 Log.d(C.TAG, "[ "  + connectedNode.getName() + " ] Entering loop for [ " + QUEUE_NAME + " ]");
                 // Read Data
                 byte[] data = new byte[bsib];
-                int leido = ar.read(data, 0, bsib);
-                Log.d(C.TAG, "Leidos [ " + leido + " ] bytes del micro");
-                if (leido > 0) {
-                    if (leido < bsib) {
-                        byte[] newData = new byte[leido];
-                        System.arraycopy(data, 0, newData, 0, leido);
+                int read = ar.read(data, 0, bsib);
+                Log.d(C.TAG, "Read [ " + read + " ] bytes from the micro");
+                if (read > 0) {
+                    if (read < bsib) {
+                        byte[] newData = new byte[read];
+                        System.arraycopy(data, 0, newData, 0, read);
                         data = newData;
                     }
-                    Log.d(C.TAG, "Recibidos [ " + data.length + " ] bytes");
+                    Log.d(C.TAG, "Received [ " + data.length + " ] bytes");
                     int pos = 0;
-                    while (pos < leido) {
+                    while (pos < read) {
                         audio_common_msgs.AudioData msg = publisher.newMessage();
                         int max = msg.getData().writableBytes();
                         int ini = pos;
-                        int fin = pos + max;
-                        fin = leido <  fin ? leido:fin;
-                        max = fin - ini;
+                        int end = pos + max;
+                        end = read <  end ? read:end;
+                        max = end - ini;
                         byte[] dataMax = new byte[max];
                         System.arraycopy(data, ini, dataMax, 0, max);
 
                         msg.getData().writeBytes(dataMax);
 
                         publisher.publish(msg);
-                        Log.d(C.TAG, "[ " + connectedNode.getName() + " ] Message published [ " + QUEUE_NAME + " ] [ " + pos + " / " + leido + " ]");
-                        pos = fin;
+                        Log.d(C.TAG, "[ " + connectedNode.getName() + " ] Message published [ " + QUEUE_NAME + " ] [ " + pos + " / " + read + " ]");
+                        pos = end;
                     }
                 }
                 else {

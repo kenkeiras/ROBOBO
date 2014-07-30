@@ -14,7 +14,7 @@
  * the License.
  */
 
-package es.udc.fic.android.robot_control.camara;
+package es.udc.fic.android.robot_control.camera;
 
 import android.content.Context;
 import android.graphics.ImageFormat;

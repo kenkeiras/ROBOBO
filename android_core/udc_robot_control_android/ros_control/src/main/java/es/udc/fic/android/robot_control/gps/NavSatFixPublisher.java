@@ -26,7 +26,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
@@ -43,7 +43,7 @@ public class NavSatFixPublisher implements NodeMain {
     private Publisher<NavSatFix> publisher;
     private NavSatThread listenerThread;
 
-    private static String QUEUE_NAME = Constantes.TOPIC_NAV_SAT_FIX;
+    private static String QUEUE_NAME = Constants.TOPIC_NAV_SAT_FIX;
 
     private Context context;
     private String robotName;

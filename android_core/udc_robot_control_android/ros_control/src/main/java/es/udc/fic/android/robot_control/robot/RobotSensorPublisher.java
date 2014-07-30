@@ -19,7 +19,7 @@ package es.udc.fic.android.robot_control.robot;
 import android.content.Context;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
@@ -32,7 +32,7 @@ import udc_robot_control_msgs.SensorStatus;
  * Created by kerry on 4/08/13.
  */
 public class RobotSensorPublisher implements NodeMain {
-    public static String TOPIC_NAME = Constantes.TOPIC_IR_SENSORS;
+    public static String TOPIC_NAME = Constants.TOPIC_IR_SENSORS;
 
     private Context context;
     private String robotName;
@@ -42,7 +42,7 @@ public class RobotSensorPublisher implements NodeMain {
 
     public RobotSensorPublisher(Context context, String robotName) {
         super();
-        Log.d(C.TAG, "Creando IrSensorPublisher");
+        Log.d(C.TAG, "Creating IrSensorPublisher");
         this.context = context;
         this.robotName = robotName;
     }

@@ -27,7 +27,7 @@ import android.widget.Toast;
 import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.PublisherFactory;
-import es.udc.fic.android.robot_control.camara.RosCameraPreviewView;
+import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.utils.C;
 import udc_robot_control_msgs.ActionCommand;
@@ -39,20 +39,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Servicio de comunicación con el robot
- * Se encargará de abrir la manejar la conexión.
+ * Service to manage the connection with the robot
+ * It opens and handles the connection
  *
  * Created by kerry on 2/06/13.
  */
 public class RobotCommController extends Service {
 
-    public boolean continuar;
     public UDCAndroidControl androidControl;
 
-    private EstadoRobot estadoRobot;
+    private RobotState robotState;
     private long readSleepTime;
-    private HiloControl control;
-    private ConectorPlaca conector;
+    private ControlThread control;
+    private BoardConnector connector;
     private String robotName;
     private URI masterURI;
 
@@ -83,9 +82,8 @@ public class RobotCommController extends Service {
 
     @Override
     public void onCreate(){
-        estadoRobot = new EstadoRobot();
+        robotState = new RobotState();
         engineManager = new EngineManager();
-        continuar = false;
 
         pf = new PublisherFactory();
         pf.setRobotName(robotName);
@@ -114,25 +112,24 @@ public class RobotCommController extends Service {
         Log.d("UDC", "OK");
 
         createdInitialNodes = true;
-        // Configurar nodo inicial. Un listener. Es el encargado de recibir instrucciones desde el exterior
+        // Configure the initial node. A listener.
+        // It's the one which receives instructions from outside
         pf.configureCommandListener(androidControl, nodeMainExecutor);
         pf.configureEngineListener(engineManager, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
         Log.d("UDC", "Let's check...");
-        pf.configureCamara(androidControl, nodeMainExecutor,
+        pf.configureCamera(androidControl, nodeMainExecutor,
                            rosCameraPreviewView, 0, 90);
     }
 
 
-    int cam= 0;
     public synchronized void setCameraPreview(RosCameraPreviewView cameraPreview){
-        Log.d("UDC", "CAM NUM: " + (cam++));
         if (rosCameraPreviewView != null){
             rosCameraPreviewView.releaseCamera();
             nodeMainExecutor.shutdownNodeMain(rosCameraPreviewView);
 
             if (createdInitialNodes){
-                pf.configureCamara(androidControl, nodeMainExecutor,
+                pf.configureCamera(androidControl, nodeMainExecutor,
                                    cameraPreview, 0, 90);
             }
         }
@@ -188,7 +185,7 @@ public class RobotCommController extends Service {
     }
 
 
-    public void arrancarListener(ActionCommand actionCommand){
+    public void startListener(ActionCommand actionCommand){
         switch (actionCommand.getPublisher()) {
             case ActionCommand.PUBLISHER_ACCELEROMTER:
                 pf.configureAccelerometer(this, nodeMainExecutor);
@@ -238,8 +235,8 @@ public class RobotCommController extends Service {
             case ActionCommand.PUBLISHER_AUDIO:
                 pf.configureAudio(this, nodeMainExecutor);
                 break;
-            case ActionCommand.PUBLISHER_BATERY:
-                pf.configureBatery(this, nodeMainExecutor);
+            case ActionCommand.PUBLISHER_BATTERY:
+                pf.configureBattery(this, nodeMainExecutor);
                 break;
             case ActionCommand.PUBLISHER_GPS:
                 pf.configureNavSatFix(this, nodeMainExecutor);
@@ -250,7 +247,7 @@ public class RobotCommController extends Service {
             case ActionCommand.PUBLISHER_VIDEO:
                 int camaraId = actionCommand.getParam0();
                 int orientation = actionCommand.getParam1();
-                pf.configureCamara(androidControl, nodeMainExecutor, rosCameraPreviewView, camaraId, orientation);
+                pf.configureCamera(androidControl, nodeMainExecutor, rosCameraPreviewView, camaraId, orientation);
                 break;
             default:
                 Log.w(C.CMD_TAG, "Publisher desconocido [ " + actionCommand.getPublisher() + " ]");
@@ -258,74 +255,70 @@ public class RobotCommController extends Service {
     }
 
 
-    public void iniciar(UDCAndroidControl androidControl, Intent intent) {
+    public void start(UDCAndroidControl androidControl, Intent intent) {
         setAndroidControl(androidControl);
-        Log.i(C.ROBOT_TAG, "Iniciando controlador de robot");
+        Log.i(C.ROBOT_TAG, "Starting the robot controller");
         try {
 
-            if (continuar) { // YA conectado
-                Log.w(C.ROBOT_TAG, "Llamado a INICIAR con un robot ya conectado");
+            if (connector != null) { // Already connected
+                Log.w(C.ROBOT_TAG, "Called START with a robot already connected");
                 return;
             }
-            continuar = true;
-            Log.i(C.ROBOT_TAG, "Creando conector Placa");
-            conector = new ConectorPlaca();
-            Log.i(C.ROBOT_TAG, "Conector placa creado. Llamando a conectar");
-            conector.conectar(this, intent);
-            Log.i(C.ROBOT_TAG, "La llamada a conectar ha tenido exito");
+            Log.i(C.ROBOT_TAG, "Creating board connector");
+            connector = new BoardConnector();
+            Log.i(C.ROBOT_TAG, "Board connector created. Calling connect");
+            connector.connect(this, intent);
+            Log.i(C.ROBOT_TAG, "The connect call has been successfull");
 
             Toast.makeText(this, R.string.robot_service_started, Toast.LENGTH_SHORT).show();
 
-            Log.i(C.ROBOT_TAG, "Creando hilo lector");
-            control = new HiloControl(this);
+            Log.i(C.ROBOT_TAG, "Creating control thread");
+            control = new ControlThread(this);
 
-            Log.i(C.ROBOT_TAG, "Lanzando hilo lector");
+            Log.i(C.ROBOT_TAG, "Launching control thread");
             control.start();
-            Log.i(C.ROBOT_TAG, "Todos los hilos han sido lanzados. iniciar completado.");
+            Log.i(C.ROBOT_TAG, "All threads had been launched. Start completed.");
         }
         catch (Exception ex) {
-            Log.w(C.ROBOT_TAG, "Error iniciando conexion [ " + ex.getMessage() + " ] ", ex);
+            Log.w(C.ROBOT_TAG, "Error starting connection [ " + ex.getMessage() + " ] ", ex);
         }
     }
 
-    public void iniciarManual(UDCAndroidControl androidControl) {
+    public void manualStart(UDCAndroidControl androidControl) {
         setAndroidControl(androidControl);
         try {
-            Log.v("UDC", "Iniciando manual, continuado? " + continuar);
-            if(continuar) { // Ya conectado
-                Log.w(C.ROBOT_TAG, "Llamado a INICIAR MANUAL con un robot ya conectado");
+            Log.v("UDC", "Manually starting, continued? " + (connector != null));
+            if (connector != null) { // Already connected
+                Log.w(C.ROBOT_TAG, "Called START with a robot already connected");
                 return;
             }
-            Log.i(C.ROBOT_TAG, "Iniciando controlador manualmente.");
-            continuar = true;
-            if (conector == null) {
-                conector = new ConectorPlaca();
-            }
-            conector.conectarManual(androidControl);
-            control = new HiloControl(this);
+            Log.i(C.ROBOT_TAG, "Manually starting controller.");
+            connector = new BoardConnector();
+            connector.manualConnect(androidControl);
+            control = new ControlThread(this);
             control.start();
         }
         catch (Exception ex) {
-            Log.w(C.ROBOT_TAG, "Error iniciando conexion [ " + ex.getMessage() + " ] ", ex);
+            Log.w(C.ROBOT_TAG, "Error staring connection [ " + ex.getMessage() + " ] ", ex);
         }
     }
 
 
-    public void terminar() {
-        if (conector != null) {
-            conector.desconectar();
+    public void stop() {
+        if (connector != null) {
+            connector.disconnect();
         }
-        continuar = false;
+        connector = null;
     }
 
 
-    public synchronized boolean continuarLector(HiloControl hl) {
-        return (continuar && (control == hl));
+    public synchronized boolean continueControl(ControlThread hl) {
+        return ((connector != null) && (control == hl));
     }
 
 
-    public synchronized  byte[] leer() {
-        return conector.leer();
+    public synchronized  byte[] read() {
+        return connector.read();
     }
 
     public long getReadSleepTime() {
@@ -336,29 +329,29 @@ public class RobotCommController extends Service {
         this.readSleepTime = readSleepTime;
     }
 
-    public void escribir(ActionCommand comando) {
+    public void write(ActionCommand command) {
         try {
-            switch (comando.getCommand()) {
+            switch (command.getCommand()) {
                 case ActionCommand.CMD_HARD_RESET:
-                    terminar();
-                    iniciarManual(androidControl);
+                    stop();
+                    manualStart(androidControl);
                     break;
                 case ActionCommand.CMD_RESET:
-                    estadoRobot.reset();
-                    conector.escribir(estadoRobot);
+                    robotState.reset();
+                    connector.write(robotState);
                     break;
                 case ActionCommand.CMD_SET_LEDS:
-                    estadoRobot.setLeds(comando.getLeds());
-                    conector.escribir(estadoRobot);
+                    robotState.setLeds(command.getLeds());
+                    connector.write(robotState);
                     break;
             }
         }
         catch (Exception ex) {
-            if (comando != null) {
-                Log.e(C.ROBOT_TAG, "Error ejecutando comando [ " + comando.getCommand() + " ]", ex);
+            if (command != null) {
+                Log.e(C.ROBOT_TAG, "Error running command [ " + command.getCommand() + " ]", ex);
             }
             else {
-                Log.e(C.ROBOT_TAG, "Error ejecutando comando. El comando es null", ex);
+                Log.e(C.ROBOT_TAG, "Error running command. The command is null", ex);
             }
         }
     }
@@ -368,8 +361,8 @@ public class RobotCommController extends Service {
     }
 
     public void refreshRobot(){
-        engineManager.refresh(estadoRobot);
-        conector.escribir(estadoRobot);
+        engineManager.refresh(robotState);
+        connector.write(robotState);
     }
 
     public void stop(ActionCommand actionCommand){
@@ -379,18 +372,18 @@ public class RobotCommController extends Service {
 }
 
 
-class HiloControl extends Thread {
+class ControlThread extends Thread {
 
     RobotCommController parent;
 
-    public HiloControl (RobotCommController parent) {
+    public ControlThread (RobotCommController parent) {
         this.parent = parent;
     }
 
 
     @Override
     public void run() {
-        while (parent.continuarLector(this)) {
+        while (parent.continueControl(this)) {
             // Commands have to be written for sensor data to be sent back
             writeCommands();
             readData();
@@ -404,37 +397,36 @@ class HiloControl extends Thread {
 
     private void readData(){
         try {
-            Log.d(C.ROBOT_TAG, "Leyendo sensores");
-            byte[] read = parent.leer();
+            Log.d(C.ROBOT_TAG, "Reading sensors");
+            byte[] read = parent.read();
             if (read != null) {
-                Log.i(C.ROBOT_TAG, "Leidos [ " + read.length + " ] bytes");
+                Log.i(C.ROBOT_TAG, "Read [ " + read.length + " ] bytes");
                 try {
-                    // Parsear la lectura
+                    // Parse the read data
                     SensorInfo info = new SensorInfo(read);
                     parent.sendToRos(info);
 
                 } catch (Exception e) {
-                    Log.w("Error recuperando info", e);
+                    Log.w("Error retrieving data", e);
                     StringBuilder sb = new StringBuilder();
                     for (int x = 0; x < read.length; x++) {
                         sb.append("byte [ " + x + " ] = (" + read[x] + ")");
                     }
-                    Log.w(C.ROBOT_TAG, "Leido => " + sb.toString());
+                    Log.w(C.ROBOT_TAG, "Read => " + sb.toString());
                 }
             }
             else {
-                Log.i(C.ROBOT_TAG, "Nada que leer");
+                Log.i(C.ROBOT_TAG, "Nothing to read");
             }
             try {
                 sleep(parent.getReadSleepTime());
             }
             catch (InterruptedException ie) {
-                Log.w(C.ROBOT_TAG, "InterruptedException en el lector");
+                Log.w(C.ROBOT_TAG, "InterruptedException in the reader");
             }
         }
         catch (Exception ex) {
-            Log.w(C.ROBOT_TAG, "Exception en hilo lector", ex);
-            parent.continuar = false;
+            Log.w(C.ROBOT_TAG, "Exception in the control thread", ex);
         }
     }
 }

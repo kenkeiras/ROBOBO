@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2011 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,14 +16,14 @@
 /**
  * Modified version by amancio.diaz@gmail.com
  */
-package es.udc.fic.android.robot_control.camara;
+package es.udc.fic.android.robot_control.camera;
 
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera.Size;
 import com.google.common.base.Preconditions;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
 import org.ros.internal.message.MessageBuffers;
 import org.ros.message.Time;
@@ -32,13 +32,13 @@ import org.ros.node.topic.Publisher;
 
 /**
  * Publishes preview frames.
- * 
+ *
  * @author damonkohler@google.com (Damon Kohler)
  */
 class CompressedImagePublisher implements RawImageListener {
 
-    private final String IMAGE_QUEUE_NAME = Constantes.TOPIC_IMAGE;
-    private final String CAMERA_INFO_QUEUE_NAME = Constantes.TOPIC_CAMERA_INFO;
+    private final String IMAGE_QUEUE_NAME = Constants.TOPIC_IMAGE;
+    private final String CAMERA_INFO_QUEUE_NAME = Constants.TOPIC_CAMERA_INFO;
 
   private final ConnectedNode connectedNode;
   private final Publisher<sensor_msgs.CompressedImage> imagePublisher;

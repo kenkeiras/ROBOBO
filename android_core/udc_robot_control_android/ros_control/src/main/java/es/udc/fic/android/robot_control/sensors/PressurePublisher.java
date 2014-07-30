@@ -20,7 +20,7 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
@@ -29,7 +29,7 @@ import sensor_msgs.FluidPressure;
 
 public class PressurePublisher extends AbstractSensorsPublisher {
 
-    private String QUEUE_NAME = Constantes.TOPIC_PRESSURE;
+    private String QUEUE_NAME = Constants.TOPIC_PRESSURE;
 
     public PressurePublisher(Context ctx, String robotName) {
         super(ctx, robotName);

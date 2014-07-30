@@ -30,27 +30,27 @@ import udc_robot_control_msgs.ActionCommand;
  * To change this template use File | Settings | File Templates.
  */
 public class CommandsPublisher {
-    private HeadlessRobotControl padre;
+    private HeadlessRobotControl parent;
 
     private Publisher<ActionCommand> publisher;
 
 
-    public CommandsPublisher(HeadlessRobotControl padre) {
+    public CommandsPublisher(HeadlessRobotControl parent) {
         super();
-        this.padre = padre;
+        this.parent = parent;
     }
 
-    public void conectar(ConnectedNode cn, String tn) {
+    public void connect(ConnectedNode cn, String tn) {
         try {
             publisher = cn.newPublisher(tn, ActionCommand._TYPE);
         }
         catch (Exception ex) {
-            // TODO: Manejar la excepcion
+            // TODO: Handle the exception
             ex.printStackTrace();
         }
     }
 
-    public void desconectar() {
+    public void disconnect() {
         publisher.shutdown();
     }
 
@@ -58,9 +58,9 @@ public class CommandsPublisher {
         return publisher.newMessage();
     }
 
-    public void publicar(ActionCommand comando) {
-        comando.getHeader().setFrameId(padre.getRobotName());
-        comando.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
-        publisher.publish(comando);
+    public void publish(ActionCommand command) {
+        command.getHeader().setFrameId(parent.getRobotName());
+        command.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
+        publisher.publish(command);
     }
 }

@@ -1,4 +1,4 @@
-# Export the sensors status of the robot
+# Export the IRsensors status of the robot
 Header  header
 
 int32 sIr0
@@ -12,4 +12,3 @@ int32 sIr7
 int32 sIr8
 int32 sIrS1
 int32 sIrS2
-

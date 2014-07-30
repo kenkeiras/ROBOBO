@@ -1,7 +1,7 @@
 package org.ros.robobo;
 
 import es.udc.robotcontrol.RosListener;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 
 import java.io.IOException;
 import java.net.URI;
@@ -80,7 +80,7 @@ public class SensorNode implements NodeMain {
     public void onStart(ConnectedNode connectedNode) {
         cn = connectedNode;
 
-        String topicName = robotName + "/" + Constantes.TOPIC_IR_SENSORS;
+        String topicName = robotName + "/" + Constants.TOPIC_IR_SENSORS;
         subscriber = connectedNode.newSubscriber(topicName, SensorStatus._TYPE);
         subscriber.addMessageListener(cml);
     }

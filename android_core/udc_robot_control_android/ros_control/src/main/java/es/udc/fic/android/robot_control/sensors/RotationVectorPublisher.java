@@ -19,14 +19,14 @@ package es.udc.fic.android.robot_control.sensors;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import udc_robot_control_msgs.AndroidSensor3;
 
 
 public class RotationVectorPublisher extends AbstractSensorsPublisher {
-    private static String QUEUE_NAME = Constantes.TOPIC_ROTATION_VECTOR;
+    private static String QUEUE_NAME = Constants.TOPIC_ROTATION_VECTOR;
 
     public RotationVectorPublisher(Context ctx, String robotName) {
         super(ctx, robotName);

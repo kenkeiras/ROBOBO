@@ -9,12 +9,12 @@ import udc_robot_control_msgs.ActionCommand;
 import udc_robot_control_msgs.Led;
 
 /**
- * Este es otro decorador para utilizar un joystick con el robot
+ * This is another decorator to use the robot with a joystick
  *
  */
 public class JoystickRobotControl extends AbstractRobotControl implements RosListener {
 
-    private AbstractRobotControl decorado;
+    private AbstractRobotControl decorated;
 
     private GeneralSubscriber joystickSubscriber;
 
@@ -22,41 +22,41 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
 
     /**
      * Constructor.
-     * @param decor Controler a decorar
+     * @param decor Controller to decorate
      */
-    public JoystickRobotControl(AbstractRobotControl decor) {
-        decorado = decor;
-        // Somos el interfaz del decorado. Las notificaciones pasan por nosotros.
-        decorado.registerNotificador(this);
+    public JoystickRobotControl(AbstractRobotControl decorated) {
+        this.decorated = decorated;
+        // Act as a decorator. Notifications pass through JoystickRobotControl
+        decorated.registerNotifier(this);
     }
 
     @Override
     public void sendCommand(ActionCommand msg) {
-        decorado.sendCommand(msg);
+        decorated.sendCommand(msg);
     }
 
     @Override
     public GraphName getDefaultNodeName() {
-        return decorado.getDefaultNodeName();
+        return decorated.getDefaultNodeName();
     }
 
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        decorado.onStart(connectedNode);
-        // Subscribirnos a la cola de joy
+        decorated.onStart(connectedNode);
+        // Subscribe to the "joy" queue
         joystickSubscriber = new GeneralSubscriber(this, sensor_msgs.Joy._TYPE);
-        joystickSubscriber.conectar(connectedNode, "joy");
+        joystickSubscriber.connect(connectedNode, "joy");
     }
 
     @Override
     public void onShutdown(Node node) {
-        decorado.onShutdown(node);
+        decorated.onShutdown(node);
     }
 
     @Override
     public void onShutdownComplete(Node node) {
-        decorado.onShutdownComplete(node);
+        decorated.onShutdownComplete(node);
     }
 
 
@@ -71,45 +71,45 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
 
     @Override
     public void onError(Node node, Throwable throwable) {
-        decorado.onError(node, throwable);
+        decorated.onError(node, throwable);
     }
 
     @Override
     public void notifyMsg(Message msg) {
-        decorado.notifyMsg(msg);
+        decorated.notifyMsg(msg);
     }
 
     @Override
     public ActionCommand newCommand() {
-        return decorado.newCommand();
+        return decorated.newCommand();
     }
 
     @Override
     public Led newLed() {
-        return decorado.newLed();
+        return decorated.newLed();
     }
 
     @Override
     public String getRobotName() {
-        return decorado.getRobotName();
+        return decorated.getRobotName();
     }
 
     @Override
     public void setRobotName(String robotName) {
-        decorado.setRobotName(robotName);
+        decorated.setRobotName(robotName);
     }
 
 
     /**
-     * Comparamos el mensaje actual con el anterior.
-     * Guardamos el mensaje actual.
+     * Compare the current message against the last one.
+     * Save the current one.
      * @param j
      */
     private void processJoy(Joy j) {
 
-        // Comprobar avance
-        boolean izquierdo = false;
-        boolean derecho = false;
+        // Check advance
+        boolean left = false;
+        boolean right = false;
 
         float[] ax = j.getAxes();
 
@@ -119,47 +119,47 @@ public class JoystickRobotControl extends AbstractRobotControl implements RosLis
         }
 
         if ((old[4] == ax[4]) && (old[5] ==  ax[5])) {
-            // Ejes igual. no hacemos nada
+            // Same axes. don't do anything
         }
         else {
             if (((ax[4] < 0.5) && (ax[4] > -0.5)) &&
                 ((ax[5] < 0.5) && (ax[5] > -0.5))) {
-                // Estamos en situacion de parada
+                // Stop situation
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(0);
                 ac.getEngines().setRightEngine(0);
                 sendCommand(ac);
             } else if (ax[5] > 0.5) {
-                // Avanzar ambas
+                // Both go forward
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(1);
                 ac.getEngines().setRightEngine(1);
                 sendCommand(ac);
             } else if (ax[4] > 0.5) {
-                // Queremos girar a la izquierda
+                // Turn left
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(0);
                 ac.getEngines().setRightEngine(1);
                 sendCommand(ac);
             } else if (ax[4] < -0.5) {
-                // Queremos girar a la derecha
+                // Turn right
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(1);
                 ac.getEngines().setRightEngine(0);
                 sendCommand(ac);
             } else if (ax[5] < -0.5) {
-                // Queremos retroceder
+                // Go backwards
                 ActionCommand ac = newCommand();
                 ac.setCommand(ActionCommand.CMD_SET_ENGINES);
-                ac.getEngines().setMotorMode(0);
+                ac.getEngines().setEngineMode(0);
                 ac.getEngines().setLeftEngine(-1);
                 ac.getEngines().setRightEngine(-1);
                 sendCommand(ac);

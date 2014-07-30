@@ -17,7 +17,7 @@
 package es.udc.robotcontrol;
 
 import audio_common_msgs.AudioData;
-import es.udc.robotcontrol.utils.Constantes;
+import es.udc.robotcontrol.utils.Constants;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
@@ -39,7 +39,7 @@ public class HeadlessRobotControl extends AbstractRobotControl {
     /**
      * Subscriptores a las colas de mensajes emitidos por el robot
      */
-    private GeneralSubscriber[] listaSubs;
+    private GeneralSubscriber[] subscriptors;
     /**
      * Publicador de mensajes
      */
@@ -48,21 +48,21 @@ public class HeadlessRobotControl extends AbstractRobotControl {
     // Tipos de mensajes emitidos por el robot
     private String[] msgTypes = {
             AudioData._TYPE,
-            BateryStatus._TYPE,
+            BatteryStatus._TYPE,
             CompressedImage._TYPE,
             CameraInfo._TYPE,
             NavSatFix._TYPE,
             Imu._TYPE, // imu
-            AndroidSensor3._TYPE, // acelerometro
+            AndroidSensor3._TYPE, // accelerometer
             MagneticField._TYPE,
-            AndroidSensor3._TYPE, // gyroscopio
+            AndroidSensor3._TYPE, // gyroscope
             Illuminance._TYPE,
             FluidPressure._TYPE,
             Range._TYPE,
             AndroidSensor3._TYPE, // gravity
             AndroidSensor3._TYPE, // lineal acceleration
             AndroidSensor3._TYPE,  // rotation vector
-            AndroidSensor3._TYPE, // orientacion
+            AndroidSensor3._TYPE, // orientation
             RelativeHumidity._TYPE, //
             Temperature._TYPE,
             MagneticField._TYPE, // Magnetic field uncalibrated
@@ -71,30 +71,30 @@ public class HeadlessRobotControl extends AbstractRobotControl {
             SensorStatus._TYPE
     };
 
-    // Nombres de las colas en las que escribe el robot.
+    // Names of the queues where the robot publishes
     private String[] topicNames = {
-            Constantes.TOPIC_AUDIO,
-            Constantes.TOPIC_BATERY,
-            Constantes.TOPIC_IMAGE,
-            Constantes.TOPIC_CAMERA_INFO,
-            Constantes.TOPIC_NAV_SAT_FIX,
-            Constantes.TOPIC_IMU,
-            Constantes.TOPIC_ACCELEROMETER,
-            Constantes.TOPIC_MAGNETIC_FIELD,
-            Constantes.TOPIC_GYROSCOPE,
-            Constantes.TOPIC_LIGHT,
-            Constantes.TOPIC_PRESSURE,
-            Constantes.TOPIC_PROXIMITY,
-            Constantes.TOPIC_GRAVITY,
-            Constantes.TOPIC_LINEAL_ACCELERATION,
-            Constantes.TOPIC_ROTATION_VECTOR,
-            Constantes.TOPIC_ORIENTATION,
-            Constantes.TOPIC_RELATIVE_HUMIDITY,
-            Constantes.TOPIC_AMBIENT_TEMPERATURE,
-            Constantes.TOPIC_MAGNETIC_FIELD_UNCALIBRATED,
-            Constantes.TOPIC_GAME_ROTATION_VECTOR,
-            Constantes.TOPIC_GYROSCOPE_UNCALIBRATED,
-            Constantes.TOPIC_IR_SENSORS
+            Constants.TOPIC_AUDIO,
+            Constants.TOPIC_BATTERY,
+            Constants.TOPIC_IMAGE,
+            Constants.TOPIC_CAMERA_INFO,
+            Constants.TOPIC_NAV_SAT_FIX,
+            Constants.TOPIC_IMU,
+            Constants.TOPIC_ACCELEROMETER,
+            Constants.TOPIC_MAGNETIC_FIELD,
+            Constants.TOPIC_GYROSCOPE,
+            Constants.TOPIC_LIGHT,
+            Constants.TOPIC_PRESSURE,
+            Constants.TOPIC_PROXIMITY,
+            Constants.TOPIC_GRAVITY,
+            Constants.TOPIC_LINEAL_ACCELERATION,
+            Constants.TOPIC_ROTATION_VECTOR,
+            Constants.TOPIC_ORIENTATION,
+            Constants.TOPIC_RELATIVE_HUMIDITY,
+            Constants.TOPIC_AMBIENT_TEMPERATURE,
+            Constants.TOPIC_MAGNETIC_FIELD_UNCALIBRATED,
+            Constants.TOPIC_GAME_ROTATION_VECTOR,
+            Constants.TOPIC_GYROSCOPE_UNCALIBRATED,
+            Constants.TOPIC_IR_SENSORS
     };
 
 
@@ -102,26 +102,26 @@ public class HeadlessRobotControl extends AbstractRobotControl {
     public HeadlessRobotControl(String rName) {
         super(rName);
         setRobotName(rName);
-        listaSubs = new GeneralSubscriber[msgTypes.length];
+        subscriptors = new GeneralSubscriber[msgTypes.length];
     }
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
         super.onStart(connectedNode);
-        for (int i = 0; i < listaSubs.length; i++) {
-            listaSubs[i] = new GeneralSubscriber(this, msgTypes[i]);
-            listaSubs[i].conectar(connectedNode, nombreCola(topicNames[i]));
+        for (int i = 0; i < subscriptors.length; i++) {
+            subscriptors[i] = new GeneralSubscriber(this, msgTypes[i]);
+            subscriptors[i].connect(connectedNode, queueName(topicNames[i]));
         }
         publisher = new CommandsPublisher(this);
-        publisher.conectar(connectedNode, nombreCola(Constantes.TOPIC_COMMANDS));
+        publisher.connect(connectedNode, queueName(Constants.TOPIC_COMMANDS));
     }
 
     @Override
     public void onShutdown(Node node) {
-        publisher.desconectar();
-        for (int i = 0 ; i < listaSubs.length; i++) {
-            if (listaSubs[i] != null) {
-                listaSubs[i].desconectar();
+        publisher.disconnect();
+        for (int i = 0 ; i < subscriptors.length; i++) {
+            if (subscriptors[i] != null) {
+                subscriptors[i].disconnect();
             }
         }
     }
@@ -133,7 +133,7 @@ public class HeadlessRobotControl extends AbstractRobotControl {
 
     @Override
     public void sendCommand(ActionCommand msg) {
-        publisher.publicar(msg);
+        publisher.publish(msg);
     }
 
 

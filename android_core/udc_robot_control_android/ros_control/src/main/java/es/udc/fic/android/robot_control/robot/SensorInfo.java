@@ -48,20 +48,20 @@ public class SensorInfo {
     }
 
 
-    public SensorInfo(byte[] lectura) throws IllegalArgumentException{
-        if (lectura.length < MSG_LENGTH) {
-            throw new IllegalArgumentException("Lectura incorrecta");
+    public SensorInfo(byte[] raw) throws IllegalArgumentException{
+        if (raw.length < MSG_LENGTH) {
+            throw new IllegalArgumentException("Data not valid");
         }
         else {
-            if (lectura[0] != (byte) 0x81) {
-                throw new IllegalArgumentException("Lectura incorrecta (byte 0 != 0x81)");
+            if (raw[0] != (byte) 0x81) {
+                throw new IllegalArgumentException("Incorrect lecture (byte 0 != 0x81)");
             }
             byte checksum = 0;
             for (int x = 1; x < 22; x += 2) {
-                int valor = (toUnsignedInt(lectura[x]) << 8) + toUnsignedInt(lectura[x+1]);
-                setValor(x, valor);
-                checksum += lectura[x];
-                checksum += lectura[x+1];
+                int value = (toUnsignedInt(raw[x]) << 8) + toUnsignedInt(raw[x+1]);
+                setValue(x, value);
+                checksum += raw[x];
+                checksum += raw[x+1];
             }
 
             // Checksum doesn't seem to be implemented as of now
@@ -89,40 +89,40 @@ public class SensorInfo {
     }
 
 
-    private void setValor(int x, int valor) {
+    private void setValue(int x, int value) {
         switch (x) {
             case 1:
-                setsIr0(valor);
+                setsIr0(value);
                 break;
             case 3:
-                setsIr1(valor);
+                setsIr1(value);
                 break;
             case 5:
-                setsIr2(valor);
+                setsIr2(value);
                 break;
             case 7:
-                setsIr3(valor);
+                setsIr3(value);
                 break;
             case 9:
-                setsIr4(valor);
+                setsIr4(value);
                 break;
             case 11:
-                setsIr5(valor);
+                setsIr5(value);
                 break;
             case 13:
-                setsIr6(valor);
+                setsIr6(value);
                 break;
             case 15:
-                setsIr7(valor);
+                setsIr7(value);
                 break;
             case 17:
-                setsIr8(valor);
+                setsIr8(value);
                 break;
             case 19:
-                setsIrS1(valor);
+                setsIrS1(value);
                 break;
             case 21:
-                setsIrS2(valor);
+                setsIrS2(value);
                 break;
         }
     }
