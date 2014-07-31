@@ -30,7 +30,9 @@ import com.google.common.base.Preconditions;
 import org.ros.exception.RosRuntimeException;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Displays preview frames from the camera.
@@ -45,7 +47,7 @@ public class CameraPreviewView extends ViewGroup {
   private Camera camera;
   private Size previewSize;
   private byte[] previewBuffer;
-  private RawImageListener rawImageListener;
+  private Set<RawImageListener> rawImageListeners;
   private BufferingPreviewCallback bufferingPreviewCallback;
 
   private final class BufferingPreviewCallback implements PreviewCallback {
@@ -53,7 +55,7 @@ public class CameraPreviewView extends ViewGroup {
     public void onPreviewFrame(byte[] data, Camera camera) {
       Preconditions.checkArgument(camera == CameraPreviewView.this.camera);
       Preconditions.checkArgument(data == previewBuffer);
-      if (rawImageListener != null) {
+      for (RawImageListener rawImageListener : rawImageListeners) {
         rawImageListener.onNewRawImage(data, previewSize);
       }
       camera.addCallbackBuffer(previewBuffer);
@@ -84,6 +86,8 @@ public class CameraPreviewView extends ViewGroup {
   }
 
   private void init(Context context) {
+    rawImageListeners = new HashSet<RawImageListener>();
+
     SurfaceView surfaceView = new SurfaceView(context);
     addView(surfaceView);
     surfaceHolder = surfaceView.getHolder();
@@ -117,8 +121,8 @@ public class CameraPreviewView extends ViewGroup {
     camera = null;
   }
 
-  public void setRawImageListener(RawImageListener rawImageListener) {
-    this.rawImageListener = rawImageListener;
+  public void addRawImageListener(RawImageListener rawImageListener) {
+      rawImageListeners.add(rawImageListener);
   }
 
   public Size getPreviewSize() {

@@ -14,8 +14,8 @@
  * the License.
  */
 
-/* 
- Examples of 
+/*
+ Examples of
    1) dependencies from another project in this gradle stack.
    2,3) dependency from a maven repository.
 */
@@ -26,6 +26,8 @@ dependencies {
     compile 'robobo:udc_robot_control_java:0.1.0'
     compile 'org.ros.android_core:android_gingerbread_mr1:0.1.2'
     compile 'org.ros.android_core:android_honeycomb_mr2:0.1.2'
+
+   compile files ("lib/april.jar")
 }
 
 apply plugin: 'android'
@@ -34,4 +36,3 @@ android {
     compileSdkVersion 18
     buildToolsVersion androidBuildToolsVersion
 }
- 
