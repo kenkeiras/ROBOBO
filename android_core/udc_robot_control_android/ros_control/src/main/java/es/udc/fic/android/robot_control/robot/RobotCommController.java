@@ -245,9 +245,9 @@ public class RobotCommController extends Service {
                 pf.configureImu(this, nodeMainExecutor);
                 break;
             case ActionCommand.PUBLISHER_VIDEO:
-                int camaraId = actionCommand.getParam0();
+                int cameraId = actionCommand.getParam0();
                 int orientation = actionCommand.getParam1();
-                pf.configureCamera(androidControl, nodeMainExecutor, rosCameraPreviewView, camaraId, orientation);
+                pf.configureCamera(androidControl, nodeMainExecutor, rosCameraPreviewView, cameraId, orientation);
                 break;
             default:
                 Log.w(C.CMD_TAG, "Publisher desconocido [ " + actionCommand.getPublisher() + " ]");
