@@ -120,7 +120,6 @@ public class SensorListener implements NodeMain {
         @Override
         public void onNewMessage(udc_robot_control_msgs.SensorStatus actionCommand) {
 
-            System.out.println("IR0 = " + actionCommand.getSIr0());
             System.out.println("IR1 = " + actionCommand.getSIr1());
             System.out.println("IR2 = " + actionCommand.getSIr2());
             System.out.println("IR3 = " + actionCommand.getSIr3());
@@ -129,7 +128,7 @@ public class SensorListener implements NodeMain {
             System.out.println("IR6 = " + actionCommand.getSIr6());
             System.out.println("IR7 = " + actionCommand.getSIr7());
             System.out.println("IR8 = " + actionCommand.getSIr8());
-            // System.out.println("IR9 = " + actionCommand.getSIr9());
+            System.out.println("IR9 = " + actionCommand.getSIr9());
             System.out.println("");
         }
     }

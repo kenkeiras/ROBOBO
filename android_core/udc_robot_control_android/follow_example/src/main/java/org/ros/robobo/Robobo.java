@@ -54,7 +54,7 @@ public class Robobo {
 
             @Override
             public void onNewMessage(SensorStatus sensorStatus) {
-                boolean goLeft = sensorStatus.getSIr1() < IR_THRESHOLD;
+                boolean goLeft = sensorStatus.getSIr9() < IR_THRESHOLD;
                 boolean goRight = sensorStatus.getSIr2() < IR_THRESHOLD;
 
                 updateEngines(goLeft, goRight);
