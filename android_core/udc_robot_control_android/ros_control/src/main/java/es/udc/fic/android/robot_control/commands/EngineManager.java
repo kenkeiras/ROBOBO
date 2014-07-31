@@ -1,5 +1,6 @@
 package es.udc.fic.android.robot_control.commands;
 
+import android.util.Log;
 import es.udc.fic.android.robot_control.robot.RobotState;
 
 import geometry_msgs.Twist;
@@ -26,14 +27,27 @@ public class EngineManager {
 
 
     public void refresh(RobotState robotState){
-        byte runningLeft = (byte) (speed_x >= 0.5f? 1 : 0);
-        byte runningRight = runningLeft;
+        byte runningLeft = 0;
+        byte runningRight = 0;
 
-        if (turn_y >= 0.5f){
-            runningRight = 0;
+        if (speed_x >= 0.5f){
+            runningLeft = 1;
+            runningRight = 1;
         }
-        else if (turn_y <= -0.5f){
-            runningLeft = 0;
+        else if (speed_x <= -0.5){
+            runningLeft = 2;
+            runningRight = 2;
+        }
+
+        if (Math.abs(speed_x) >= 0.5f){
+            if (turn_y >= 0.5f){
+                runningRight = 2;
+                runningLeft = 1;
+            }
+            else if (turn_y <= -0.5f){
+                runningRight = 1;
+                runningLeft = 2;
+            }
         }
 
         robotState.setEngines(runningLeft, runningRight);
