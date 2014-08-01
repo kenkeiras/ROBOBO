@@ -20,7 +20,7 @@
 
   </LinearLayout>
 
-  <es.udc.fic.android.robot_control.camara.RosCameraPreviewView
+  <es.udc.fic.android.robot_control.camera.RosCameraPreviewView
       android:id="@+id/ros_camera_preview_view_task_manager"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent" />
