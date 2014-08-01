@@ -83,8 +83,8 @@ public class RobotState {
         int pos = 0;
         out[0] = 0x37;
         out[1] = engineMode;
-        out[2] = leftEngine;
-        out[3] = rightEngine;
+        out[2] = rightEngine;
+        out[3] = leftEngine;
 
         try {
             Led led = leds[0];
