@@ -11,6 +11,8 @@ import april.tag.*;
 import com.google.common.base.Preconditions;
 
 import es.udc.robotcontrol.utils.Constants;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.ros.node.ConnectedNode;
@@ -19,6 +21,7 @@ import org.ros.node.topic.Publisher;
 
 class AprilTagPublisher implements RawImageListener {
 
+    public static final boolean USE_NDK = true;
     private final ConnectedNode connectedNode;
     private final Publisher<udc_robot_control_msgs.AprilTag> aprilPublisher;
 
@@ -44,21 +47,70 @@ class AprilTagPublisher implements RawImageListener {
     }
 
 
+    private byte[] yuvToBytes(byte[] yuv){
+        int origLen = yuv.length;
+        byte[] img = new byte[origLen];
+
+        // Check convertion quality
+        for (int i = 0; i < origLen; i++) {
+            byte grey = (byte)(yuv[i] & 0xff);
+            img[i] = grey;
+        }
+        return img;
+    }
+
+
+    private TagDetection stringToDetection (String str){
+        TagDetection detection = new TagDetection();
+        String []parts = str.split(", ");
+        assert(parts.length == 5);
+
+        detection.code              = Integer.parseInt(parts[0], 16);
+        detection.id                = Integer.parseInt(parts[1], 16);
+        detection.hammingDistance   = Integer.parseInt(parts[2], 16);
+        detection.rotation          = Integer.parseInt(parts[3], 16);
+        detection.observedPerimeter = Integer.parseInt(parts[4], 16);
+
+        // Filler
+        detection.obsCode = -1;
+        detection.good = true; // Probably...
+        detection.cxy = new double[]{(double) -1, (double) -1};
+
+        return detection;
+    }
+
+    private List<TagDetection> stringArrayToDetections(String[] results){
+        List<TagDetection> detections = new ArrayList<TagDetection>();
+        for (String result : results){
+            detections.add(stringToDetection(result));
+        }
+
+        return detections;
+    }
+
+
     @Override
     public void onNewRawImage(byte[] data, Size size) {
 
-        Log.d("UDCApril", "More data");
-        TagFamily tf = new Tag36h11();
-        TagDetector td = new TagDetector(tf);
+        List<TagDetection> detections;
         int width = size.width;
         int height = size.height;
 
-        FloatImage img = new FloatImage(width, height,
-                                        yuvToFloats(data));
+        if (USE_NDK){
+            AprilTagNdkInterface april = new AprilTagNdkInterface();
+            String[] results = april.process(yuvToBytes(data), width, height);
 
-        List<TagDetection> detections = td.processFloat(img, new double[]{width / 2,
-                                                                          height / 2});
+            detections = stringArrayToDetections(results);
+        }
+        else {
+            TagFamily tf = new Tag36h11();
+            TagDetector td = new TagDetector(tf);
 
+            FloatImage img = new FloatImage(width, height,
+                                            yuvToFloats(data));
+            detections = td.processFloat(img, new double[]{width / 2,
+                                                           height / 2});
+        }
         Log.d("UDCApril", detections.size() + " detections!");
         for (TagDetection detection : detections){
             Log.d("UDCApril", "Detected: " + detection);
