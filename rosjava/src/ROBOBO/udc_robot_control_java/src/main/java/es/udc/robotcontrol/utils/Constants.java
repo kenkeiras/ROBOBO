@@ -35,6 +35,7 @@ public abstract class Constants {
     public static final String NODE_CAMERA_INFO = "camerainfo";
     public static final String NODE_NAV_SAT_FIX = "nav_sat_fix";
     public static final String NODE_IMU         = "imu";
+    public static final String NODE_APRIL_TAGS  = "april_tags";
 
 
     public static final String NODE_ACCELEROMETER               = "accelerometer";
@@ -63,6 +64,7 @@ public abstract class Constants {
     public static final String TOPIC_CAMERA_INFO   = "camerainfo";
     public static final String TOPIC_NAV_SAT_FIX   = "nav_sat_fix";
     public static final String TOPIC_IMU           = "imu";
+    public static final String TOPIC_APRIL_TAGS    = "april_tags";
 
 
     public static final String TOPIC_ACCELEROMETER               = "accelerometer";

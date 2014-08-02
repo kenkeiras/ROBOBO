@@ -1,5 +1,6 @@
 package es.udc.fic.android.robot_control.camera;
 
+
 import android.graphics.YuvImage;
 import android.hardware.Camera.Size;
 import android.util.Log;
@@ -9,6 +10,7 @@ import april.tag.*;
 
 import com.google.common.base.Preconditions;
 
+import es.udc.robotcontrol.utils.Constants;
 import java.util.List;
 
 import org.ros.node.ConnectedNode;
@@ -18,26 +20,14 @@ import org.ros.node.topic.Publisher;
 class AprilTagPublisher implements RawImageListener {
 
     private final ConnectedNode connectedNode;
-    // private byte[] rawImageBuffer;
-    // private Size rawImageSize;
-    // private final Publisher<sensor_msgs.CompressedImage> imagePublisher;
-    // private final Publisher<sensor_msgs.CameraInfo> cameraInfoPublisher;
-
-    // private byte[] rawImageBuffer;
-    // private Size rawImageSize;
-    // private YuvImage yuvImage;
-    // private Rect rect;
-    // private ChannelBufferOutputStream stream;
+    private final Publisher<udc_robot_control_msgs.AprilTag> aprilPublisher;
 
 
 
     public AprilTagPublisher(String robotName, ConnectedNode connectedNode) {
         this.connectedNode = connectedNode;
-        // String aprilQueue = robotName + "/" + IMAGE_QUEUE_NAME + "/compressed";
-        // String infoQueue = robotName + "/" + CAMERA_INFO_QUEUE_NAME;
-        // imagePublisher = connectedNode.newPublisher(imageQueue, sensor_msgs.CompressedImage._TYPE);
-        // cameraInfoPublisher = connectedNode.newPublisher(infoQueue, sensor_msgs.CameraInfo._TYPE);
-        // stream = new ChannelBufferOutputStream(MessageBuffers.dynamicBuffer());
+        String aprilQueue = robotName + "/" + Constants.TOPIC_APRIL_TAGS;
+        aprilPublisher = connectedNode.newPublisher(aprilQueue, udc_robot_control_msgs.AprilTag._TYPE);
     }
 
 
@@ -58,14 +48,6 @@ class AprilTagPublisher implements RawImageListener {
     public void onNewRawImage(byte[] data, Size size) {
 
         Log.d("UDCApril", "More data");
-        // if (data == rawImageBuffer && size.equals(rawImageSize)) {
-        //     Log.d("UDCApril", "Data already checked");
-        //     return;
-        // }
-
-        // Log.d("UDCApril", "New data!");
-        /// @TODO don't destroy buffers after every call to improve performance
-        /// @TODO make this configurable
         TagFamily tf = new Tag36h11();
         TagDetector td = new TagDetector(tf);
         int width = size.width;
@@ -80,6 +62,15 @@ class AprilTagPublisher implements RawImageListener {
         Log.d("UDCApril", detections.size() + " detections!");
         for (TagDetection detection : detections){
             Log.d("UDCApril", "Detected: " + detection);
+
+            udc_robot_control_msgs.AprilTag msg = aprilPublisher.newMessage();
+            msg.setCode((int) detection.code);
+            msg.setId(detection.id);
+            msg.setHammingDistance(detection.hammingDistance);
+            msg.setRotation(detection.rotation * 90);
+            msg.setObservedPerimeter(detection.observedPerimeter);
+
+            aprilPublisher.publish(msg);
         }
     }
 }
