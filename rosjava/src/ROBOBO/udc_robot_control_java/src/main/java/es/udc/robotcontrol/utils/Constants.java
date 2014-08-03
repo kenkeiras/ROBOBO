@@ -30,6 +30,7 @@ public abstract class Constants {
     public static final String NODE_COMMANDS    = "commands";
     public static final String NODE_IR_SENSORS  = "irsensors";
     public static final String NODE_AUDIO       = "audio";
+    public static final String NODE_TEXT_TO_SPEECH = "text_to_speech";
     public static final String NODE_BATTERY     = "battery";
     public static final String NODE_IMAGE       = "image";
     public static final String NODE_CAMERA_INFO = "camerainfo";
@@ -58,6 +59,7 @@ public abstract class Constants {
     public static final String TOPIC_COMMANDS      = "commands";
     public static final String TOPIC_IR_SENSORS    = "irsensors";
     public static final String TOPIC_AUDIO         = "audio";
+    public static final String TOPIC_TEXT_TO_SPEECH = "text_to_speech";
     public static final String TOPIC_BATTERY       = "battery";
     public static final String TOPIC_IMAGE         = "image";
     public static final String TOPIC_CAMERA_INFO   = "camerainfo";

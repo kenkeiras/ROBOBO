@@ -120,6 +120,7 @@ public class RobotCommController extends Service {
         Log.d("UDC", "Let's check...");
         pf.configureCamera(androidControl, nodeMainExecutor,
                            rosCameraPreviewView, 0, 90);
+        pf.configureTTS(androidControl, nodeMainExecutor);
     }
 
 
