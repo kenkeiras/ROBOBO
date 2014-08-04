@@ -16,4 +16,5 @@
 
     <string name="action_tasks">Tareas</string>
     <string name="action_info">Información</string>
+    <string name="title_info_activity">Información</string>
 </resources>

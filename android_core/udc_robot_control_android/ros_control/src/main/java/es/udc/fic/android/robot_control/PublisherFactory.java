@@ -27,7 +27,9 @@ import es.udc.fic.android.robot_control.commands.CommandListener;
 import es.udc.fic.android.robot_control.commands.EngineListener;
 import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.gps.NavSatFixPublisher;
+import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
+import es.udc.fic.android.robot_control.screen.ScreenListener;
 import es.udc.fic.android.robot_control.sensors.*;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
@@ -85,6 +87,8 @@ public class PublisherFactory {
     private RobotSensorPublisher rsp;
     private CommandListener cmdl;
     private EngineListener engineListener;
+
+    private ScreenListener screenListener;
 
 
     public void setRobotName(String r) {
@@ -305,6 +309,14 @@ public class PublisherFactory {
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_TEXT_TO_SPEECH);
         ttsListener = new TextToSpeechListener(ctx, robotName, nodeMainExecutor);
         nodeMainExecutor.execute(ttsListener, nc);
+    }
+
+    public void configureScreenListener(RobotCommController robot, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating TextToSpeech Listener");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_SCREEN);
+        screenListener = new ScreenListener(robot, robotName, nodeMainExecutor);
+        nodeMainExecutor.execute(screenListener, nc);
     }
 
     public void stopPublisher(NodeMainExecutor node, int publisher) {

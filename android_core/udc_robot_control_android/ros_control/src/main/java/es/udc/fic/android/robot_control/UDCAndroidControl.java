@@ -33,6 +33,7 @@ import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotCommController.SimpleBinder;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.robot.SensorInfo;
+import es.udc.fic.android.robot_control.screen.InfoActivity;
 import es.udc.fic.android.robot_control.tasks.TaskManagerActivity;
 
 import es.udc.fic.android.robot_control.utils.C;
@@ -135,7 +136,14 @@ public class UDCAndroidControl extends RosActivity {
             return true;
         }
         else if (id == R.id.action_info){
-            return false;
+            cameraPreview = null;
+            if (robot != null){
+                robot.setCameraPreview(null);
+            }
+
+            Intent i = new Intent(this, InfoActivity.class);
+            startActivity(i);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
