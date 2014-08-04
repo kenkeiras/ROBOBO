@@ -110,6 +110,7 @@ public class TaskManagerActivity extends Activity {
 
 
         cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view_task_manager);
+        cameraPreview.hide();
         robotControllerIntent = new Intent(this, RobotCommController.class);
         bindService(robotControllerIntent, rConn, 0);
 

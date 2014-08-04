@@ -53,8 +53,7 @@
 
         <activity
             android:name="es.udc.fic.android.robot_control.tasks.TaskManagerActivity"
-            android:label="@string/title_task_manager" >
-        </activity>
+            android:label="@string/title_task_manager" />
 
         <service android:name="es.udc.fic.android.robot_control.tasks.TaskManagerService" />
         <service android:name="es.udc.fic.android.robot_control.robot.RobotCommController" />

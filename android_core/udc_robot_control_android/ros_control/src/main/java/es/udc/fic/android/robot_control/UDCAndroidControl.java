@@ -23,6 +23,8 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 import com.google.common.base.Preconditions;
 
@@ -103,9 +105,31 @@ public class UDCAndroidControl extends RosActivity {
             robot.setNodeMainExecutor(nodeMainExecutor);
         }
         this.nodeMainExecutor = nodeMainExecutor;
+    }
 
-        Intent i = new Intent(this, TaskManagerActivity.class);
-        startActivity(i);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_tasks) {
+            Intent i = new Intent(this, TaskManagerActivity.class);
+            startActivity(i);
+            return true;
+        }
+        else if (id == R.id.action_info){
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

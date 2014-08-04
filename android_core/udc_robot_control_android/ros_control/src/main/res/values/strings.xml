@@ -13,4 +13,7 @@
     <string name="robot_service_manual_started">Robot manually connected</string>
     <string name="robot_service_manual_not_start">Application manually started. Skipping connection to platform</string>
     <string name="no_tasks">No tasks</string>
+
+    <string name="action_tasks">Tasks</string>
+    <string name="action_info">Info</string>
 </resources>
