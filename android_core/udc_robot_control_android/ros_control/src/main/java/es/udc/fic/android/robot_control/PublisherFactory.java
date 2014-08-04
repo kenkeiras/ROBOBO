@@ -20,6 +20,7 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
 import es.udc.fic.android.robot_control.audio.AudioPublisher;
+import es.udc.fic.android.robot_control.audio.TextToSpeechListener;
 import es.udc.fic.android.robot_control.battery.BatteryStatus;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.commands.CommandListener;
@@ -73,6 +74,7 @@ public class PublisherFactory {
     private RosCameraPreviewView rosCameraPreviewView;
     // Audio
     private AudioPublisher audioPub;
+    private TextToSpeechListener ttsListener;
     // GPS
     private NavSatFixPublisher navSatFixPub;
 
@@ -295,6 +297,14 @@ public class PublisherFactory {
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_AUDIO);
         audioPub = new AudioPublisher(ctx, robotName);
         nodeMainExecutor.execute(audioPub, nc);
+    }
+
+    public void configureTTS(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating TextToSpeech Listener");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_TEXT_TO_SPEECH);
+        ttsListener = new TextToSpeechListener(ctx, robotName, nodeMainExecutor);
+        nodeMainExecutor.execute(ttsListener, nc);
     }
 
     public void stopPublisher(NodeMainExecutor node, int publisher) {
