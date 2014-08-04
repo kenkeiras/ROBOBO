@@ -53,7 +53,9 @@ public class TaskManagerActivity extends Activity {
         public void onServiceConnected(ComponentName arg0, IBinder bind) {
             RobotCommController.SimpleBinder sBinder = (RobotCommController.SimpleBinder) bind;
             robot = sBinder.getService();
-            robot.setCameraPreview(cameraPreview);
+            if (cameraPreview != null){
+                robot.setCameraPreview(cameraPreview);
+            }
         }
 
         @Override
@@ -105,12 +107,10 @@ public class TaskManagerActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-        super.onResume();
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.task_manager);
 
 
-        cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view_task_manager);
-        cameraPreview.hide();
         robotControllerIntent = new Intent(this, RobotCommController.class);
         bindService(robotControllerIntent, rConn, 0);
 
@@ -118,5 +118,25 @@ public class TaskManagerActivity extends Activity {
         taskServiceIntent = new Intent(this, TaskManagerService.class);
         startService(taskServiceIntent);
         bindService(taskServiceIntent, mConn, 0);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view_task_manager);
+        cameraPreview.hide();
+
+        if (robot != null){
+                robot.setCameraPreview(cameraPreview);
+        }
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        cameraPreview = null;
+        if (robot != null){
+                robot.setCameraPreview(null);
+        }
     }
 }

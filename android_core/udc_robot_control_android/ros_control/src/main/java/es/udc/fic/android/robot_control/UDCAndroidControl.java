@@ -76,7 +76,9 @@ public class UDCAndroidControl extends RosActivity {
             if (usbIntent != null){
                 robot.start(UDCAndroidControl.this, usbIntent);
             }
-            robot.setCameraPreview(cameraPreview);
+            if (cameraPreview != null){
+                robot.setCameraPreview(cameraPreview);
+            }
         }
 
         @Override
@@ -89,7 +91,6 @@ public class UDCAndroidControl extends RosActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view);
     robotControllerIntent = new Intent(this, RobotCommController.class);
 
     startService(robotControllerIntent);
@@ -122,6 +123,13 @@ public class UDCAndroidControl extends RosActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_tasks) {
+            // Free camera here, on onStop would be too late for
+            // TaskManagerActivity to take it
+            cameraPreview = null;
+            if (robot != null){
+                robot.setCameraPreview(null);
+            }
+
             Intent i = new Intent(this, TaskManagerActivity.class);
             startActivity(i);
             return true;
@@ -220,11 +228,28 @@ public class UDCAndroidControl extends RosActivity {
 //        registerReceiver(receiver, filter);
     }
 
+
     @Override
-    protected void onStop() {
-        super.onStop();
-//        unregisterReceiver(receiver);
+    public void onStart(){
+        super.onStart();
+
+        cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view);
+        if (robot != null){
+            robot.setCameraPreview(cameraPreview);
+        }
     }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if (cameraPreview != null){
+            cameraPreview = null;
+            if (robot != null){
+                robot.setCameraPreview(null);
+            }
+        }
+    }
+
 
     public void startListener(ActionCommand actionCommand) {
         robot.startListener(actionCommand);
