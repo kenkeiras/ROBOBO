@@ -42,10 +42,12 @@ public class Robobo implements NodeMain {
         executor = DefaultNodeMainExecutor.newDefault();
 
         final String master = args[1];
-        System.out.println("Connecting to master [URI: " + master + " ]");
+        final String robotName = args[2];
+        System.out.println("Connecting to master [URI: " + master
+                           + "  Robot name: " + robotName + " ]");
 
-        Robobo robot = new Robobo("robot1", master);
-        SensorNode sensor = new SensorNode("robot1", master, executor,
+        Robobo robot = new Robobo(robotName, master);
+        SensorNode sensor = new SensorNode(robotName, master, executor,
                                            new SensorListener(executor));
 
         waitForShutdown();

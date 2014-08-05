@@ -31,13 +31,14 @@ public class TaskRunner {
     }
 
 
-    public static void run(String path, Context context, String masterUri)
+    public static void run(String path, Context context,
+                           String masterUri, String robotName)
         throws ClassNotFoundException, NoSuchMethodException,
         IllegalAccessException, InvocationTargetException {
 
         Class<?> clazz = getMainClass(path, context);
 
-        String[] args = new String[]{ path, masterUri };
+        String[] args = new String[]{ path, masterUri, robotName };
 
         for (Method m : clazz.getDeclaredMethods()){
             if (m.getName().equals(CALLED_METHOD_NAME)){
