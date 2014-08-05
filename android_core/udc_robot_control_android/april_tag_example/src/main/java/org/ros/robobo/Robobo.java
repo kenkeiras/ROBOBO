@@ -24,9 +24,11 @@ public class Robobo {
         executor = DefaultNodeMainExecutor.newDefault();
 
         final String master = args[1];
-        System.out.println("Connecting to master [URI: " + master + " ]");
+        final String robotName = args[2];
+        System.out.println("Connecting to master [URI: " + master
+                           + " Robot name: " + robotName + " ]");
 
-        AprilTagListener listener = new AprilTagListener("robot1", master, executor);
+        AprilTagListener listener = new AprilTagListener(robotName, master, executor);
 
         waitForShutdown();
         System.out.println("Done stopping");
