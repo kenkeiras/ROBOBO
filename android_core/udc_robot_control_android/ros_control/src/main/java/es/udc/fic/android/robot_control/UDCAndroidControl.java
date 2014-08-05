@@ -23,6 +23,8 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 import com.google.common.base.Preconditions;
 
@@ -31,6 +33,7 @@ import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotCommController.SimpleBinder;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.robot.SensorInfo;
+import es.udc.fic.android.robot_control.screen.InfoActivity;
 import es.udc.fic.android.robot_control.tasks.TaskManagerActivity;
 
 import es.udc.fic.android.robot_control.utils.C;
@@ -74,7 +77,9 @@ public class UDCAndroidControl extends RosActivity {
             if (usbIntent != null){
                 robot.start(UDCAndroidControl.this, usbIntent);
             }
-            robot.setCameraPreview(cameraPreview);
+            if (cameraPreview != null){
+                robot.setCameraPreview(cameraPreview);
+            }
         }
 
         @Override
@@ -87,7 +92,6 @@ public class UDCAndroidControl extends RosActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view);
     robotControllerIntent = new Intent(this, RobotCommController.class);
 
     startService(robotControllerIntent);
@@ -103,9 +107,45 @@ public class UDCAndroidControl extends RosActivity {
             robot.setNodeMainExecutor(nodeMainExecutor);
         }
         this.nodeMainExecutor = nodeMainExecutor;
+    }
 
-        Intent i = new Intent(this, TaskManagerActivity.class);
-        startActivity(i);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_tasks) {
+            // Free camera here, on onStop would be too late for
+            // TaskManagerActivity to take it
+            cameraPreview = null;
+            if (robot != null){
+                robot.setCameraPreview(null);
+            }
+
+            Intent i = new Intent(this, TaskManagerActivity.class);
+            startActivity(i);
+            return true;
+        }
+        else if (id == R.id.action_info){
+            cameraPreview = null;
+            if (robot != null){
+                robot.setCameraPreview(null);
+            }
+
+            Intent i = new Intent(this, InfoActivity.class);
+            startActivity(i);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -196,11 +236,28 @@ public class UDCAndroidControl extends RosActivity {
 //        registerReceiver(receiver, filter);
     }
 
+
     @Override
-    protected void onStop() {
-        super.onStop();
-//        unregisterReceiver(receiver);
+    public void onStart(){
+        super.onStart();
+
+        cameraPreview = (RosCameraPreviewView) findViewById(R.id.ros_camera_preview_view);
+        if (robot != null){
+            robot.setCameraPreview(cameraPreview);
+        }
     }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if (cameraPreview != null){
+            cameraPreview = null;
+            if (robot != null){
+                robot.setCameraPreview(null);
+            }
+        }
+    }
+
 
     public void startListener(ActionCommand actionCommand) {
         robot.startListener(actionCommand);

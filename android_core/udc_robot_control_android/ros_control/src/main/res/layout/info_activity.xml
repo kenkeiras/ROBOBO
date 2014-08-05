@@ -1,0 +1,16 @@
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <WebView
+      android:id="@+id/info_web_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+  <es.udc.fic.android.robot_control.camera.RosCameraPreviewView
+      android:id="@+id/ros_camera_preview_view_task_manager"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent" />
+
+</FrameLayout>

@@ -1,4 +1,4 @@
-package es.udc.fic.android.robot_control.tasks;
+package es.udc.fic.android.robot_control.screen;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,29 +24,14 @@ import es.udc.fic.android.robot_control.robot.RobotCommController;
 
 import org.ros.node.NodeConfiguration;
 
-public class TaskManagerActivity extends Activity {
-
+public class InfoActivity extends Activity {
 
     private RobotCommController robot;
     private RosCameraPreviewView cameraPreview;
-    private Intent taskServiceIntent;
-    private TaskManagerService taskService;
-    private ServiceConnection mConn = new ServiceConnection() {
 
-        @Override
-        public void onServiceConnected(ComponentName arg0, IBinder bind) {
-            TaskManagerService.SimpleBinder sBinder = (TaskManagerService.SimpleBinder) bind;
-            taskService = sBinder.getService();
-            if (!populateList()){
-                setContentView(R.layout.task_manager_no_tasks);
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-        }
-    };
-
+    private WebView webView;
+    private String DEFAULT_MSG = "<html><head></head><body>No information "
+        + "has been sent yet</body></html>";
 
     private Intent robotControllerIntent;
     private ServiceConnection rConn = new ServiceConnection() {
@@ -56,6 +42,11 @@ public class TaskManagerActivity extends Activity {
             if (cameraPreview != null){
                 robot.setCameraPreview(cameraPreview);
             }
+            String msg = robot.getLastInfo();
+            if (msg == null){
+                msg = DEFAULT_MSG;
+            }
+            webView.loadData(msg, "text/html", null);
         }
 
         @Override
@@ -63,43 +54,10 @@ public class TaskManagerActivity extends Activity {
         }
     };
 
-    private boolean populateList(){
-        List<Task> taskList = taskService.getTaskList();
-        if (taskList.size() == 0){
-            return false;
-        }
-
-        final TaskListAdapter adapter = new TaskListAdapter(this, taskList);
-        ListView lv = (ListView) findViewById(R.id.task_list);
-        lv.setAdapter(adapter);
-
-        final TaskManagerService tService = taskService;
-        final Activity ctx = this;
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-                public boolean onItemLongClick(AdapterView<?> arg0,
-                                               View arg1, int pos, long id) {
-
-                    String masterUri = ctx.getSharedPreferences(
-                        ConfigActivity.class.getName(), MODE_PRIVATE).getString(
-                            ConfigActivity.PREFS_KEY_URI,
-                            NodeConfiguration.DEFAULT_MASTER_URI.toString());
-
-                    Log.v("long clicked","pos: " + pos);
-                    tService.toggle(adapter.getItem(pos), masterUri);
-                    return true;
-                }
-            });
-
-        return true;
-    }
-
-
     @Override
     public void onDestroy(){
         super.onDestroy();
 
-        unbindService(mConn);
         unbindService(rConn);
     }
 
@@ -108,16 +66,11 @@ public class TaskManagerActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.task_manager);
+        setContentView(R.layout.info_activity);
 
-
+        webView = (WebView)findViewById(R.id.info_web_view);
         robotControllerIntent = new Intent(this, RobotCommController.class);
         bindService(robotControllerIntent, rConn, 0);
-
-
-        taskServiceIntent = new Intent(this, TaskManagerService.class);
-        startService(taskServiceIntent);
-        bindService(taskServiceIntent, mConn, 0);
     }
 
     @Override
@@ -128,6 +81,12 @@ public class TaskManagerActivity extends Activity {
 
         if (robot != null){
                 robot.setCameraPreview(cameraPreview);
+
+                String msg = robot.getLastInfo();
+                if (msg == null){
+                    msg = DEFAULT_MSG;
+                }
+                webView.loadData(msg, "text/html", null);
         }
     }
 

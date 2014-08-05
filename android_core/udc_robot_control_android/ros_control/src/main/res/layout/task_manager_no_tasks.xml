@@ -13,4 +13,10 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textStyle="bold" />
+
+  <es.udc.fic.android.robot_control.camera.RosCameraPreviewView
+      android:id="@+id/ros_camera_preview_view_task_manager"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"  />
+
 </RelativeLayout>

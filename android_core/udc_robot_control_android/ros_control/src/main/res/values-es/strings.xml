@@ -13,4 +13,8 @@
     <string name="robot_service_manual_started">Robot conectado manualmente</string>
     <string name="robot_service_manual_not_start">Aplicación arrancada manualmente. Sin conexión con la plataforma</string>
     <string name="no_tasks">No hay tareas</string>
+
+    <string name="action_tasks">Tareas</string>
+    <string name="action_info">Información</string>
+    <string name="title_info_activity">Información</string>
 </resources>

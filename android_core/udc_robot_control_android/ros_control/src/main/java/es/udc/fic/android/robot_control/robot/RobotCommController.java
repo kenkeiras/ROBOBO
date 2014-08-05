@@ -64,6 +64,7 @@ public class RobotCommController extends Service {
     private RosCore core = null;
     private boolean createdInitialNodes = false;
     private EngineManager engineManager;
+    private String lastInfo = null;
 
     private final IBinder sBinder = (IBinder) new SimpleBinder();
 
@@ -71,6 +72,14 @@ public class RobotCommController extends Service {
         public RobotCommController getService(){
             return RobotCommController.this;
         }
+    }
+
+    public String getLastInfo(){
+        return lastInfo;
+    }
+
+    public void setLastInfo(String info){
+        lastInfo = info;
     }
 
 
@@ -121,18 +130,19 @@ public class RobotCommController extends Service {
         pf.configureCamera(androidControl, nodeMainExecutor,
                            rosCameraPreviewView, 0, 90);
         pf.configureTTS(androidControl, nodeMainExecutor);
+        pf.configureScreenListener(this, nodeMainExecutor);
     }
 
 
     public synchronized void setCameraPreview(RosCameraPreviewView cameraPreview){
+        Log.d("UDC", "Set Camera Preview " + rosCameraPreviewView + " -> " + cameraPreview);
         if (rosCameraPreviewView != null){
             rosCameraPreviewView.releaseCamera();
-            nodeMainExecutor.shutdownNodeMain(rosCameraPreviewView);
+        }
 
-            if (createdInitialNodes){
-                pf.configureCamera(androidControl, nodeMainExecutor,
-                                   cameraPreview, 0, 90);
-            }
+        if (createdInitialNodes && (cameraPreview != null)){
+            pf.configureCamera(androidControl, nodeMainExecutor,
+                               cameraPreview, 0, 90);
         }
 
         rosCameraPreviewView = cameraPreview;

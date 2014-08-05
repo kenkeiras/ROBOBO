@@ -42,6 +42,7 @@ import java.util.Set;
 public class CameraPreviewView extends ViewGroup {
 
   private final static double ASPECT_TOLERANCE = 0.1;
+  private boolean hideCamera = false;
 
   private SurfaceHolder surfaceHolder;
   private Camera camera;
@@ -69,7 +70,10 @@ public class CameraPreviewView extends ViewGroup {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-      setVisibility(View.GONE);
+      if (hideCamera){
+          setVisibility(View.GONE);
+      }
+
       try {
         if (camera != null) {
           camera.setPreviewDisplay(holder);
@@ -123,6 +127,10 @@ public class CameraPreviewView extends ViewGroup {
 
   public void addRawImageListener(RawImageListener rawImageListener) {
       rawImageListeners.add(rawImageListener);
+  }
+
+  public void hide(){
+      hideCamera = true;
   }
 
   public Size getPreviewSize() {
