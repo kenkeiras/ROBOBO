@@ -21,7 +21,7 @@ import org.ros.node.topic.Publisher;
 
 class AprilTagPublisher implements RawImageListener {
 
-    public static final boolean USE_NDK = true;
+    public static final boolean USE_NDK = false;
     private final ConnectedNode connectedNode;
     private final Publisher<udc_robot_control_msgs.AprilTag> aprilPublisher;
 
