@@ -55,7 +55,7 @@ public class TaskManagerService extends Service {
         return _taskList;
     }
 
-    public void toggle(Task task, String masterUri){
+    public void toggle(Task task, String masterUri, String robotName){
         Log.v("UDC", task + "");
 
         switch(task.getState()){
@@ -63,7 +63,7 @@ public class TaskManagerService extends Service {
             Log.v("UDC", "Resuming task");
 
             task.stop();
-            task.run(masterUri);
+            task.run(masterUri, robotName);
             break;
 
         case Task.RUNNING:

@@ -66,13 +66,14 @@ public class Task {
     }
 
 
-    public void run(final String masterUri){
+    public void run(final String masterUri, final String robotName){
         final Task task = this;
         thread = new Thread() {
                 public void run(){
                     try {
                         TaskRunner.run(file.getAbsolutePath(),
-                                       context, masterUri);
+                                       context, masterUri,
+                                       robotName);
                     }
                     catch (Exception e){
                         e.printStackTrace();
