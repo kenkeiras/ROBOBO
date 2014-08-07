@@ -2,7 +2,10 @@ package es.udc.fic.android.robot_control.screen;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,6 +29,8 @@ import org.ros.node.NodeConfiguration;
 
 public class InfoActivity extends Activity {
 
+    public final static String NEW_INFO_TAG = "es.udc.fic.android.robot_control.screen.NEW_INFO";
+
     private RobotCommController robot;
     private RosCameraPreviewView cameraPreview;
 
@@ -42,17 +47,24 @@ public class InfoActivity extends Activity {
             if (cameraPreview != null){
                 robot.setCameraPreview(cameraPreview);
             }
-            String msg = robot.getLastInfo();
-            if (msg == null){
-                msg = DEFAULT_MSG;
-            }
-            webView.loadData(msg, "text/html", null);
+            InfoActivity.this.notifyNewInfo();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
         }
     };
+
+
+    public class NewInfoReceiver extends BroadcastReceiver{
+        public NewInfoReceiver(){}
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            InfoActivity.this.notifyNewInfo();
+        }
+    }
+    BroadcastReceiver newInfoReceiver = new NewInfoReceiver();
 
     @Override
     public void onDestroy(){
@@ -61,6 +73,17 @@ public class InfoActivity extends Activity {
         unbindService(rConn);
     }
 
+
+    protected void notifyNewInfo(){
+        if (robot != null){
+
+            String msg = robot.getLastInfo();
+            if (msg == null){
+                msg = DEFAULT_MSG;
+            }
+            webView.loadData(msg, "text/html", null);
+        }
+    }
 
 
     @Override
@@ -80,15 +103,15 @@ public class InfoActivity extends Activity {
         cameraPreview.hide();
 
         if (robot != null){
-                robot.setCameraPreview(cameraPreview);
-
-                String msg = robot.getLastInfo();
-                if (msg == null){
-                    msg = DEFAULT_MSG;
-                }
-                webView.loadData(msg, "text/html", null);
+            robot.setCameraPreview(cameraPreview);
         }
+
+        notifyNewInfo();
+
+        IntentFilter filter = new IntentFilter(InfoActivity.NEW_INFO_TAG);
+        registerReceiver(newInfoReceiver, filter);
     }
+
 
     @Override
     public void onPause(){
@@ -97,5 +120,7 @@ public class InfoActivity extends Activity {
         if (robot != null){
                 robot.setCameraPreview(null);
         }
+
+        unregisterReceiver(newInfoReceiver);
     }
 }

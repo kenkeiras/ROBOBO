@@ -29,6 +29,7 @@ import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.PublisherFactory;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.commands.EngineManager;
+import es.udc.fic.android.robot_control.screen.InfoActivity;
 import es.udc.fic.android.robot_control.utils.C;
 import udc_robot_control_msgs.ActionCommand;
 
@@ -80,6 +81,7 @@ public class RobotCommController extends Service {
 
     public void setLastInfo(String info){
         lastInfo = info;
+        sendBroadcast(new Intent(InfoActivity.NEW_INFO_TAG));
     }
 
 
