@@ -131,6 +131,7 @@ public class RobotCommController extends Service {
         Log.d("UDC", "Let's check...");
         pf.configureTTS(androidControl, nodeMainExecutor);
         pf.configureScreenListener(this, nodeMainExecutor);
+        pf.configureSpeechRecognition(this, nodeMainExecutor);
 
         if (rosCameraPreviewView != null){
             pf.configureCamera(androidControl, nodeMainExecutor,
