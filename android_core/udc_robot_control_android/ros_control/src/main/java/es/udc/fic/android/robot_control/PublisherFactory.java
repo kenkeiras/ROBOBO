@@ -20,6 +20,7 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
 import es.udc.fic.android.robot_control.audio.AudioPublisher;
+import es.udc.fic.android.robot_control.audio.SpeechRecognitionPublisher;
 import es.udc.fic.android.robot_control.audio.TextToSpeechListener;
 import es.udc.fic.android.robot_control.battery.BatteryStatus;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
@@ -76,6 +77,7 @@ public class PublisherFactory {
     private RosCameraPreviewView rosCameraPreviewView;
     // Audio
     private AudioPublisher audioPub;
+    private SpeechRecognitionPublisher speechPub;
     private TextToSpeechListener ttsListener;
     // GPS
     private NavSatFixPublisher navSatFixPub;
@@ -303,6 +305,14 @@ public class PublisherFactory {
         nodeMainExecutor.execute(audioPub, nc);
     }
 
+    public void configureSpeechRecognition(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating SpeechRecognitionPublisher");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_SPEECH_RECOGNITION);
+        speechPub = new SpeechRecognitionPublisher(ctx, robotName);
+        nodeMainExecutor.execute(speechPub, nc);
+    }
+
     public void configureTTS(Context ctx, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating TextToSpeech Listener");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
@@ -389,6 +399,10 @@ public class PublisherFactory {
             case ActionCommand.PUBLISHER_AUDIO:
                 node.shutdownNodeMain(audioPub);
                 audioPub = null;
+                break;
+            case ActionCommand.PUBLISHER_SPEECH_RECOGNITION:
+                node.shutdownNodeMain(speechPub);
+                speechPub = null;
                 break;
             case ActionCommand.PUBLISHER_BATTERY:
                 node.shutdownNodeMain(batteryStatusPublisher);
