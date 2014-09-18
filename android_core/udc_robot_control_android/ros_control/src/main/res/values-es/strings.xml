@@ -17,4 +17,6 @@
     <string name="action_tasks">Tareas</string>
     <string name="action_info">Información</string>
     <string name="title_info_activity">Información</string>
+
+    <string name="local_april_tags">Detección local de April Tags</string>
 </resources>

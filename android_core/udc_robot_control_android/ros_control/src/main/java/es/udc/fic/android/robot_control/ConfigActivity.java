@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 import org.ros.node.NodeConfiguration;
 import android.util.Log;
@@ -35,6 +36,7 @@ public class ConfigActivity extends Activity {
      */
     public static final String PREFS_KEY_URI  = "URI_KEY";
     public static final String PREFS_KEY_ROBOT_NAME = "ROBOT_NAME_KEY";
+    public static final String PREFS_KEY_LOCAL_APRIL_TAG_DETECTION = "LOCAL_APRIL_TAG_DETECTION_KEY";
     private static final String DEFAULT_ROBOT_NAME = "robot1";
 
     private String masterUri;
@@ -42,6 +44,7 @@ public class ConfigActivity extends Activity {
 
     private EditText uriText;
     private EditText robotText;
+    private Switch aprilTagDetectionSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class ConfigActivity extends Activity {
 
         uriText = (EditText) findViewById(R.id.etRosMasterUrl);
         robotText = (EditText) findViewById(R.id.etRobotName);
+        aprilTagDetectionSwitch = (Switch) findViewById(R.id.localAprilTagsSwitch);
 
         masterUri = getPreferences(MODE_PRIVATE).getString(PREFS_KEY_URI,
                         NodeConfiguration.DEFAULT_MASTER_URI.toString());
@@ -65,6 +69,7 @@ public class ConfigActivity extends Activity {
         // Get the current text entered for URI.
         String userUri = uriText.getText().toString();
         String userRobotName = robotText.getText().toString();
+        boolean localAprilTagDetection = aprilTagDetectionSwitch.isChecked();
 
         boolean allok = true;
 
@@ -102,6 +107,7 @@ public class ConfigActivity extends Activity {
             Log.v("UDC", "MASTER URI: " + masterUri);
             editor.putString(PREFS_KEY_URI, masterUri);
             editor.putString(PREFS_KEY_ROBOT_NAME, robotName);
+            editor.putBoolean(PREFS_KEY_LOCAL_APRIL_TAG_DETECTION, localAprilTagDetection);
             editor.commit();
 
             // Package the intent to be consumed by the calling activity.
