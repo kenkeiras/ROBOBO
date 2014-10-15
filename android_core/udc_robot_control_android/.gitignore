@@ -6,6 +6,7 @@ bin
 build
 build.xml
 gen
+ros_control/jni/opencv/
 libs
 ^libs/java/ 
 obj

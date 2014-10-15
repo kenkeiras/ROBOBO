@@ -9,7 +9,6 @@
 #include "apriltag-0.92/zarray.h"
 
 #include "es_udc_fic_android_robot_control_camera_AprilTagNdkInterface.h"
-#include "standard_fix.c"
 
 /**
  * Convert an April tag detections into it's string form.
