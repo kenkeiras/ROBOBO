@@ -12,6 +12,7 @@ public class EngineManager {
     private double speed_x, speed_y, speed_z;
     private double turn_x, turn_y, turn_z;
 
+    private final static double TOLERANCE = 0.0000001f;
 
     public EngineManager(){
         reset();
@@ -26,31 +27,96 @@ public class EngineManager {
     }
 
 
+    double getLeftRotationSpeed(){
+        if (turn_y > -TOLERANCE){
+            return speed_x;
+        }
+        else {
+            return -speed_x;
+        }
+    }
+
+
+    double getRightRotationSpeed(){
+        if (turn_y < TOLERANCE){
+            return speed_x;
+        }
+        else {
+            return -speed_x;
+        }
+    }
+
+
+    byte getWheelState(double left, double right){
+        // Left stopped
+        if (Math.abs(left) < TOLERANCE){
+            if (Math.abs(right) < TOLERANCE){ // Right stopped
+                return (byte) 0x0; // 0000
+            }
+            if (right > 0){ // Right forward
+                return (byte) 0x1; // 0001
+            }
+            if (right < 0){ // Right reverse
+                return (byte) 0x3; // 0011
+            }
+        }
+        // Left forward
+        if (left > 0){
+            if (Math.abs(right) < TOLERANCE){ // Right stopped
+                return (byte) 0x4; // 0100
+            }
+            if (right > 0){ // Right forward
+                return (byte) 0x5; // 0101
+            }
+            if (right < 0){ // Right reverse
+                return (byte) 0xB; // 1011
+            }
+        }
+        // Left reverse
+        if (left < 0){
+            if (Math.abs(right) < TOLERANCE){ // Right stopped
+                return (byte) 0x6; // 0110
+            }
+            if (right > 0){ // Right forward
+                return (byte) 0xA; // 1010
+            }
+            if (right < 0){ // Right reverse
+                return (byte) 0x7; // 0111
+            }
+        }
+
+        throw new RuntimeException("This shouldn't be reached");
+    }
+
+
+    int getPower(double engineValue){
+
+        engineValue = Math.abs(engineValue);
+        if (engineValue < TOLERANCE){
+            return 0;
+        }
+
+         // max: 0.020
+         // min: 0.764
+
+        double power = ((1 - engineValue) * 0.762) + 0.02;
+
+        power = Math.min(0.764, Math.max(0.02, power));
+
+        return (int) Math.round(power * 65535);
+    }
+
+
     public void refresh(RobotState robotState){
-        byte runningLeft = 0;
-        byte runningRight = 0;
 
-        if (speed_x >= 0.5f){
-            runningLeft = 1;
-            runningRight = 1;
-        }
-        else if (speed_x <= -0.5){
-            runningLeft = 2;
-            runningRight = 2;
-        }
+        double left = getLeftRotationSpeed();
+        double right = getRightRotationSpeed();
 
-        if (Math.abs(speed_x) >= 0.5f){
-            if (turn_y >= 0.5f){
-                runningRight = 2;
-                runningLeft = 1;
-            }
-            else if (turn_y <= -0.5f){
-                runningRight = 1;
-                runningLeft = 2;
-            }
-        }
+        Log.d("UDC_EngineManager", "Left: " + left + " -- Right: " + right);
 
-        robotState.setEngines(runningLeft, runningRight);
+        robotState.setEngines(getWheelState(left, right),
+                              getPower(left),
+                              getPower(right));
     }
 
 

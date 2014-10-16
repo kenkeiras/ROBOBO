@@ -15,6 +15,8 @@
  */
 package es.udc.fic.android.robot_control.robot;
 
+import android.util.Log;
+
 import udc_robot_control_msgs.Led;
 
 import java.util.List;
@@ -29,7 +31,8 @@ public class RobotState {
     public static int NUM_LEDS = 8;
 
     public byte engineMode;
-    public byte leftEngine, rightEngine;
+    public byte wheelState;
+    public int leftEngine, rightEngine;
     public Led[] leds;
 
     public RobotState() {
@@ -37,7 +40,8 @@ public class RobotState {
         leftEngine = rightEngine = 0;
     }
 
-    public void setEngines(byte leftEngine, byte rightEngine) {
+    public void setEngines(byte wheelState, int leftEngine, int rightEngine) {
+        this.wheelState = wheelState;
         this.leftEngine = leftEngine;
         this.rightEngine = rightEngine;
     }
@@ -80,26 +84,32 @@ public class RobotState {
     public byte[] message() {
         byte[] out = new byte[31];
 
+        byte[] rightBytes = engineIntToBytes(rightEngine);
+        byte[] leftBytes = engineIntToBytes(leftEngine);
+
         int pos = 0;
         out[0] = 0x37;
         out[1] = engineMode;
-        out[2] = rightEngine;
-        out[3] = leftEngine;
+        out[2] = wheelState;
+        out[3] = leftBytes[0];  // Left wheel, hight byte
+        out[4] = leftBytes[1];  // Left wheel, low byte
+        out[5] = rightBytes[0]; // Right wheel, hight byte
+        out[6] = rightBytes[1]; // Right wheel, low byte
 
         try {
             Led led = leds[0];
-            out[4] = (byte) led.getRed();
-            out[5] = (byte) led.getGreen();
-            out[6] = (byte) led.getBlue();
+            out[7] = (byte) led.getRed();
+            out[8] = (byte) led.getGreen();
+            out[9] = (byte) led.getBlue();
         }
         catch (NullPointerException e){
-            out[4] = 0;
-            out[5] = 0;
-            out[6] = 0;
+            out[7] = 0;
+            out[8] = 0;
+            out[9] = 0;
         }
 
         // Checksum
-        out[7] = checksum(out, 1, 7);
+        out[10] = checksum(out, 1, 10);
         return out;
     }
 
