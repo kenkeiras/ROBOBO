@@ -32,7 +32,7 @@ public class EngineManager {
             return speed_x;
         }
         else {
-            return -speed_x;
+            return Math.max(-1, speed_x + 2 * turn_y);
         }
     }
 
@@ -42,7 +42,7 @@ public class EngineManager {
             return speed_x;
         }
         else {
-            return -speed_x;
+            return Math.max(-1, speed_x - 2 * turn_y);
         }
     }
 
@@ -112,7 +112,8 @@ public class EngineManager {
         double left = getLeftRotationSpeed();
         double right = getRightRotationSpeed();
 
-        Log.d("UDC_EngineManager", "Left: " + left + " -- Right: " + right);
+        Log.d("UDC_EngineManager", "Left : " + left + " -> " + getPower(left));
+        Log.d("UDC_EngineManager", "Right: " + right + " -> " + getPower(right));
 
         robotState.setEngines(getWheelState(left, right),
                               getPower(left),
