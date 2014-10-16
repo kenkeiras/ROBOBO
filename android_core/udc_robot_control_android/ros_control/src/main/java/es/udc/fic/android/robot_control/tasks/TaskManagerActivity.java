@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -115,6 +116,7 @@ public class TaskManagerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_manager);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         robotControllerIntent = new Intent(this, RobotCommController.class);
         bindService(robotControllerIntent, rConn, 0);

@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -90,6 +91,8 @@ public class InfoActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info_activity);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         webView = (WebView)findViewById(R.id.info_web_view);
         robotControllerIntent = new Intent(this, RobotCommController.class);
