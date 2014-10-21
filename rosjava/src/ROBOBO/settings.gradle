@@ -17,3 +17,4 @@
 include 'udc_robot_control_msgs'
 include 'udc_robot_control_java'
 include 'panel_control'
+include 'cmd_control'
