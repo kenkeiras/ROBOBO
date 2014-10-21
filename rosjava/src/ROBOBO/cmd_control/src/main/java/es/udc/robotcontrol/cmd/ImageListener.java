@@ -9,6 +9,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -36,6 +37,7 @@ public class ImageListener implements NodeMain {
 
     private CommandMessageListener cml;
     static String fileDest;
+    static final int IMAGE_START_INDEX = 34;
 
     public static void main(String args[]) {
         if (args.length < 2){
@@ -128,6 +130,7 @@ public class ImageListener implements NodeMain {
         public void onNewMessage(sensor_msgs.CompressedImage actionCommand) {
 
             byte[] data = actionCommand.getData().array();
+            data = Arrays.copyOfRange(data, IMAGE_START_INDEX, data.length);
 
             System.out.println("Reading...");
 
