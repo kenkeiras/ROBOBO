@@ -2,6 +2,7 @@ package es.udc.fic.android.robot_control.commands;
 
 import android.util.Log;
 import es.udc.fic.android.robot_control.robot.RobotState;
+import es.udc.fic.android.robot_control.utils.C;
 
 import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
@@ -9,41 +10,18 @@ import geometry_msgs.Vector3;
 
 public class EngineManager {
 
-    private double speed_x, speed_y, speed_z;
-    private double turn_x, turn_y, turn_z;
+    private double leftSpeed, rightSpeed;
 
+    private final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
     private final static double TOLERANCE = 0.0000001f;
 
     public EngineManager(){
         reset();
-        speed_x = 0.0f;
-        turn_x = 0.0f;
     }
 
 
     public void reset(){
-        speed_x = speed_y = speed_z = 0;
-        turn_x = turn_y = turn_z = 0;
-    }
-
-
-    double getLeftRotationSpeed(){
-        if (turn_y > -TOLERANCE){
-            return speed_x;
-        }
-        else {
-            return Math.max(-1, speed_x + 2 * turn_y);
-        }
-    }
-
-
-    double getRightRotationSpeed(){
-        if (turn_y < TOLERANCE){
-            return speed_x;
-        }
-        else {
-            return Math.max(-1, speed_x - 2 * turn_y);
-        }
+        leftSpeed = rightSpeed = 0.0f;
     }
 
 
@@ -109,8 +87,8 @@ public class EngineManager {
 
     public void refresh(RobotState robotState){
 
-        double left = getLeftRotationSpeed();
-        double right = getRightRotationSpeed();
+        double left = leftSpeed;
+        double right = rightSpeed;
 
         Log.d("UDC_EngineManager", "Left : " + left + " -> " + getPower(left));
         Log.d("UDC_EngineManager", "Right: " + right + " -> " + getPower(right));
@@ -122,18 +100,31 @@ public class EngineManager {
 
 
     public void setTwist(Twist twist){
-        System.out.print("(" + speed_x + ", " + turn_y + ") -> ");
-
         Vector3 linear = twist.getLinear();
-        speed_x = linear.getX();
-        speed_y = linear.getY();
-        speed_z = linear.getZ();
+        double speed = linear.getX();
 
         Vector3 angular = twist.getAngular();
-        turn_x = angular.getX();
-        turn_y = angular.getY();
-        turn_z = angular.getZ();
+        double turn = angular.getY();
 
-        System.out.println("(" + speed_x + ", " + turn_y + ")");
+        double turnRadius = speed / turn;
+
+        double vLeft = speed - turn * DISTANCE_TO_AXIS;
+        double vRight = speed + turn * DISTANCE_TO_AXIS;
+
+        leftSpeed = vLeft / 1;
+        rightSpeed = vRight / 1;
+
+        // Keep it in range, while mantaining the course
+        if (Math.abs(leftSpeed) > 1){
+            rightSpeed /= Math.abs(leftSpeed);
+            leftSpeed = 1;
+        }
+        if (Math.abs(rightSpeed) > 1){
+            leftSpeed /= Math.abs(rightSpeed);
+            rightSpeed = 1;
+        }
+
+        Log.d(C.TAG, "(" + speed + ", " + turn + ") "
+              + "-> L: " + leftSpeed + " R: " + rightSpeed);
     }
 }
