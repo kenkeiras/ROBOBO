@@ -18,6 +18,17 @@ if (!project.hasProperty("output")) {
     ext.output = 'out.jpg';
 }
 
+if (!project.hasProperty("speed")) {
+    ext.speed = '';
+}
+
+if (!project.hasProperty("angle")) {
+    ext.angle = '';
+}
+
+if (!project.hasProperty("text")) {
+    ext.text = '';
+}
 
 
 def pkg = 'es.udc.robotcontrol.cmd';
@@ -162,4 +173,35 @@ task SensorListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
 
     main = "${pkg}.SensorListener";
     args = ["${robot}"];
+}
+
+
+// Publishers
+task EnginePublisher(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Change the engine Speed and Angle.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.EnginePublisher";
+    args = ["${robot}", "${speed}", "${angle}"];
+}
+
+
+task ScreenPublisher(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Send data to the InfoScreen.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.ScreenPublisher";
+    args = ["${robot}", "${text}"];
+}
+
+
+task TTSPublisher(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Send data to the TextToSpeechSystem.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.TTSPublisher";
+    args = ["${robot}", "${text}"];
 }

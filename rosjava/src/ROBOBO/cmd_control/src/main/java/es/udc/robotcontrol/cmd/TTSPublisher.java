@@ -90,7 +90,7 @@ public class TTSPublisher implements NodeMain {
             Thread.sleep(1000);
             std_msgs.String msg = publisher.newMessage();
 
-            msg.setData(TTSPublisher.args[0]);
+            msg.setData(TTSPublisher.args[1]);
 
             publisher.publish(msg);
             System.exit(0);
