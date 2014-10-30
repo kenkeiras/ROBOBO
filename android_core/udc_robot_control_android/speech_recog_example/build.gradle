@@ -1,0 +1,27 @@
+apply plugin: 'java'
+
+def exDir = file("${project.buildDir}/examples")
+
+dependencies {
+    compile 'org.ros.rosjava_core:rosjava:0.1.6'
+    compile 'org.ros.rosjava_messages:std_msgs:0.5.+'
+    compile 'robobo:udc_robot_control_java:0.1.0'
+}
+
+task examples(type: Exec, dependsOn: ':speech_recog_example:build') {
+    description 'Build and dex the examples.'
+
+    def dex = "$System.env.ANDROID_HOME/build-tools/19.1.0/dx"
+    exDir.mkdirs()
+
+    // Dex examples
+    commandLine "$dex", '--dex', "--output=$exDir/speech_recog_example.dex", "${project.buildDir}/libs/speech_recog_example-0.1.0.jar"
+}
+
+task installExamples(type: Exec, dependsOn: examples) {
+    description 'Install example tasks to the connected device.'
+
+    def adb = "$System.env.ANDROID_HOME/platform-tools/adb"
+
+    commandLine "$adb", 'push', "$exDir/speech_recog_example.dex", '/sdcard/ros/speech_recog_example.dex'
+}

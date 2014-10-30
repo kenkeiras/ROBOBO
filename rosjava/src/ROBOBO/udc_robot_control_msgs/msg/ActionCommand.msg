@@ -60,6 +60,8 @@ int32 PUBLISHER_GYROSCOPE_UNCALIBRATED      = 17
 int32 PUBLISHER_AUDIO                       = 18
 # Video publisher
 int32 PUBLISHER_VIDEO                       = 19
+# Speech recognition publisher
+int32 PUBLISHER_SPEECH_RECOGNITION          = 20
 
 Header  header
 
