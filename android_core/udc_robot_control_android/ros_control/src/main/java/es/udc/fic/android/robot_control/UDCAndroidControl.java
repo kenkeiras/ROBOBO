@@ -25,6 +25,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 import com.google.common.base.Preconditions;
 
@@ -93,6 +94,8 @@ public class UDCAndroidControl extends RosActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
     robotControllerIntent = new Intent(this, RobotCommController.class);
+
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     startService(robotControllerIntent);
     bindService(robotControllerIntent, mConn, 0);
