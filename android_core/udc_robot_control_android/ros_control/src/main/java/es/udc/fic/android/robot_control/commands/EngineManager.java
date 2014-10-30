@@ -2,6 +2,7 @@ package es.udc.fic.android.robot_control.commands;
 
 import android.util.Log;
 import es.udc.fic.android.robot_control.robot.RobotState;
+import es.udc.fic.android.robot_control.utils.C;
 
 import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
@@ -9,64 +10,121 @@ import geometry_msgs.Vector3;
 
 public class EngineManager {
 
-    private double speed_x, speed_y, speed_z;
-    private double turn_x, turn_y, turn_z;
+    private double leftSpeed, rightSpeed;
 
+    private final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
+    private final static double TOLERANCE = 0.0000001f;
 
     public EngineManager(){
         reset();
-        speed_x = 0.0f;
-        turn_x = 0.0f;
     }
 
 
     public void reset(){
-        speed_x = speed_y = speed_z = 0;
-        turn_x = turn_y = turn_z = 0;
+        leftSpeed = rightSpeed = 0.0f;
+    }
+
+
+    byte getWheelState(double left, double right){
+        // Left stopped
+        if (Math.abs(left) < TOLERANCE){
+            if (Math.abs(right) < TOLERANCE){ // Right stopped
+                return (byte) 0x0; // 0000
+            }
+            if (right > 0){ // Right forward
+                return (byte) 0x1; // 0001
+            }
+            if (right < 0){ // Right reverse
+                return (byte) 0x3; // 0011
+            }
+        }
+        // Left forward
+        if (left > 0){
+            if (Math.abs(right) < TOLERANCE){ // Right stopped
+                return (byte) 0x4; // 0100
+            }
+            if (right > 0){ // Right forward
+                return (byte) 0x5; // 0101
+            }
+            if (right < 0){ // Right reverse
+                return (byte) 0xB; // 1011
+            }
+        }
+        // Left reverse
+        if (left < 0){
+            if (Math.abs(right) < TOLERANCE){ // Right stopped
+                return (byte) 0x6; // 0110
+            }
+            if (right > 0){ // Right forward
+                return (byte) 0xA; // 1010
+            }
+            if (right < 0){ // Right reverse
+                return (byte) 0x7; // 0111
+            }
+        }
+
+        throw new RuntimeException("This shouldn't be reached");
+    }
+
+
+    int getPower(double engineValue){
+
+        engineValue = Math.abs(engineValue);
+        if (engineValue < TOLERANCE){
+            return 0;
+        }
+
+         // max: 0.020
+         // min: 0.764
+
+        double power = ((1 - engineValue) * 0.762) + 0.02;
+
+        power = Math.min(0.764, Math.max(0.02, power));
+
+        return (int) Math.round(power * 65535);
     }
 
 
     public void refresh(RobotState robotState){
-        byte runningLeft = 0;
-        byte runningRight = 0;
 
-        if (speed_x >= 0.5f){
-            runningLeft = 1;
-            runningRight = 1;
-        }
-        else if (speed_x <= -0.5){
-            runningLeft = 2;
-            runningRight = 2;
-        }
+        double left = leftSpeed;
+        double right = rightSpeed;
 
-        if (Math.abs(speed_x) >= 0.5f){
-            if (turn_y >= 0.5f){
-                runningRight = 2;
-                runningLeft = 1;
-            }
-            else if (turn_y <= -0.5f){
-                runningRight = 1;
-                runningLeft = 2;
-            }
-        }
+        Log.d("UDC_EngineManager", "Left : " + left + " -> " + getPower(left));
+        Log.d("UDC_EngineManager", "Right: " + right + " -> " + getPower(right));
 
-        robotState.setEngines(runningLeft, runningRight);
+        robotState.setEngines(getWheelState(left, right),
+                              getPower(left),
+                              getPower(right));
     }
 
 
     public void setTwist(Twist twist){
-        System.out.print("(" + speed_x + ", " + turn_y + ") -> ");
-
         Vector3 linear = twist.getLinear();
-        speed_x = linear.getX();
-        speed_y = linear.getY();
-        speed_z = linear.getZ();
+        double speed = linear.getX();
 
         Vector3 angular = twist.getAngular();
-        turn_x = angular.getX();
-        turn_y = angular.getY();
-        turn_z = angular.getZ();
+        double turn = angular.getY();
 
-        System.out.println("(" + speed_x + ", " + turn_y + ")");
+        double turnRadius = speed / turn;
+
+        double vLeft = speed - turn * DISTANCE_TO_AXIS;
+        double vRight = speed + turn * DISTANCE_TO_AXIS;
+
+        leftSpeed = vLeft / 1;
+        rightSpeed = vRight / 1;
+
+        // Keep it in range, while mantaining the course
+        if (Math.abs(leftSpeed) > 1){
+            rightSpeed /= Math.abs(leftSpeed);
+            leftSpeed = 1;
+        }
+        if (Math.abs(rightSpeed) > 1){
+            leftSpeed /= Math.abs(rightSpeed);
+            rightSpeed = 1;
+        }
+
+        Log.d(C.TAG, "(" + speed + ", " + turn + ") "
+              + "-> L: " + leftSpeed + " R: " + rightSpeed);
     }
 }
