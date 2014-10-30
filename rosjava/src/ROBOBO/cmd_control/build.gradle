@@ -1,0 +1,207 @@
+apply plugin: 'java'
+
+dependencies {
+
+    compile 'org.ros.rosjava_core:rosjava:[0.1,)';
+    compile 'org.ros.rosjava_messages:audio_common_msgs:0.2.4';
+    compile 'org.ros.rosjava_messages:sensor_msgs:1.10.2';
+
+    compile project (':udc_robot_control_java');
+}
+
+
+if (!project.hasProperty("robot")) {
+    ext.robot = 'robot1';
+}
+
+if (!project.hasProperty("output")) {
+    ext.output = 'out.jpg';
+}
+
+if (!project.hasProperty("speed")) {
+    ext.speed = '';
+}
+
+if (!project.hasProperty("angle")) {
+    ext.angle = '';
+}
+
+if (!project.hasProperty("text")) {
+    ext.text = '';
+}
+
+
+def pkg = 'es.udc.robotcontrol.cmd';
+def rosmvn = '/opt/ros/hydro/share/maven/';
+
+def jar = "${project.buildDir}/libs/cmd_control-0.1.0.jar";
+def rosCoreJar = "${rosmvn}/org/ros/rosjava_core/rosjava/0.1.6/rosjava-0.1.6.jar";
+def rosMessagesJar = "${rosmvn}/org/ros/rosjava_bootstrap/message_generation/0.1.22/message_generation-0.1.22.jar";
+def rosGraphJar = "${rosmvn}/org/ros/rosjava_messages/rosgraph_msgs/1.10.11/rosgraph_msgs-1.10.11.jar";
+def rosStdMsgsJar = "${rosmvn}/org/ros/rosjava_messages/std_msgs/0.5.8/std_msgs-0.5.8.jar";
+def rosGeomMsgsJar = "${rosmvn}/org/ros/rosjava_messages/geometry_msgs/1.10.6/geometry_msgs-1.10.6.jar";
+def rosSensorMsgsJar = "${rosmvn}/org/ros/rosjava_messages/sensor_msgs/1.10.6/sensor_msgs-1.10.6.jar";
+
+/// @FIXME find a more sane way to do this :/
+def homeDir = System.properties['user.home'];
+def udcRobotJar = "${homeDir}/.m2/repository/robobo/udc_robot_control_java/0.1.0/udc_robot_control_java-0.1.0.jar";
+def udcRobotMessges = "${homeDir}/.m2/repository/robobo/udc_robot_control_msgs/0.1.0/udc_robot_control_msgs-0.1.0.jar";
+
+def gradleCache = "${homeDir}/.gradle/caches/artifacts-24/filestore/";
+def guavaJar = "${gradleCache}/com.google.guava/guava/13.0.1/jar/d6f22b1e60a2f1ef99e22c9f5fde270b2088365/guava-13.0.1.jar";
+def logFactoryJar = "${gradleCache}/commons-logging/commons-logging/1.1.1/jar/5043bfebc3db072ed80fbd362e7caf00e885d8ae/commons-logging-1.1.1.jar";
+def xmlrpcClientJar = "${gradleCache}/org.ros.rosjava_core/apache_xmlrpc_client/0.1.6/jar/3732bfde1149cfd1a984576e58ad4f4caa9bc451/apache_xmlrpc_client-0.1.6.jar";
+def xmlrpcConfigJar = "${gradleCache}/org.ros.rosjava_core/apache_xmlrpc_common/0.1.6/jar/5844c027dd3e8b61aa5885a5748f6560a8fe10e/apache_xmlrpc_common-0.1.6.jar";
+def domSerializerJar = "${gradleCache}/org.apache.ws.commons/ws-commons-util/1.0.1/jar/126e80ff798fece634bc94e61f8be8a8da00be60/ws-commons-util-1.0.1.jar";
+def rpcServerJar = "${gradleCache}/org.ros.rosjava_core/apache_xmlrpc_server/0.1.6/jar/46fe3d04e7cd2c1d0b7a749df36b8a08e0e38f84/apache_xmlrpc_server-0.1.6.jar";
+def nettyChannelJar = "${gradleCache}/io.netty/netty/3.5.2.Final/bundle/e6fb74a0699abe108969b2ec1f269391169a0426/netty-3.5.2.Final.jar";
+def codecJar = "${gradleCache}/commons-codec/commons-codec/1.4/jar/4216af16d38465bbab0f3dff8efa14204f7a399a/commons-codec-1.4.jar";
+def poolJar = "${gradleCache}/commons-pool/commons-pool/1.6/jar/4572d589699f09d866a226a14b7f4323c6d8f040/commons-pool-1.6.jar";
+def httpClientJar = "${gradleCache}/org.apache.commons/com.springsource.org.apache.commons.httpclient/3.1.0/jar/c493a925a091ac3d8f449d9265fe12482dabb2a7/com.springsource.org.apache.commons.httpclient-3.1.0.jar";
+
+def classpathJars = [jar, udcRobotJar, udcRobotMessges, rosCoreJar, rosMessagesJar,
+                     rosGraphJar, rosStdMsgsJar, rosGeomMsgsJar, rosSensorMsgsJar,
+                     guavaJar, logFactoryJar, xmlrpcClientJar, xmlrpcConfigJar,
+                     rpcServerJar, domSerializerJar, nettyChannelJar, codecJar,
+                     poolJar, httpClientJar];
+
+// Listeners
+task AccelerometerListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch an AccelerometerListener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.AccelerometerListener";
+    args = ["${robot}"];
+}
+
+
+task AprilListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch an April tag listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.AprilListener";
+    args = ["${robot}"];
+}
+
+
+task BatteryListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Battery listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.BatteryListener";
+    args = ["${robot}"];
+}
+
+
+task CommandListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Command listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.CommandListener";
+    args = ["${robot}"];
+}
+
+
+task GyroscopeListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Gyroscope listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.GyroscopeListener";
+    args = ["${robot}"];
+}
+
+
+task ImageListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Image listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.ImageListener";
+    args = ["${robot}", "${output}"];
+}
+
+
+task LightListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Light listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.LightListener";
+    args = ["${robot}"];
+}
+
+
+task PositionListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Position listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.PositionListener";
+    args = ["${robot}"];
+}
+
+
+task PressureListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Pressure listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.PressureListener";
+    args = ["${robot}"];
+}
+
+
+task ProximityListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Proximity listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.ProximityListener";
+    args = ["${robot}"];
+}
+
+
+task SensorListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Sensor listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.SensorListener";
+    args = ["${robot}"];
+}
+
+
+// Publishers
+task EnginePublisher(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Change the engine Speed and Angle.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.EnginePublisher";
+    args = ["${robot}", "${speed}", "${angle}"];
+}
+
+
+task ScreenPublisher(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Send data to the InfoScreen.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.ScreenPublisher";
+    args = ["${robot}", "${text}"];
+}
+
+
+task TTSPublisher(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Send data to the TextToSpeechSystem.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.TTSPublisher";
+    args = ["${robot}", "${text}"];
+}
