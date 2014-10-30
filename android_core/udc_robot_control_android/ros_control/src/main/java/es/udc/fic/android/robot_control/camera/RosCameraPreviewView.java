@@ -19,7 +19,10 @@ package es.udc.fic.android.robot_control.camera;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import es.udc.fic.android.robot_control.ConfigActivity;
 import es.udc.fic.android.robot_control.utils.C;
+
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
@@ -33,17 +36,21 @@ import org.ros.node.NodeMain;
 public class RosCameraPreviewView extends CameraPreviewView implements NodeMain {
 
     private String robotName;
+    private Context context;
 
     public RosCameraPreviewView(Context context) {
         super(context);
+        this.context = context;
     }
 
     public RosCameraPreviewView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
     public RosCameraPreviewView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        this.context = context;
     }
 
     @Override
@@ -51,11 +58,25 @@ public class RosCameraPreviewView extends CameraPreviewView implements NodeMain 
         return GraphName.of(C.DefaultBaseNodeName + "/camera");
     }
 
+
+    private boolean runLocalAprilTagDetector(){
+        return context.getSharedPreferences(
+            ConfigActivity.class.getName(),
+            ConfigActivity.MODE_PRIVATE).getBoolean(
+                ConfigActivity.PREFS_KEY_LOCAL_APRIL_TAG_DETECTION,
+                false);
+    }
+
+
     @Override
     public void onStart(ConnectedNode connectedNode) {
         Log.d(C.TAG, "Starting [ " + connectedNode.getName() + " ]");
         addRawImageListener(new CompressedImagePublisher(getRobotName(), connectedNode));
-        addRawImageListener(new AprilTagPublisher(getRobotName(), connectedNode));
+
+        if (runLocalAprilTagDetector()){
+            addRawImageListener(new AprilTagPublisher(getRobotName(),
+                                                      connectedNode));
+        }
     }
 
     @Override
