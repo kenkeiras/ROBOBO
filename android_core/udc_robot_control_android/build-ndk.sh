@@ -11,13 +11,17 @@ fi
 set -euo pipefail
 IFS=$'\n\t'
 
+export ANDROID_NDK="$ANDROID_NDK_PATH"
+export ANDROID_NATIVE_API_LEVEL=android-19
+
 if [ ! -d jni/opencv/ ];then
     echo "Downloading OpenCV..."
 
-    export ANDROID_NDK="$ANDROID_NDK_PATH"
-    export ANDROID_NATIVE_API_LEVEL=android-19
     git clone git://code.opencv.org/opencv.git jni/opencv/
+fi
 
+
+if [ ! -f jni/opencv/platforms/build_android_arm/OpenCV.mk ];then
     echo "Building OpenCV..."
     cd jni/opencv/platforms
     sh scripts/cmake_android_arm.sh
