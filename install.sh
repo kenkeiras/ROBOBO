@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
+
+# Try to guess Android NDK path
+if [ -z "$ANDROID_NDK_PATH" ];then
+    ANDROID_NDK_PATH=~/android-ndk/
+fi
+
+# Check whether or not is android NDK available
+HAS_NDK="false"
+if [ -d "$ANDROID_NDK_PATH" ];then
+    HAS_NDK="true"
+    export ANDROID_NDK_PATH
+fi
+
+# Fail hard
 set -eu
 set -o pipefail
 IFS=$'\n\t'
@@ -34,6 +48,12 @@ cd ../../../
 TITLE "Building android core"
 cd android_core/udc_robot_control_android/
 bash ./gradlew build
+
+if [ "$HAS_NDK" == "true" ];then
+    TITLE "Building android core NDK"
+    bash build-ndk.sh
+    echo ""
+fi
 
 cd ../../
 
