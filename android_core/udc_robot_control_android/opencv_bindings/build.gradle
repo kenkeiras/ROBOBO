@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+def exDir = file("${project.buildDir}/examples")
+
+dependencies {
+    compile 'org.ros.rosjava_core:rosjava:0.1.6'
+    compile 'org.ros.rosjava_messages:std_msgs:0.5.+'
+    compile 'robobo:udc_robot_control_java:0.1.0'
+
+    compile fileTree(dir: '../libs', include: '*/*.jar')
+}

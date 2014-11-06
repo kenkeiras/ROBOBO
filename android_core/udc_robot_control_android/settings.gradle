@@ -19,6 +19,7 @@ include 'my_android_project'
 include 'my_android_library_project'
 */
 
+include 'opencv_bindings'
 include 'ros_control'
 include 'april_tag_example'
 include 'follow_example'
