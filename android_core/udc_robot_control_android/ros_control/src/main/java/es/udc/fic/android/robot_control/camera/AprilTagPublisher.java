@@ -1,14 +1,11 @@
 package es.udc.fic.android.robot_control.camera;
 
 
-import android.graphics.YuvImage;
 import android.hardware.Camera.Size;
 import android.util.Log;
 
 import april.image.FloatImage;
 import april.tag.*;
-
-import com.google.common.base.Preconditions;
 
 import es.udc.robotcontrol.utils.Constants;
 

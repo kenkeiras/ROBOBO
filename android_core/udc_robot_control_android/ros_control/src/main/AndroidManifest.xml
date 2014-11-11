@@ -1,70 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="es.udc.fic.android.robot_control"
-    android:versionCode="1"
-    android:versionName="1.0" >
+          xmlns:tools="http://schemas.android.com/tools"
+          package="es.udc.fic.android.robot_control"
+          android:versionCode="1"
+          android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="13" />
+<uses-sdk android:minSdkVersion="13" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.NFC" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+<uses-feature android:name="android.hardware.camera" />
+<uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <application
-        android:icon="@drawable/ic_launcher"
+<application
+    tools:replace="android:icon"
+    android:icon="@drawable/ic_launcher"
+    android:label="@string/app_name" >
+    <activity
+        android:name=".UDCAndroidControl"
         android:label="@string/app_name" >
-        <activity
-            android:name="es.udc.fic.android.robot_control.UDCAndroidControl"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="android.intent.category.DEFAULT" />
 
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-            </intent-filter>
-            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                       android:resource="@xml/device_filter">
-            </meta-data>
-        </activity>
+        </intent-filter>
+        <intent-filter>
+            <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+        </intent-filter>
+        <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+            android:resource="@xml/device_filter">
+        </meta-data>
+    </activity>
 
-        <service android:name="org.ros.android.NodeMainExecutorService" >
-            <intent-filter>
-                <action android:name="org.ros.android.NodeMainExecutorService" />
-            </intent-filter>
-        </service>
+    <service android:name="org.ros.android.NodeMainExecutorService" >
+        <intent-filter>
+            <action android:name="org.ros.android.NodeMainExecutorService" />
+        </intent-filter>
+    </service>
 
-        <activity
-            android:name="es.udc.fic.android.robot_control.ConfigActivity"
-            android:label="@string/title_activity_config" >
-        </activity>
+    <activity
+        android:name=".ConfigActivity"
+        android:label="@string/title_activity_config" >
+    </activity>
 
-        <activity
-            android:name="es.udc.fic.android.robot_control.tasks.TaskManagerActivity"
-            android:label="@string/title_task_manager" />
+    <activity
+        android:name=".tasks.TaskManagerActivity"
+        android:label="@string/title_task_manager" />
 
-        <activity
-            android:name="es.udc.fic.android.robot_control.screen.InfoActivity"
-            android:label="@string/title_info_activity" />
+    <activity
+        android:name=".screen.InfoActivity"
+        android:label="@string/title_info_activity" />
 
-        <service
-            android:name="es.udc.fic.android.robot_control.audio.SpeechRecognitionService" />
+    <service
+        android:name=".audio.SpeechRecognitionService" />
 
-        <service android:name="es.udc.fic.android.robot_control.tasks.TaskManagerService" />
-        <service android:name="es.udc.fic.android.robot_control.robot.RobotCommController" />
+    <service android:name=".tasks.TaskManagerService" />
+    <service android:name=".robot.RobotCommController" />
 
-    </application>
+</application>
 
 </manifest>

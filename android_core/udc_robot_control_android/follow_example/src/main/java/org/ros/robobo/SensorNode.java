@@ -1,9 +1,7 @@
 package org.ros.robobo;
 
-import es.udc.robotcontrol.RosListener;
 import es.udc.robotcontrol.utils.Constants;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -19,8 +17,6 @@ import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Subscriber;
 import org.ros.address.InetAddressFactory;
 
-import sensor_msgs.*;
-import udc_robot_control_msgs.ActionCommand;
 import udc_robot_control_msgs.SensorStatus;
 
 

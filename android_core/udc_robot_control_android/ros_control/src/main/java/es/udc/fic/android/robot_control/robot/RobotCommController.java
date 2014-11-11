@@ -16,10 +16,7 @@
 package es.udc.fic.android.robot_control.robot;
 
 import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -37,7 +34,6 @@ import org.ros.RosCore;
 import org.ros.node.NodeMainExecutor;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Service to manage the connection with the robot

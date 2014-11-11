@@ -1,8 +1,7 @@
 package es.udc.fic.android.robot_control.commands;
 
 import android.util.Log;
-import es.udc.fic.android.robot_control.UDCAndroidControl;
-import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
+
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.MessageListener;
@@ -12,7 +11,7 @@ import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Subscriber;
-import org.ros.message.MessageListener;
+
 import geometry_msgs.Twist;
 
 

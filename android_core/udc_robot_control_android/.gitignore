@@ -1,21 +1,6 @@
-.classpath
 .gradle
-.project
-.settings
-bin
-build
-build.xml
-gen
-libs
-^libs/java/ 
-obj
-local.properties
-proguard-project.txt
-
-# These are Android Studio files, might be worth including these later.
-.idea
-*.iml
-build.log
-build-log.xml
-docs.iml
-
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/april_tag_example/april_tag_example.iml" filepath="$PROJECT_DIR$/april_tag_example/april_tag_example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/follow_example/follow_example.iml" filepath="$PROJECT_DIR$/follow_example/follow_example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ros_control/ros_control.iml" filepath="$PROJECT_DIR$/ros_control/ros_control.iml" />
+      <module fileurl="file://$PROJECT_DIR$/speech_recog_example/speech_recog_example.iml" filepath="$PROJECT_DIR$/speech_recog_example/speech_recog_example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/udc_robot_control_android.iml" filepath="$PROJECT_DIR$/udc_robot_control_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/udc_robot_control_android2.iml" filepath="$PROJECT_DIR$/udc_robot_control_android2.iml" />
+    </modules>
+  </component>
+</project>
+

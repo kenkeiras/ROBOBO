@@ -9,7 +9,6 @@ import android.util.Log;
 
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
-import es.udc.fic.android.robot_control.audio.SpeechRecognitionService;
 import es.udc.fic.android.robot_control.audio.SpeechRecognitionService.SimpleBinder;
 
 import org.ros.namespace.GraphName;
