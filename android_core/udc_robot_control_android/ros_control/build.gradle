@@ -28,10 +28,18 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: '*/*.jar')
 
-    compile('org.ros.rosjava_core:rosjava:[0.1,0.2)')
-    compile('org.ros.rosjava_messages:geometry_msgs:1.10.+')
+    compile('org.ros.rosjava_core:rosjava:[0.1,0.2)'){
+        exclude group: 'xml-apis', module: 'xml-apis'
+    }
+    compile('org.ros.rosjava_messages:geometry_msgs:1.10.+'){
+        exclude group: 'xml-apis', module: 'xml-apis'
+    }
     /* Esta dependencia es para compartir las clases con nombres constantes (Comandos y colas) */
-    compile 'robobo:udc_robot_control_java:0.1.0'
+    compile('robobo:udc_robot_control_java:0.1.0'){
+        exclude group: 'xml-apis', module: 'xml-apis'
+    }
     // compile 'org.ros.android_core:android_gingerbread_mr1:[0.1,0.2)'
-    compile'org.ros.android_core:android_honeycomb_mr2:[0.1,0.2)'
+    compile('org.ros.android_core:android_honeycomb_mr2:[0.1,0.2)'){
+        exclude group: 'xml-apis', module: 'xml-apis'
+    }
 }
