@@ -1,16 +1,12 @@
 package es.udc.fic.android.robot_control.tasks;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 import java.util.ArrayList;
 import java.util.List;

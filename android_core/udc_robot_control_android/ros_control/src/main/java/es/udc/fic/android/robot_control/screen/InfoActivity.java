@@ -7,26 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.util.Log;
 
-import java.util.List;
-
-import es.udc.fic.android.robot_control.ConfigActivity;
 import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
-
-import org.ros.node.NodeConfiguration;
 
 public class InfoActivity extends Activity {
 

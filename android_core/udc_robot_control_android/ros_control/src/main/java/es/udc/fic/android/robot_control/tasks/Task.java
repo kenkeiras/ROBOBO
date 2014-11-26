@@ -1,7 +1,6 @@
 package es.udc.fic.android.robot_control.tasks;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 

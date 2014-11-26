@@ -15,7 +15,7 @@ task examples(type: Exec, dependsOn: ':follow_example:build') {
     exDir.mkdirs()
 
     // Dex examples
-    commandLine "$dex", '--dex', "--output=$exDir/follow_example.dex", "${project.buildDir}/libs/follow_example-0.1.0.jar"
+    commandLine "$dex", '--dex', "--output=$exDir/follow_example.dex", "${project.buildDir}/libs/follow_example.jar"
 }
 
 task installExamples(type: Exec, dependsOn: examples) {

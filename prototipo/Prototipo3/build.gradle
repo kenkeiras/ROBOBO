@@ -1,24 +1,27 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
-    }
-}
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile 'com.android.support:support-v4:13.0.+'
-}
-
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.0.1"
+    buildToolsVersion "19.1.0"
+
+    defaultConfig {
+        applicationId "es.udc.robotcontrol.testapp"
+        minSdkVersion 18
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 
     productFlavors {
         usbHost {
@@ -39,5 +42,4 @@ android {
             targetSdkVersion 18
         }
     }
-
 }

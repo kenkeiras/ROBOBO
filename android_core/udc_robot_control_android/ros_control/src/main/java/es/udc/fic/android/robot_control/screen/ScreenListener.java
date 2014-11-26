@@ -1,6 +1,5 @@
 package es.udc.fic.android.robot_control.screen;
 
-import android.content.Context;
 import android.util.Log;
 
 import es.udc.fic.android.robot_control.robot.RobotCommController;

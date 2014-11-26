@@ -19,12 +19,12 @@ package es.udc.fic.android.robot_control.sensors;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.os.SystemClock;
+
 import es.udc.robotcontrol.utils.Constants;
-import org.ros.message.Time;
+
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import sensor_msgs.Imu;
+
 import udc_robot_control_msgs.AndroidSensor3;
 
 

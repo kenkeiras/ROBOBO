@@ -1,12 +1,10 @@
 package es.udc.fic.android.robot_control.tasks;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 
 import dalvik.system.DexClassLoader;
 

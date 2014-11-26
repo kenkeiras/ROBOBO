@@ -32,14 +32,11 @@ import com.google.common.base.Preconditions;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotCommController.SimpleBinder;
-import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
-import es.udc.fic.android.robot_control.robot.SensorInfo;
 import es.udc.fic.android.robot_control.screen.InfoActivity;
 import es.udc.fic.android.robot_control.tasks.TaskManagerActivity;
 
 import es.udc.fic.android.robot_control.utils.C;
 import org.ros.android.RosActivity;
-import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 import udc_robot_control_msgs.ActionCommand;
 

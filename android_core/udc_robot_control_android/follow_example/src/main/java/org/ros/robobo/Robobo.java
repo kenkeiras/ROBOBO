@@ -2,16 +2,11 @@ package org.ros.robobo;
 
 import geometry_msgs.Twist;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import es.udc.robotcontrol.utils.Constants;
 
-import org.ros.RosCore;
 import org.ros.address.InetAddressFactory;
-import org.ros.internal.message.Message;
-import org.ros.message.Time;
-import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
 import org.ros.node.DefaultNodeMainExecutor;
@@ -20,7 +15,6 @@ import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Publisher;
-import org.ros.node.topic.Subscriber;
 
 
 public class Robobo implements NodeMain {

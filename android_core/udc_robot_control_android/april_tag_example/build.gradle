@@ -6,6 +6,7 @@ dependencies {
     compile 'org.ros.rosjava_core:rosjava:0.1.6'
     compile 'org.ros.rosjava_messages:std_msgs:0.5.+'
     compile 'robobo:udc_robot_control_java:0.1.0'
+    compile 'robobo:udc_robot_control_msgs:0.1.0'
 }
 
 task examples(type: Exec, dependsOn: ':april_tag_example:build') {
@@ -15,7 +16,7 @@ task examples(type: Exec, dependsOn: ':april_tag_example:build') {
     exDir.mkdirs()
 
     // Dex examples
-    commandLine "$dex", '--dex', "--output=$exDir/april_tag_example.dex", "${project.buildDir}/libs/april_tag_example-0.1.0.jar"
+    commandLine "$dex", '--dex', "--output=$exDir/april_tag_example.dex", "${project.buildDir}/libs/april_tag_example.jar"
 }
 
 task installExamples(type: Exec, dependsOn: examples) {

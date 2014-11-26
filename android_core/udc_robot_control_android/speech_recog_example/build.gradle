@@ -15,7 +15,7 @@ task examples(type: Exec, dependsOn: ':speech_recog_example:build') {
     exDir.mkdirs()
 
     // Dex examples
-    commandLine "$dex", '--dex', "--output=$exDir/speech_recog_example.dex", "${project.buildDir}/libs/speech_recog_example-0.1.0.jar"
+    commandLine "$dex", '--dex', "--output=$exDir/speech_recog_example.dex", "${project.buildDir}/libs/speech_recog_example.jar"
 }
 
 task installExamples(type: Exec, dependsOn: examples) {
