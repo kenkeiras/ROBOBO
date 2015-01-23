@@ -48,6 +48,7 @@
         </intent-filter>
     </service>
 
+
     <activity
         android:name=".ConfigActivity"
         android:label="@string/title_activity_config" >
@@ -63,6 +64,9 @@
 
     <service
         android:name=".audio.SpeechRecognitionService" />
+
+    <service
+        android:name=".webserver.WebserverService" />
 
     <service android:name=".tasks.TaskManagerService" />
     <service android:name=".robot.RobotCommController" />
