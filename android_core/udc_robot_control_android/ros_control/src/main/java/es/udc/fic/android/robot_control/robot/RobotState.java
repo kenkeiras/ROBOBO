@@ -15,6 +15,7 @@
  */
 package es.udc.fic.android.robot_control.robot;
 
+import android.content.IntentFilter;
 import android.util.Log;
 
 import udc_robot_control_msgs.Led;
@@ -28,6 +29,7 @@ import java.util.List;
  */
 public class RobotState {
 
+    public static final String UPDATE_BOARD_STATE = "es.udc.fic.android.robot_control.robot.UPDATE_BOARD_STATE";
     public static int NUM_LEDS = 8;
 
     public byte engineMode;

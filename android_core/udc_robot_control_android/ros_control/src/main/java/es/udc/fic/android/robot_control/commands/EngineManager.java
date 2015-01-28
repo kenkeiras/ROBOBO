@@ -1,5 +1,8 @@
 package es.udc.fic.android.robot_control.commands;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import es.udc.fic.android.robot_control.robot.RobotState;
 import es.udc.fic.android.robot_control.utils.C;
@@ -10,12 +13,17 @@ import geometry_msgs.Vector3;
 
 public class EngineManager {
 
+    public static final String RIGHT_WHEEL_UPDATE_KEY = "RIGHT_WHEEL_UPDATE";
+    public static final String LEFT_WHEEL_UPDATE_KEY = "LEFT_WHEEL_UPDATE";
     private double leftSpeed, rightSpeed;
 
     private final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
     private final static double TOLERANCE = 0.0000001f;
 
-    public EngineManager(){
+    private final Context ctx;
+
+    public EngineManager(Context ctx){
+        this.ctx = ctx;
         reset();
     }
 
@@ -124,7 +132,16 @@ public class EngineManager {
             rightSpeed = 1;
         }
 
+
+        publishSpeeds();
         Log.d(C.TAG, "(" + speed + ", " + turn + ") "
               + "-> L: " + leftSpeed + " R: " + rightSpeed);
+    }
+
+    private void publishSpeeds() {
+        Intent i = new Intent(RobotState.UPDATE_BOARD_STATE);
+        i.putExtra(LEFT_WHEEL_UPDATE_KEY, leftSpeed);
+        i.putExtra(RIGHT_WHEEL_UPDATE_KEY, rightSpeed);
+        ctx.sendBroadcast(i);
     }
 }

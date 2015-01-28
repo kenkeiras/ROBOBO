@@ -34,7 +34,8 @@ public class WebserverService extends Service {
     public void onCreate(){
         Log.i(TAG, "Starting webserver");
         try {
-            httpd = new AndroidHTTPD(this, port, new File(wwwroot), new RequestHandler());
+            RobotStateWrapper wrapper = new RobotStateWrapper(this);
+            httpd = new AndroidHTTPD(this, port, new File(wwwroot), new RequestHandler(wrapper));
             httpd.startServer();
         } catch(IOException e){
             httpd = null;

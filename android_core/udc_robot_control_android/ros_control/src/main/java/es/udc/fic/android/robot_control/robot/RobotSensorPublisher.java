@@ -17,6 +17,7 @@ package es.udc.fic.android.robot_control.robot;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
@@ -33,6 +34,8 @@ import udc_robot_control_msgs.SensorStatus;
  */
 public class RobotSensorPublisher implements NodeMain {
     public static String TOPIC_NAME = Constants.TOPIC_IR_SENSORS;
+    public static final String IR_SENSORS_UPDATE_KEY = "IR_SENSORS_UPDATE";
+
 
     private Context context;
     private String robotName;
@@ -76,6 +79,7 @@ public class RobotSensorPublisher implements NodeMain {
     }
 
     public void sendInfo(SensorInfo inf) {
+        broadcastInfo(inf);
         SensorStatus ss = publisher.newMessage();
         ss.getHeader().setFrameId(robotName);
         ss.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
@@ -91,5 +95,15 @@ public class RobotSensorPublisher implements NodeMain {
         ss.setSIrS1(inf.getsIrS1());
         ss.setSIrS2(inf.getsIrS2());
         publisher.publish(ss);
+    }
+
+    private void broadcastInfo(SensorInfo inf) {
+        int[] sensors = new int[]{inf.getsIr0(), inf.getsIr1(), inf.getsIr2(), inf.getsIr3(),
+                                  inf.getsIr4(), inf.getsIr5(), inf.getsIr6(), inf.getsIr7(),
+                                  inf.getsIr8()
+        };
+        Intent i = new Intent(RobotState.UPDATE_BOARD_STATE);
+        i.putExtra(IR_SENSORS_UPDATE_KEY, sensors);
+        context.sendBroadcast(i);
     }
 }

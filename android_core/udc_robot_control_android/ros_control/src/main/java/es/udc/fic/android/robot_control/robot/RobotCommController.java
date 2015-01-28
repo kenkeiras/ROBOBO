@@ -90,7 +90,7 @@ public class RobotCommController extends Service {
     @Override
     public void onCreate(){
         robotState = new RobotState();
-        engineManager = new EngineManager();
+        engineManager = new EngineManager(this);
 
         pf = new PublisherFactory();
         pf.setRobotName(robotName);
