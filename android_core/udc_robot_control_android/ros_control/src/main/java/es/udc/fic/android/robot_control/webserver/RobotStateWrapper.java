@@ -13,11 +13,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import es.udc.fic.android.robot_control.camera.CompressedImagePublisher;
 import es.udc.fic.android.robot_control.commands.EngineManager;
-import es.udc.fic.android.robot_control.robot.BoardConnector;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.robot.RobotState;
 
+
+/**
+ * Keeps an updated state of all the robot and makes it available to the RequestHandler
+ * to access it from the HTTP server.
+ */
 public class RobotStateWrapper extends BroadcastReceiver implements SensorEventListener {
 
     // Update rate low because it's only for visualization, and most of the time will go unused
@@ -30,13 +35,16 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
     private static final int PRESSURE_RATE = SensorManager.SENSOR_DELAY_NORMAL;
     private static final int PROXIMITY_RATE = SensorManager.SENSOR_DELAY_NORMAL;
 
+    private static final String TAG = "UDC_ROBOT_RobotStateWrapper";
+
 
     private final Context ctx;
     private final IntentFilter boardIntentFilter;
+    private final IntentFilter imageIntentFilter;
     private double wheelLeft = 0.0f;
     private double wheelRight = 0.0f;
     private int[] irSensors = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
-
+    private byte[] lastCompressedImage = new byte[]{};
 
     private final Sensor accelerometer;
     private float acceleration_x = 0.0f,
@@ -78,6 +86,9 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
         // Board sensors
         boardIntentFilter = new IntentFilter(RobotState.UPDATE_BOARD_STATE);
         ctx.registerReceiver(this, boardIntentFilter);
+
+        imageIntentFilter = new IntentFilter(CompressedImagePublisher.COMPRESSED_CAMERA_IMAGE_ACTION);
+        ctx.registerReceiver(this, imageIntentFilter);
 
         // Android sensors
         SensorManager sensorManager = (SensorManager)ctx.getSystemService(Context.SENSOR_SERVICE);
@@ -173,6 +184,10 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
         return new double[]{wheelLeft, wheelRight};
     }
 
+    public byte[] getLastCompressedImage(){
+        return lastCompressedImage;
+    }
+
 
 
     @Override
@@ -212,7 +227,7 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
             proximity = sensorEvent.values[0];
         }
         else {
-            Log.w("ROBOSTATE", "Unknown sensor change received");
+            Log.w(TAG, "Unknown sensor change received");
         }
     }
 
@@ -223,14 +238,21 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle data = intent.getExtras();
-        if (data.containsKey(EngineManager.LEFT_WHEEL_UPDATE_KEY)){
-            wheelLeft = data.getDouble(EngineManager.LEFT_WHEEL_UPDATE_KEY);
+        if (boardIntentFilter.hasAction(intent.getAction())) {
+            if (data.containsKey(EngineManager.LEFT_WHEEL_UPDATE_KEY)) {
+                wheelLeft = data.getDouble(EngineManager.LEFT_WHEEL_UPDATE_KEY);
+            }
+            if (data.containsKey(EngineManager.RIGHT_WHEEL_UPDATE_KEY)) {
+                wheelRight = data.getDouble(EngineManager.RIGHT_WHEEL_UPDATE_KEY);
+            }
+            if (data.containsKey(RobotSensorPublisher.IR_SENSORS_UPDATE_KEY)) {
+                irSensors = data.getIntArray(EngineManager.RIGHT_WHEEL_UPDATE_KEY);
+            }
         }
-        if (data.containsKey(EngineManager.RIGHT_WHEEL_UPDATE_KEY)){
-            wheelRight = data.getDouble(EngineManager.RIGHT_WHEEL_UPDATE_KEY);
-        }
-        if (data.containsKey(RobotSensorPublisher.IR_SENSORS_UPDATE_KEY)){
-            irSensors = data.getIntArray(EngineManager.RIGHT_WHEEL_UPDATE_KEY);
+        if (imageIntentFilter.hasAction(intent.getAction())){
+            if (data.containsKey(CompressedImagePublisher.COMPRESSED_CAMERA_IMAGE_KEY)){
+                lastCompressedImage = data.getByteArray(CompressedImagePublisher.COMPRESSED_CAMERA_IMAGE_KEY);
+            }
         }
     }
 }

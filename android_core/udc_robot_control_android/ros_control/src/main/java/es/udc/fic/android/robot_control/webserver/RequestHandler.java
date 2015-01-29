@@ -1,5 +1,7 @@
 package es.udc.fic.android.robot_control.webserver;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.util.Properties;
 
 
@@ -29,6 +31,14 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
                 NanoHTTPDPooled.MIME_JSON,
                 "{\"batteryLevel\": " + wrapper.getBatteryLevel() + "}");
+    }
+
+
+    private NanoHTTPDPooled.Response getCompressedImageResponse(){
+        byte[] compressedImage = wrapper.getLastCompressedImage();
+
+        return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
+                NanoHTTPDPooled.MIME_JPEG, new ByteArrayInputStream(compressedImage));
     }
 
 
@@ -135,6 +145,9 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         }
         else if (uri.equals("/sensors/accelerometer")){
             return getAccelerationResponse();
+        }
+        else if (uri.equals("/sensors/compressedImage")){
+            return getCompressedImageResponse();
         }
         else if (uri.equals("/sensors/gyroscope")){
             return getGyroscopeResponse();

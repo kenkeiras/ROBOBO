@@ -49,9 +49,9 @@ public class NanoHTTPDPooled {
 
 	public static final String TAG = "NanoHTTPDPooled";
 
-	/*
-	 * Where worker threads stand idle
-	 */
+    /*
+     * Where worker threads stand idle
+     */
 	private static Vector<HTTPSession> threads = new Vector<HTTPSession>();
 
 	/**
@@ -260,7 +260,8 @@ public class NanoHTTPDPooled {
 			MIME_HTML = "text/html",
 			MIME_DEFAULT_BINARY = "application/octet-stream",
             MIME_XML = "text/xml",
-            MIME_JSON = "application/json";
+            MIME_JSON = "application/json",
+            MIME_JPEG = "image/jpeg";
 
 	// ==================================================
 	// Socket & server code

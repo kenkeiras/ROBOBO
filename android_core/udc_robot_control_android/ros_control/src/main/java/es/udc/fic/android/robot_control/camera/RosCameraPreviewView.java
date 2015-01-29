@@ -71,7 +71,7 @@ public class RosCameraPreviewView extends CameraPreviewView implements NodeMain 
     @Override
     public void onStart(ConnectedNode connectedNode) {
         Log.d(C.TAG, "Starting [ " + connectedNode.getName() + " ]");
-        addRawImageListener(new CompressedImagePublisher(getRobotName(), connectedNode));
+        addRawImageListener(new CompressedImagePublisher(getRobotName(), connectedNode, context));
 
         if (runLocalAprilTagDetector()){
             addRawImageListener(new AprilTagPublisher(getRobotName(),
