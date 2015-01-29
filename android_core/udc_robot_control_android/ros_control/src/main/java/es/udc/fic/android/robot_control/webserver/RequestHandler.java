@@ -1,16 +1,24 @@
 package es.udc.fic.android.robot_control.webserver;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
 import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.util.Properties;
+
+import es.udc.fic.android.robot_control.commands.EngineManager;
 
 
 public class RequestHandler implements AndroidHTTPD.RequestHandler {
 
+    private static final String TAG = "UDC_ROBOT_RequestHandler";
     RobotStateWrapper wrapper;
+    Context ctx;
 
-    public RequestHandler(RobotStateWrapper wrapper){
+    public RequestHandler(RobotStateWrapper wrapper, Context ctx){
         this.wrapper = wrapper;
+        this.ctx = ctx;
     }
 
     // Responses to sensor queries
@@ -36,6 +44,9 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
 
     private NanoHTTPDPooled.Response getCompressedImageResponse(){
         byte[] compressedImage = wrapper.getLastCompressedImage();
+        if (compressedImage == null){
+            return responseNotFound();
+        }
 
         return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
                 NanoHTTPDPooled.MIME_JPEG, new ByteArrayInputStream(compressedImage));
@@ -139,6 +150,18 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
     }
 
 
+    private NanoHTTPDPooled.Response updatedEnginesResponse(boolean updated) {
+        if (updated){
+            return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
+                    NanoHTTPDPooled.MIME_PLAINTEXT, "Wheel speeds updated");
+        }
+        else {
+            return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_BADREQUEST,
+                    NanoHTTPDPooled.MIME_PLAINTEXT, "Wheel speeds not found in parameters");
+        }
+    }
+
+
     private NanoHTTPDPooled.Response handleSensorRequest(String uri) {
         if (uri.equals("/sensors/battery")){
             return getBatteryResponse();
@@ -179,21 +202,54 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
     }
 
 
-    private NanoHTTPDPooled.Response handleActuatorRequest(String uri) {
-        if (uri.equals("/actuators/wheels")) {
-            return getWheelsResponse();
+    private NanoHTTPDPooled.Response handleActuatorRequest(String uri, String method, Properties params) {
+        if (method.equals("GET")) {
+            if (uri.equals("/actuators/wheels")) {
+                return getWheelsResponse();
+            }
         }
-        else {
-            return responseNotFound();
+        else if (method.equals("POST")){
+            if (uri.equals("/actuators/wheels")) {
+                Intent i = new Intent(EngineManager.SET_WHEELS_ACTION);
+                boolean withExtra = false;
+                if (params.containsKey("leftWheel")){
+                    try {
+                        i.putExtra(EngineManager.LEFT_WHEEL_UPDATE_KEY,
+                                Double.parseDouble(params.getProperty("leftWheel")));
+                        withExtra = true;
+                    }
+                    catch (NumberFormatException nfe){
+                        Log.e(TAG, nfe.getMessage());
+                    }
+                }
+                if (params.containsKey("rightWheel")){
+                    try {
+                        i.putExtra(EngineManager.RIGHT_WHEEL_UPDATE_KEY,
+                                Double.parseDouble(params.getProperty("rightWheel")));
+                        withExtra = true;
+                    }
+                    catch (NumberFormatException nfe){
+                        Log.e(TAG, nfe.getMessage());
+                    }
+                }
+                if (withExtra){
+                    ctx.sendBroadcast(i);
+                }
+
+                return updatedEnginesResponse(withExtra);
+            }
         }
+
+        return responseNotFound();
     }
+
 
     // General query management
     @Override
     public NanoHTTPDPooled.Response onRequestReceived(String uri,
                                                       String method,
                                                       Properties header,
-                                                      Properties parms,
+                                                      Properties params,
                                                       Properties files) {
 
         if (uri.equals("/")) {
@@ -205,7 +261,7 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
             return handleSensorRequest(uri);
         }
         else if (uri.startsWith("/actuators/")){
-            return handleActuatorRequest(uri);
+            return handleActuatorRequest(uri, method, params);
         }
         else {
             return responseNotFound();

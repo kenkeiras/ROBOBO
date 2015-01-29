@@ -1,8 +1,10 @@
 package es.udc.fic.android.robot_control.commands;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 import es.udc.fic.android.robot_control.robot.RobotState;
 import es.udc.fic.android.robot_control.utils.C;
@@ -11,10 +13,11 @@ import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
 
 
-public class EngineManager {
+public class EngineManager extends BroadcastReceiver {
 
     public static final String RIGHT_WHEEL_UPDATE_KEY = "RIGHT_WHEEL_UPDATE";
     public static final String LEFT_WHEEL_UPDATE_KEY = "LEFT_WHEEL_UPDATE";
+    public static final String SET_WHEELS_ACTION = "SET_WHEELS";
     private double leftSpeed, rightSpeed;
 
     private final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
@@ -24,6 +27,8 @@ public class EngineManager {
 
     public EngineManager(Context ctx){
         this.ctx = ctx;
+        IntentFilter f = new IntentFilter(SET_WHEELS_ACTION);
+        ctx.registerReceiver(this, f);
         reset();
     }
 
@@ -143,5 +148,24 @@ public class EngineManager {
         i.putExtra(LEFT_WHEEL_UPDATE_KEY, leftSpeed);
         i.putExtra(RIGHT_WHEEL_UPDATE_KEY, rightSpeed);
         ctx.sendBroadcast(i);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Bundle data = intent.getExtras();
+        boolean updates = false;
+
+        if (data.containsKey(LEFT_WHEEL_UPDATE_KEY)){
+            leftSpeed = data.getDouble(LEFT_WHEEL_UPDATE_KEY);
+            updates = true;
+        }
+        if (data.containsKey(RIGHT_WHEEL_UPDATE_KEY)){
+            rightSpeed = data.getDouble(RIGHT_WHEEL_UPDATE_KEY);
+            updates = true;
+        }
+
+        if (updates){
+            publishSpeeds();
+        }
     }
 }
