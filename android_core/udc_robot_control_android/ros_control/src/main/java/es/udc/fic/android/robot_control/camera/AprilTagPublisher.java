@@ -109,6 +109,8 @@ class AprilTagPublisher implements RawImageListener {
 
             FloatImage img = new FloatImage(width, height,
                                             yuvToFloats(data));
+            data = null;
+
             detections = td.processFloat(img, new double[]{width / 2,
                                                            height / 2});
             tf = null;
