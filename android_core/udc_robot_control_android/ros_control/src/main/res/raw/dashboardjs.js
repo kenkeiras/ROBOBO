@@ -24,71 +24,67 @@
         // Board
         // Wheels
         $.get("actuators/wheels", function(data){
-            $('#wheels').html("Wheels: left " + data.leftWheel
+            $('#wheels>.value').html("left " + data.leftWheel
                               + ", right: " + data.rightWheel);
         }, "json");
 
         // IR Sensors
         $.get("sensors/ir", function(data){
-            $('#irsensors').html("IrSensors: "
-                                 + data.irSensor0 + ", "
-                                 + data.irSensor1 + ", "
-                                 + data.irSensor2 + ", "
-                                 + data.irSensor3 + ", "
-                                 + data.irSensor4 + ", "
-                                 + data.irSensor5 + ", "
-                                 + data.irSensor6 + ", "
-                                 + data.irSensor7 + ", "
-                                 + data.irSensor8);
+            $('#irsensors>.value').html(data.irSensor0 + ", "
+                                         + data.irSensor1 + ", "
+                                         + data.irSensor2 + ", "
+                                         + data.irSensor3 + ", "
+                                         + data.irSensor4 + ", "
+                                         + data.irSensor5 + ", "
+                                         + data.irSensor6 + ", "
+                                         + data.irSensor7 + ", "
+                                         + data.irSensor8);
         }, "json");
 
         // Android sensors
         $.get("sensors/accelerometer", function(data){
-            $('#accelerometer').html("Accelerometer: "
-                                     + data.accelerationX + ", "
+            $('#accelerometer>.value').html(
+                                       data.accelerationX + ", "
                                      + data.accelerationY + ", "
                                      + data.accelerationZ);
         }, "json");
 
         $.get("sensors/battery", function(data){
-            $('#battery').html("Battery: " + data.batteryLevel * 100 + "%");
+            $('#battery>.value').html(data.batteryLevel * 100 + "%");
         }, "json");
 
         $.get("sensors/gravity", function(data){
-            $('#gravity').html("Gravity: "
-                               + data.gravityX + ", "
-                               + data.gravityY + ", "
-                               + data.gravityZ);
+            $('#gravity>.value').html(data.gravityX + ", "
+                                       + data.gravityY + ", "
+                                       + data.gravityZ);
         }, "json");
 
         $.get("sensors/gyroscope", function(data){
-            $('#gyroscope').html("Gyroscope: "
-                                     + data.gyroscopeX + ", "
-                                     + data.gyroscopeY + ", "
-                                     + data.gyroscopeZ);
+            $('#gyroscope>.value').html(data.gyroscopeX + ", "
+                                         + data.gyroscopeY + ", "
+                                         + data.gyroscopeZ);
         }, "json");
 
         $.get("sensors/light", function(data){
-            $('#light').html("Light: " + data.light);
+            $('#light>.value').html(data.light);
         }, "json");
 
         $.get("sensors/magneticField", function(data){
-            $('#magneticField').html("Magnetic Field: "
-                                     + data.magneticFieldX + ", "
-                                     + data.magneticFieldY + ", "
-                                     + data.magneticFieldZ);
+            $('#magneticField>.value').html(data.magneticFieldX + ", "
+                                             + data.magneticFieldY + ", "
+                                             + data.magneticFieldZ);
         }, "json");
 
         $.get("sensors/pressure", function(data){
-            $('#pressure').html("Pressure: " + data.pressure);
+            $('#pressure>.value').html(data.pressure);
         }, "json");
 
         $.get("sensors/proximity", function(data){
-            $('#proximity').html("Proximity: " + data.proximity);
+            $('#proximity>.value').html(data.proximity);
         }, "json");
 
         $.get("sensors/temperature", function(data){
-            $('#temperature').html("Temperature: " + data.temperature);
+            $('#temperature>.value').html(data.temperature);
         }, "json");
 
         setTimeout(updateStats, STATS_REFRESH_TIME);

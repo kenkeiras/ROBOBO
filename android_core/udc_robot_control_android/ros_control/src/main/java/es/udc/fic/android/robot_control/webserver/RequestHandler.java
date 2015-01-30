@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
+import java.util.Locale;
 import java.util.Properties;
 
 import es.udc.fic.android.robot_control.R;
@@ -13,6 +14,7 @@ import es.udc.fic.android.robot_control.commands.EngineManager;
 
 public class RequestHandler implements AndroidHTTPD.RequestHandler {
 
+    private static final Locale jsonLocale = new Locale("en");
     private static final String TAG = "UDC_ROBOT_RequestHandler";
     RobotStateWrapper wrapper;
     Context ctx;
@@ -29,9 +31,9 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
                 NanoHTTPDPooled.MIME_JSON,
                 "{\n"
-                + "    \"accelerationX\": " + accelerations[0] + ",\n"
-                + "    \"accelerationY\": " + accelerations[1] + ",\n"
-                + "    \"accelerationZ\": " + accelerations[2] + "\n"
+                + "    \"accelerationX\": " + String.format(jsonLocale, "%.2f", accelerations[0]) + ",\n"
+                + "    \"accelerationY\": " + String.format(jsonLocale, "%.2f", accelerations[1]) + ",\n"
+                + "    \"accelerationZ\": " + String.format(jsonLocale, "%.2f", accelerations[2]) + "\n"
                 + "}");
     }
 
@@ -60,9 +62,9 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
                 NanoHTTPDPooled.MIME_JSON,
                 "{\n"
-                + "    \"gravityX\": " + gravity[0] + ",\n"
-                + "    \"gravityY\": " + gravity[1] + ",\n"
-                + "    \"gravityZ\": " + gravity[2] + "\n"
+                + "    \"gravityX\": " + String.format(jsonLocale, "%.2f", gravity[0]) + ",\n"
+                + "    \"gravityY\": " + String.format(jsonLocale, "%.2f", gravity[1]) + ",\n"
+                + "    \"gravityZ\": " + String.format(jsonLocale, "%.2f", gravity[2]) + "\n"
                 + "}");
     }
 
@@ -73,9 +75,9 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
                 NanoHTTPDPooled.MIME_JSON,
                 "{\n"
-                + "    \"gyroscopeX\": " + gyroscope[0] + ",\n"
-                + "    \"gyroscopeY\": " + gyroscope[1] + ",\n"
-                + "    \"gyroscopeZ\": " + gyroscope[2] + "\n"
+                + "    \"gyroscopeX\": " + String.format(jsonLocale, "%.2f", gyroscope[0]) + ",\n"
+                + "    \"gyroscopeY\": " + String.format(jsonLocale, "%.2f", gyroscope[1]) + ",\n"
+                + "    \"gyroscopeZ\": " + String.format(jsonLocale, "%.2f", gyroscope[2]) + "\n"
                 + "}");
     }
 
@@ -111,9 +113,9 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
                 NanoHTTPDPooled.MIME_JSON,
                 "{\n"
-                + "    \"magneticFieldX\": " + magneticField[0] + ",\n"
-                + "    \"magneticFieldY\": " + magneticField[1] + ",\n"
-                + "    \"magneticFieldZ\": " + magneticField[2] + "\n"
+                + "    \"magneticFieldX\": " + String.format(jsonLocale, "%.2f", magneticField[0]) + ",\n"
+                + "    \"magneticFieldY\": " + String.format(jsonLocale, "%.2f", magneticField[1]) + ",\n"
+                + "    \"magneticFieldZ\": " + String.format(jsonLocale, "%.2f", magneticField[2]) + "\n"
                 + "}");
     }
 
