@@ -7,6 +7,7 @@ import android.util.Log;
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
 
+import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.commands.EngineManager;
 
 
@@ -254,8 +255,23 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
 
         if (uri.equals("/")) {
             return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
-                    NanoHTTPDPooled.MIME_PLAINTEXT,
-                    "OK");
+                    NanoHTTPDPooled.MIME_HTML,
+                    ctx.getResources().openRawResource(R.raw.dashboardhtml));
+        }
+        else if (uri.equals("/dash.css")) {
+            return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
+                    NanoHTTPDPooled.MIME_CSS,
+                    ctx.getResources().openRawResource(R.raw.dashboardcss));
+        }
+        else if (uri.equals("/dash.js")) {
+            return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
+                    NanoHTTPDPooled.MIME_JAVASCRIPT,
+                    ctx.getResources().openRawResource(R.raw.dashboardjs));
+        }
+        else if (uri.equals("/jquery.js")) {
+            return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
+                    NanoHTTPDPooled.MIME_JAVASCRIPT,
+                    ctx.getResources().openRawResource(R.raw.jquery));
         }
         else if (uri.startsWith("/sensors/")){
             return handleSensorRequest(uri);

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>ROBOBO dashboard</title>
+    <script src="jquery.js"></script>
+    <script src="dash.js"></script>
+    <link rel="stylesheet" type="text/css" href="dash.css" />
+  </head>
+  <body>
+    <div id="cameraFrame"></div>
+    <div id="stats">
+      <div id="boardState"><h2>Board state</h2>
+        <div id="wheels">Wheels: - </div>
+        <div id="irsensors">IrSensors: - </div>
+      </div>
+      <div id="boardState"><h2>Phone state</h2>
+        <div id="accelerometer">Accelerometer: - </div>
+        <div id="battery">Battery: - </div>
+        <div id="gravity">Gravity: - </div>
+        <div id="gyroscope">Gyroscope: - </div>
+        <div id="light">Light: - </div>
+        <div id="magneticField">Magnetic field: - </div>
+        <div id="pressure">Pressure: - </div>
+        <div id="proximity">Proximity: - </div>
+        <div id="temperature">Temperature: - </div>
+      </div>
+      <form action="#" id="newSpeedForm">
+          Left wheel speed: <input type="text" id="leftWheel" pattern="[0-9]+([,\.][0-9]+)?" placeholder="from 0 to 1" />
+          <br/>
+          Right wheel speed: <input type="text" id="rightWheel" pattern="[0-9]+([,\.][0-9]+)?" placeholder="from 0 to 1" />
+          <br/>
+          <input type="submit" id="sendNewSpeed" value="Change speeds" />
+      </form>
+    </div>
+  </body>
+</html>

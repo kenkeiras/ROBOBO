@@ -261,7 +261,9 @@ public class NanoHTTPDPooled {
 			MIME_DEFAULT_BINARY = "application/octet-stream",
             MIME_XML = "text/xml",
             MIME_JSON = "application/json",
-            MIME_JPEG = "image/jpeg";
+            MIME_JPEG = "image/jpeg",
+            MIME_CSS = "text/css",
+            MIME_JAVASCRIPT = "application/javascript";
 
 	// ==================================================
 	// Socket & server code
