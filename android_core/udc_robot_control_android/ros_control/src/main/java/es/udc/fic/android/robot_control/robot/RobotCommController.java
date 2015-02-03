@@ -125,6 +125,7 @@ public class RobotCommController extends Service {
         pf.configureEngineListener(engineManager, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
         Log.d("UDC", "Let's check...");
+        pf.configureOdometry(androidControl, nodeMainExecutor);
         pf.configureTTS(androidControl, nodeMainExecutor);
         pf.configureScreenListener(this, nodeMainExecutor);
         pf.configureSpeechRecognition(this, nodeMainExecutor);

@@ -20,7 +20,7 @@ public class EngineManager extends BroadcastReceiver {
     public static final String SET_WHEELS_ACTION = "SET_WHEELS";
     private double leftSpeed, rightSpeed;
 
-    private final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
+    public final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
     private final static double TOLERANCE = 0.0000001f;
 
     private final Context ctx;
