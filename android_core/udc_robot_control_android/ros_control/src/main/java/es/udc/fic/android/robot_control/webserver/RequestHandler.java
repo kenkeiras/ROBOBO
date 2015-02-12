@@ -250,6 +250,16 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
                         Log.e(TAG, nfe.getMessage());
                     }
                 }
+                if (params.containsKey("distance")) {
+                    try {
+                        i.putExtra(EngineManager.DISTANCE_UPDATE_KEY,
+                                Double.parseDouble(params.getProperty("distance")));
+                        withExtra = true;
+                    }
+                    catch (NumberFormatException nfe){
+                        Log.e(TAG, nfe.getMessage());
+                    }
+                }
                 if (withExtra){
                     ctx.sendBroadcast(i);
                 }

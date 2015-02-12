@@ -287,7 +287,7 @@ public class RobotCommController extends Service {
             Toast.makeText(this, R.string.robot_service_started, Toast.LENGTH_SHORT).show();
 
             Log.i(C.ROBOT_TAG, "Creating control thread");
-            control = new ControlThread(this);
+            control = new ControlThread(this, true);
 
             Log.i(C.ROBOT_TAG, "Launching control thread");
             control.start();
@@ -309,11 +309,13 @@ public class RobotCommController extends Service {
             Log.i(C.ROBOT_TAG, "Manually starting controller.");
             connector = new BoardConnector();
             connector.manualConnect(androidControl);
-            control = new ControlThread(this);
+            control = new ControlThread(this, true);
             control.start();
         }
         catch (Exception ex) {
             Log.w(C.ROBOT_TAG, "Error staring connection [ " + ex.getMessage() + " ] ", ex);
+            control = new ControlThread(this, false);
+            control.start();
         }
     }
 
@@ -376,7 +378,9 @@ public class RobotCommController extends Service {
 
     public void refreshRobot(){
         engineManager.refresh(robotState);
-        connector.write(robotState);
+        if ((connector != null) && (connector.isConnected())) {
+            connector.write(robotState);
+        }
     }
 
     public void stop(ActionCommand actionCommand){
@@ -389,9 +393,11 @@ public class RobotCommController extends Service {
 class ControlThread extends Thread {
 
     RobotCommController parent;
+    private final boolean connected;
 
-    public ControlThread (RobotCommController parent) {
+    public ControlThread (RobotCommController parent, boolean connected) {
         this.parent = parent;
+        this.connected = connected;
     }
 
 
@@ -400,7 +406,9 @@ class ControlThread extends Thread {
         while (parent.continueControl(this)) {
             // Commands have to be written for sensor data to be sent back
             writeCommands();
-            readData();
+            if (connected) {
+                readData();
+            }
         }
     }
 

@@ -45,8 +45,8 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
     private double pos_x = 0.0f,
                    pos_y = 0.0f;
 
-    private double speedConversion = 27.5f; // cm/s at max speed
-    private double turnConversion = 4.608f; // rad/s at max turn (left -1, right +1)
+    public final static double SPEED_CONVERSION = 27.5f; // cm/s at max speed
+    public final static double TURN_CONVERSION = 4.608f; // rad/s at max turn (left -1, right +1)
 
     private Publisher<Object> publisher = null;
     private double speed;
@@ -77,6 +77,7 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
             }
             lock.unlock();
         }
+        computeOdom();
     }
 
 
@@ -119,11 +120,11 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
             turn = (rightSpeed - speed) / EngineManager.DISTANCE_TO_AXIS;
 
             // Update the angle according to the turn speed
-            angle += turn * timeInc * turnConversion;
+            angle += turn * timeInc * TURN_CONVERSION;
 
             // Update the position according to the speed and angle
-            pos_x += speed * Math.cos(angle) * timeInc * speedConversion;
-            pos_y += speed * Math.sin(angle) * timeInc * speedConversion;
+            pos_x += speed * Math.cos(angle) * timeInc * SPEED_CONVERSION;
+            pos_y += speed * Math.sin(angle) * timeInc * SPEED_CONVERSION;
         }
 
         lastUpdateTime = currentTime;
