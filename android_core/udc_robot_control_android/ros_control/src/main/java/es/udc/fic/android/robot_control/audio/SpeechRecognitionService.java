@@ -29,6 +29,11 @@ public class SpeechRecognitionService
     }
 
     private void initService(){
+        if (serviceIntent == null){
+            stopSelf();
+            return;
+        }
+
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(this);
         speechRecognizer.startListening(serviceIntent);
