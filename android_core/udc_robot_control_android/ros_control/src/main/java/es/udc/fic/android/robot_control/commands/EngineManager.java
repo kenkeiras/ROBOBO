@@ -122,6 +122,15 @@ public class EngineManager extends BroadcastReceiver {
     }
 
 
+    public void setEngines(double leftEngine, double rightEngine, double distance){
+        leftSpeed = leftEngine;
+        rightSpeed = rightEngine;
+        endTime = (double) System.currentTimeMillis()
+                + (distance * 1000) / OdometryPublisher.SPEED_CONVERSION;
+        Log.e("EngineManager", "t=" + (endTime - System.currentTimeMillis()));
+    }
+
+
     public void setTwist(Twist twist){
         Vector3 linear = twist.getLinear();
         double speed = linear.getX();

@@ -2,26 +2,18 @@ package es.udc.robotcontrol.cmd;
 
 import es.udc.robotcontrol.utils.Constants;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
-import org.ros.node.topic.Subscriber;
 import org.ros.node.topic.Publisher;
 import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.address.InetAddressFactory;
-
-import sensor_msgs.*;
-
-import udc_robot_control_msgs.*;
-
 
 public class EnginePublisher implements NodeMain {
 
