@@ -62,14 +62,14 @@ public class AndroidHTTPD extends NanoHTTPDPooled {
 	@Override
 	public Response serve(String uri, String method, Properties header,
 			Properties parms, Properties files) {
-		Log.i(TAG,
-				new StringBuilder().append("#serve called with uri=")
-						.append(uri).append(", method=").append(method)
-						.append(", header=")
-						.append(null == header ? null : header.toString())
-						.append(", parms=")
-						.append(null == parms ? null : parms.toString())
-						.toString());
+//		Log.i(TAG,
+//				new StringBuilder().append("#serve called with uri=")
+//						.append(uri).append(", method=").append(method)
+//						.append(", header=")
+//						.append(null == header ? null : header.toString())
+//						.append(", parms=")
+//						.append(null == parms ? null : parms.toString())
+//						.toString());
 		if (null != requestHandler) {
 			return requestHandler.onRequestReceived(uri, method, header, parms,
 					files);
