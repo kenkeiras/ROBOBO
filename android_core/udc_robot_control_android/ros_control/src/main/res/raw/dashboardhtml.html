@@ -61,9 +61,9 @@
         </div>
       </div>
       <form action="#" id="newSpeedForm">
-          Left wheel speed: <input type="text" id="leftWheel" pattern="(1(\.0*)?|0 ([,\.][0-9]+)?)" placeholder="from 0 to 1" />
+          Left wheel speed: <input type="text" id="leftWheel" pattern="[+-]?(1(\.0+)?|0(\.\d+)?)" placeholder="from 0 to 1" />
           <br/>
-          Right wheel speed: <input type="text" id="rightWheel" pattern="(1(\.0*)?|0([,\.][0-9]+)?)?" placeholder="from 0 to 1" />
+          Right wheel speed: <input type="text" id="rightWheel" pattern="[+-]?(1(\.0+)?|0(\.\d+)?)" placeholder="from 0 to 1" />
           <br/>
           <input type="submit" id="sendNewSpeed" value="Change speeds" />
       </form>
