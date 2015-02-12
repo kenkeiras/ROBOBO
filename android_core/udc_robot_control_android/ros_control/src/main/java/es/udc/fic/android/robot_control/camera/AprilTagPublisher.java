@@ -18,6 +18,7 @@ import org.ros.node.topic.Publisher;
 
 class AprilTagPublisher implements RawImageListener {
 
+    private boolean working = false;
     public static final boolean USE_NDK = false;
     private final ConnectedNode connectedNode;
     private final Publisher<udc_robot_control_msgs.AprilTag> aprilPublisher;
@@ -89,6 +90,9 @@ class AprilTagPublisher implements RawImageListener {
     @Override
     public void onNewRawImage(byte[] data, Size size) {
 
+        if (working) return;
+        working = true;
+
         List<TagDetection> detections;
         int width = size.width;
         int height = size.height;
@@ -105,10 +109,15 @@ class AprilTagPublisher implements RawImageListener {
 
             FloatImage img = new FloatImage(width, height,
                                             yuvToFloats(data));
+            data = null;
+
             detections = td.processFloat(img, new double[]{width / 2,
                                                            height / 2});
+            tf = null;
+            td = null;
+            img = null;
         }
-        Log.d("UDCApril", detections.size() + " detections!");
+        Log.d("UDCApril", detections.size() + " detections");
         for (TagDetection detection : detections){
             Log.d("UDCApril", "Detected: " + detection);
 
@@ -121,5 +130,7 @@ class AprilTagPublisher implements RawImageListener {
 
             aprilPublisher.publish(msg);
         }
+
+        working = false;
     }
 }
