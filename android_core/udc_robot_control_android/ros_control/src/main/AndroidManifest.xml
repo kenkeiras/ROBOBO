@@ -50,15 +50,21 @@
 
 
     <activity
+        android:screenOrientation="portrait"
+        android:configChanges="orientation|keyboardHidden"
         android:name=".ConfigActivity"
         android:label="@string/title_activity_config" >
     </activity>
 
     <activity
+        android:screenOrientation="portrait"
+        android:configChanges="orientation|keyboardHidden"
         android:name=".tasks.TaskManagerActivity"
         android:label="@string/title_task_manager" />
 
     <activity
+        android:screenOrientation="portrait"
+        android:configChanges="orientation|keyboardHidden"
         android:name=".screen.InfoActivity"
         android:label="@string/title_info_activity" />
 
