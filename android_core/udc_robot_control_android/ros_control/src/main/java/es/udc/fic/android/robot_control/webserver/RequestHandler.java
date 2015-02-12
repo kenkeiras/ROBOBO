@@ -15,7 +15,7 @@ import es.udc.fic.android.robot_control.commands.EngineManager;
 public class RequestHandler implements AndroidHTTPD.RequestHandler {
 
     private static final Locale jsonLocale = new Locale("en");
-    private static final String TAG = "UDC_ROBOT_RequestHandler";
+    private static final String TAG = "UDC_ROBOT_RequestHandlr";
     RobotStateWrapper wrapper;
     Context ctx;
 

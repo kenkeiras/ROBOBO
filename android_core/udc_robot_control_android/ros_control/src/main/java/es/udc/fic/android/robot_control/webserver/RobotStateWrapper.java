@@ -36,7 +36,7 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
     private static final int PRESSURE_RATE = SensorManager.SENSOR_DELAY_NORMAL;
     private static final int PROXIMITY_RATE = SensorManager.SENSOR_DELAY_NORMAL;
 
-    private static final String TAG = "UDC_ROBOT_RobotStateWrapper";
+    private static final String TAG = "UDC_ROBOT_RobotStateWra";
 
 
     private final Context ctx;
