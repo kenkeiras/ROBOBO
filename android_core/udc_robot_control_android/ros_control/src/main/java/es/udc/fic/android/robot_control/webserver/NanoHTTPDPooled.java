@@ -57,7 +57,7 @@ public class NanoHTTPDPooled {
 	/**
 	 * max # worker threads
 	 */
-	private static int workers = 2;
+	private static int workers = 0;
 
 	protected int myTcpPort;
 	protected ServerSocket myServerSocket;
