@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.service.wallpaper.WallpaperService;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import org.ros.node.topic.Publisher;
-import org.ros.rosjava_geometry.Vector3;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,7 +19,6 @@ import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.robot.RobotState;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
-import geometry_msgs.Twist;
 import nav_msgs.Odometry;
 
 public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
@@ -47,6 +44,10 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
     private double angle = 0.0f;
     private double pos_x = 0.0f,
                    pos_y = 0.0f;
+
+    private double speedConversion = 27.5f; // cm/s at max speed
+    private double turnConversion = 4.608f; // rad/s at max turn (left -1, right +1)
+
     private Publisher<Object> publisher = null;
     private double speed;
     private double turn;
@@ -118,11 +119,11 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
             turn = (rightSpeed - speed) / EngineManager.DISTANCE_TO_AXIS;
 
             // Update the angle according to the turn speed
-            angle += turn * timeInc;
+            angle += turn * timeInc * turnConversion;
 
             // Update the position according to the speed and angle
-            pos_x += speed * Math.cos(angle) * timeInc;
-            pos_y += speed * Math.sin(angle) * timeInc;
+            pos_x += speed * Math.cos(angle) * timeInc * speedConversion;
+            pos_y += speed * Math.sin(angle) * timeInc * speedConversion;
         }
 
         lastUpdateTime = currentTime;
