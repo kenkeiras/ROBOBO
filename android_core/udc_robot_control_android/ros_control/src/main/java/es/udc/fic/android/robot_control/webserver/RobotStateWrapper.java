@@ -17,6 +17,7 @@ import es.udc.fic.android.robot_control.camera.CompressedImagePublisher;
 import es.udc.fic.android.robot_control.commands.EngineManager;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.robot.RobotState;
+import es.udc.fic.android.robot_control.sensors.OdometryPublisher;
 
 
 /**
@@ -41,6 +42,8 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
     private final Context ctx;
     private final IntentFilter boardIntentFilter;
     private final IntentFilter imageIntentFilter;
+    private final IntentFilter odometryIntentFilter;
+
     private double wheelLeft = 0.0f;
     private double wheelRight = 0.0f;
     private int[] irSensors = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -50,6 +53,9 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
     private float acceleration_x = 0.0f,
             acceleration_y = 0.0f,
             acceleration_z = 0.0f;
+
+    private double position_x = 0.0f,
+            position_y = 0.0f;
 
     private final Sensor ambTemperature;
     private float temperature = 0.0f;
@@ -89,6 +95,10 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
 
         imageIntentFilter = new IntentFilter(CompressedImagePublisher.COMPRESSED_CAMERA_IMAGE_ACTION);
         ctx.registerReceiver(this, imageIntentFilter);
+
+        // Odometry
+        odometryIntentFilter = new IntentFilter(OdometryPublisher.UPDATE_ODOMETRY);
+        ctx.registerReceiver(this, odometryIntentFilter);
 
         // Android sensors
         SensorManager sensorManager = (SensorManager)ctx.getSystemService(Context.SENSOR_SERVICE);
@@ -158,6 +168,10 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
 
     public float getLight(){
         return lightLevel;
+    }
+
+    public double[] getOdometry(){
+        return new double[]{position_x, position_y};
     }
 
     public float[] getMagneticField(){
@@ -252,6 +266,14 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
         if (imageIntentFilter.hasAction(intent.getAction())){
             if (data.containsKey(CompressedImagePublisher.COMPRESSED_CAMERA_IMAGE_KEY)){
                 lastCompressedImage = data.getByteArray(CompressedImagePublisher.COMPRESSED_CAMERA_IMAGE_KEY);
+            }
+        }
+        if (odometryIntentFilter.hasAction(intent.getAction())){
+            if (data.containsKey(OdometryPublisher.POSITION_X)){
+                position_x = data.getDouble(OdometryPublisher.POSITION_X);
+            }
+            if (data.containsKey(OdometryPublisher.POSITION_Y)){
+                position_y = data.getDouble(OdometryPublisher.POSITION_Y);
             }
         }
     }

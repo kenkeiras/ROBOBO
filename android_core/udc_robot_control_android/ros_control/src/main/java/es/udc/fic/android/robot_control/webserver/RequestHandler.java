@@ -107,6 +107,18 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
     }
 
 
+    private NanoHTTPDPooled.Response getOdometryResponse() {
+        double[] odometry = wrapper.getOdometry();
+
+        return new NanoHTTPDPooled.Response(NanoHTTPDPooled.HTTP_OK,
+                NanoHTTPDPooled.MIME_JSON,
+                "{\n"
+                        + "    \"odometryX\": " + String.format(jsonLocale, "%.2f", odometry[0]) + ",\n"
+                        + "    \"odometryY\": " + String.format(jsonLocale, "%.2f", odometry[1]) + "\n"
+                        + "}");
+    }
+
+
     private NanoHTTPDPooled.Response getMagneticFieldResponse() {
         float[] magneticField = wrapper.getMagneticField();
 
@@ -189,6 +201,9 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         }
         else if (uri.equals("/sensors/magneticField")){
             return getMagneticFieldResponse();
+        }
+        else if (uri.equals("/sensors/odometry")){
+            return getOdometryResponse();
         }
         else if (uri.equals("/sensors/pressure")){
             return getPressureResponse();

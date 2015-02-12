@@ -69,6 +69,11 @@
             $('#light>.value').html(data.light);
         }, "json");
 
+        $.get("sensors/odometry", function(data){
+            $('#odometry>.value').html(data.odometryX + ", "
+                                       + data.odometryY);
+        }, "json");
+
         $.get("sensors/magneticField", function(data){
             $('#magneticField>.value').html(data.magneticFieldX + ", "
                                              + data.magneticFieldY + ", "

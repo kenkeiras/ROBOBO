@@ -26,6 +26,12 @@ import nav_msgs.Odometry;
 
 public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
 
+    public static final String UPDATE_ODOMETRY = "es.udc.fic.android.robot_control.ODOMETRY";
+    public static final String SPEED = "SPEED";
+    public static final String TURN = "TURN";
+    public static final String POSITION_X = "POSITION_X";
+    public static final String POSITION_Y = "POSITION_Y";
+
     private static final String QUEUE_NAME = Constants.TOPIC_ODOMETRY;
     private static final long SLEEP_TIME = 100; // Miliseconds between each publication
     private final Context ctx;
@@ -74,6 +80,16 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
 
 
     private void publishOdom() {
+        // Android broadcast
+        Intent i = new Intent(UPDATE_ODOMETRY);
+        i.putExtra(SPEED, speed);
+        i.putExtra(TURN, turn);
+        i.putExtra(POSITION_X, pos_x);
+        i.putExtra(POSITION_Y, pos_y);
+        ctx.sendBroadcast(i);
+
+
+        // ROS
         if (publisher == null) return;
 
         // Speed
