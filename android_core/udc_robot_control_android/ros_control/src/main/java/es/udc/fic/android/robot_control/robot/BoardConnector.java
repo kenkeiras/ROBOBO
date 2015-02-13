@@ -107,6 +107,10 @@ public class BoardConnector  {
         connect();
     }
 
+    public boolean isConnected() {
+        return connection != null;
+    }
+
     public void manualConnect(Context ctx) throws TransmisionErrorException {
         Log.i(C.ROBOT_TAG, "Manually connected. mode - Host");
 		/* Get the USB manager from the requesting context */

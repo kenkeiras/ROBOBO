@@ -1,21 +1,37 @@
 package es.udc.fic.android.robot_control.commands;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 import es.udc.fic.android.robot_control.robot.RobotState;
+import es.udc.fic.android.robot_control.sensors.OdometryPublisher;
 import es.udc.fic.android.robot_control.utils.C;
 
 import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
 
 
-public class EngineManager {
+public class EngineManager extends BroadcastReceiver {
 
+    public static final String RIGHT_WHEEL_UPDATE_KEY = "RIGHT_WHEEL_UPDATE";
+    public static final String LEFT_WHEEL_UPDATE_KEY = "LEFT_WHEEL_UPDATE";
+    public static final String DISTANCE_UPDATE_KEY = "DISTANCE_UPDATE";
+    public static final String SET_WHEELS_ACTION = "SET_WHEELS";
     private double leftSpeed, rightSpeed;
 
-    private final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
+    public final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
     private final static double TOLERANCE = 0.0000001f;
 
-    public EngineManager(){
+    private Double endTime = null;
+    private final Context ctx;
+
+    public EngineManager(Context ctx){
+        this.ctx = ctx;
+        IntentFilter f = new IntentFilter(SET_WHEELS_ACTION);
+        ctx.registerReceiver(this, f);
         reset();
     }
 
@@ -90,12 +106,28 @@ public class EngineManager {
         double left = leftSpeed;
         double right = rightSpeed;
 
+        // Done with scheduled movement
+        if ((endTime != null) && (System.currentTimeMillis() > endTime)){
+            endTime = null;
+            left = leftSpeed = right = rightSpeed = 0;
+            publishSpeeds();
+        }
+
         Log.d("UDC_EngineManager", "Left : " + left + " -> " + getPower(left));
         Log.d("UDC_EngineManager", "Right: " + right + " -> " + getPower(right));
 
         robotState.setEngines(getWheelState(left, right),
                               getPower(left),
                               getPower(right));
+    }
+
+
+    public void setEngines(double leftEngine, double rightEngine, double distance){
+        leftSpeed = leftEngine;
+        rightSpeed = rightEngine;
+        endTime = (double) System.currentTimeMillis()
+                + (distance * 1000) / OdometryPublisher.SPEED_CONVERSION;
+        Log.e("EngineManager", "t=" + (endTime - System.currentTimeMillis()));
     }
 
 
@@ -124,7 +156,45 @@ public class EngineManager {
             rightSpeed = 1;
         }
 
+        endTime = null;
+
+        publishSpeeds();
         Log.d(C.TAG, "(" + speed + ", " + turn + ") "
               + "-> L: " + leftSpeed + " R: " + rightSpeed);
+    }
+
+    private void publishSpeeds() {
+        Intent i = new Intent(RobotState.UPDATE_BOARD_STATE);
+        i.putExtra(LEFT_WHEEL_UPDATE_KEY, leftSpeed);
+        i.putExtra(RIGHT_WHEEL_UPDATE_KEY, rightSpeed);
+        ctx.sendBroadcast(i);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Bundle data = intent.getExtras();
+        boolean updates = false;
+
+        if (data.containsKey(LEFT_WHEEL_UPDATE_KEY)){
+            leftSpeed = data.getDouble(LEFT_WHEEL_UPDATE_KEY);
+            updates = true;
+        }
+        if (data.containsKey(RIGHT_WHEEL_UPDATE_KEY)){
+            rightSpeed = data.getDouble(RIGHT_WHEEL_UPDATE_KEY);
+            updates = true;
+        }
+        if (data.containsKey(DISTANCE_UPDATE_KEY)){
+            endTime = (double) System.currentTimeMillis()
+                    + (data.getDouble(DISTANCE_UPDATE_KEY) * 1000)
+                      / OdometryPublisher.SPEED_CONVERSION;
+            Log.e("EngineManager", "t=" + (endTime - System.currentTimeMillis()));
+        }
+        else {
+            endTime = null;
+        }
+
+        if (updates){
+            publishSpeeds();
+        }
     }
 }

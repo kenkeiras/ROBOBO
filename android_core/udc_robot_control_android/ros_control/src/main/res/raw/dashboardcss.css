@@ -1,0 +1,10 @@
+body {
+}
+
+#cameraFrame {
+    float: left;
+}
+
+#stats {
+    float: right;
+}

@@ -65,6 +65,7 @@ public class PublisherFactory {
     private LinearAccelerationPublisher linearAccelerationPub;
     private MagneticFieldPublisher magneticFieldPub;
     private MagneticFieldUncalibratedPublisher magneticFieldUncalibratedPub;
+    private OdometryPublisher odometryPub;
     private PressurePublisher fluidPressurePub;
     private LightPublisher lightPub;
     private RelativeHumidityPublisher relativeHumidityPub;
@@ -215,6 +216,15 @@ public class PublisherFactory {
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_LINEAL_ACCELERATION);
         linearAccelerationPub = new LinearAccelerationPublisher(ctx, robotName);
         nodeMainExecutor.execute(accelerometerPub, nc);
+    }
+
+
+    public void configureOdometry(Context ctx, NodeMainExecutor nodeMainExecutor) {
+        Log.i(C.TAG, "Creating Odometry manager");
+        NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
+        nc.setNodeName("/" + robotName + "/" + Constants.NODE_ODOMETRY);
+        odometryPub = new OdometryPublisher(ctx, robotName);
+        nodeMainExecutor.execute(odometryPub, nc);
     }
 
 

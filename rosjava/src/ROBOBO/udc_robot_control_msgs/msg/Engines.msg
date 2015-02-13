@@ -2,5 +2,6 @@
 
 
 int32 engineMode
-int32 leftEngine
-int32 rightEngine
+float64 leftEngine
+float64 rightEngine
+float64 distance

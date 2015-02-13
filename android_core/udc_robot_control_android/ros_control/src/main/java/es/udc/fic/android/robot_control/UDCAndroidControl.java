@@ -38,6 +38,8 @@ import es.udc.fic.android.robot_control.tasks.TaskManagerActivity;
 import es.udc.fic.android.robot_control.utils.C;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeMainExecutor;
+
+import es.udc.fic.android.robot_control.webserver.WebserverService;
 import udc_robot_control_msgs.ActionCommand;
 
 import java.net.URI;
@@ -92,10 +94,13 @@ public class UDCAndroidControl extends RosActivity {
     setContentView(R.layout.main);
     robotControllerIntent = new Intent(this, RobotCommController.class);
 
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-    startService(robotControllerIntent);
-    bindService(robotControllerIntent, mConn, 0);
+      Intent webserverIntent = new Intent(this, WebserverService.class);
+      startService(webserverIntent);
+
+      startService(robotControllerIntent);
+      bindService(robotControllerIntent, mConn, 0);
   }
 
     @Override

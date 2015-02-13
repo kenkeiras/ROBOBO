@@ -5,6 +5,7 @@ dependencies {
     compile 'org.ros.rosjava_core:rosjava:[0.1,)';
     compile 'org.ros.rosjava_messages:audio_common_msgs:0.2.4';
     compile 'org.ros.rosjava_messages:sensor_msgs:1.10.2';
+    compile 'org.ros.rosjava_messages:nav_msgs:1.10.2';
 
     compile project (':udc_robot_control_java');
 }
@@ -132,6 +133,16 @@ task LightListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
     classpath(classpathJars);
 
     main = "${pkg}.LightListener";
+    args = ["${robot}"];
+}
+
+
+task OdometryListener(type: JavaExec, dependsOn: ':cmd_control:jar'){
+    description 'Launch a Odometry listener.';
+
+    classpath(classpathJars);
+
+    main = "${pkg}.OdometryListener";
     args = ["${robot}"];
 }
 

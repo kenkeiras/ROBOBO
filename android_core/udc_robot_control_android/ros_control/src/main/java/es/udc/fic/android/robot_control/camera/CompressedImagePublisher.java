@@ -18,6 +18,8 @@
  */
 package es.udc.fic.android.robot_control.camera;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -35,14 +37,18 @@ import org.ros.node.topic.Publisher;
  *
  * @author damonkohler@google.com (Damon Kohler)
  */
-class CompressedImagePublisher implements RawImageListener {
+public class CompressedImagePublisher implements RawImageListener {
 
+    private static final int IMAGE_QUALITY = 20; // 0 to 100 where 0 is min size and 100 max quality
     private final String IMAGE_QUEUE_NAME = Constants.TOPIC_IMAGE;
     private final String CAMERA_INFO_QUEUE_NAME = Constants.TOPIC_CAMERA_INFO;
+    public static final String COMPRESSED_CAMERA_IMAGE_ACTION = "COMPRESSED_CAMERA_IMAGE_ACTION";
+    public static final String COMPRESSED_CAMERA_IMAGE_KEY = "COMPRESSED_CAMERA_IMAGE_ACTION";
 
-  private final ConnectedNode connectedNode;
-  private final Publisher<sensor_msgs.CompressedImage> imagePublisher;
-  private final Publisher<sensor_msgs.CameraInfo> cameraInfoPublisher;
+    private final ConnectedNode connectedNode;
+    private final Publisher<sensor_msgs.CompressedImage> imagePublisher;
+    private final Publisher<sensor_msgs.CameraInfo> cameraInfoPublisher;
+    private final Context context;
 
   private byte[] rawImageBuffer;
   private Size rawImageSize;
@@ -50,13 +56,14 @@ class CompressedImagePublisher implements RawImageListener {
   private Rect rect;
   private ChannelBufferOutputStream stream;
 
-  public CompressedImagePublisher(String robotName, ConnectedNode connectedNode) {
+  public CompressedImagePublisher(String robotName, ConnectedNode connectedNode, Context context) {
     this.connectedNode = connectedNode;
     String imageQueue = robotName + "/" + IMAGE_QUEUE_NAME + "/compressed";
     String infoQueue = robotName + "/" + CAMERA_INFO_QUEUE_NAME;
     imagePublisher = connectedNode.newPublisher(imageQueue, sensor_msgs.CompressedImage._TYPE);
     cameraInfoPublisher = connectedNode.newPublisher(infoQueue, sensor_msgs.CameraInfo._TYPE);
     stream = new ChannelBufferOutputStream(MessageBuffers.dynamicBuffer());
+    this.context = context;
   }
 
   @Override
@@ -78,7 +85,10 @@ class CompressedImagePublisher implements RawImageListener {
     image.getHeader().setStamp(currentTime);
     image.getHeader().setFrameId(frameId);
 
-    Preconditions.checkState(yuvImage.compressToJpeg(rect, 20, stream));
+    Preconditions.checkState(yuvImage.compressToJpeg(rect, IMAGE_QUALITY, stream));
+    Intent i = new Intent(COMPRESSED_CAMERA_IMAGE_ACTION);
+    i.putExtra(COMPRESSED_CAMERA_IMAGE_KEY, stream.buffer().array());
+    context.sendBroadcast(i);
     image.setData(stream.buffer().copy());
     stream.buffer().clear();
 

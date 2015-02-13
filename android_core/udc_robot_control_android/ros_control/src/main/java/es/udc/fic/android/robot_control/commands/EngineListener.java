@@ -4,6 +4,7 @@ import android.util.Log;
 
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
+import udc_robot_control_msgs.Engines;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
@@ -25,6 +26,7 @@ public class EngineListener implements NodeMain {
     private Subscriber<Twist> subscriber;
 
     private CommandMessageListener cml;
+    private HighLevelEngineListener hlel;
 
     public EngineListener(EngineManager manager, String robotName, NodeMainExecutor nodeMainExecutor) {
         super();
@@ -81,6 +83,23 @@ public class EngineListener implements NodeMain {
         @Override
         public void onNewMessage(Twist twist) {
             manager.setTwist(twist);
+        }
+    }
+
+    private class HighLevelEngineListener implements MessageListener<Engines> {
+        private EngineManager manager;
+        private NodeMainExecutor nodeMainExecutor;
+
+
+        public HighLevelEngineListener(EngineManager manager, NodeMainExecutor nodeMainExecutor) {
+            this.manager = manager;
+            this.nodeMainExecutor = nodeMainExecutor;
+        }
+
+
+        @Override
+        public void onNewMessage(Engines e) {
+            manager.setEngines(e.getLeftEngine(), e.getRightEngine(), e.getDistance());
         }
     }
 }

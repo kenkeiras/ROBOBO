@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>ROBOBO dashboard</title>
+    <script src="jquery.js"></script>
+    <script src="dash.js"></script>
+    <link rel="stylesheet" type="text/css" href="dash.css" />
+  </head>
+  <body>
+    <div id="cameraFrameBorder">
+      <div id="cameraFrame"></div>
+    </div>
+    <div id="stats">
+      <div id="boardState"><h2>Board state</h2>
+        <div id="wheels">
+          <span class="name">Wheels</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="irsensors">
+          <span class="name">IrSensors</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="odometry">
+          <span class="name">Odometry</span>
+          <span class="value"> - </span>
+        </div>
+      </div>
+      <div id="boardState"><h2>Phone state</h2>
+        <div id="accelerometer">
+          <span class="name">Accelerometer(m/s²)</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="battery">
+          <span class="name">Battery</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="gravity">
+          <span class="name">Gravity(m/s²)</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="gyroscope">
+          <span class="name">Gyroscope(rad/s)</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="light">
+          <span class="name">Light(lux)</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="magneticField">
+          <span class="name">Magnetic Field(uT)</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="pressure">
+          <span class="name">Pressure(hPa)</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="proximity">
+          <span class="name">Proximity(cm)</span>
+          <span class="value"> - </span>
+        </div>
+        <div id="temperature">
+          <span class="name">Temperature(ºC)</span>
+          <span class="value"> - </span>
+        </div>
+      </div>
+      <form action="#" id="newSpeedForm">
+          Left wheel speed: <input type="text" id="leftWheel" pattern="[+-]?(1(\.0+)?|0(\.\d+)?)" placeholder="from 0 to 1" />
+          <br/>
+          Right wheel speed: <input type="text" id="rightWheel" pattern="[+-]?(1(\.0+)?|0(\.\d+)?)" placeholder="from 0 to 1" />
+          <br/>
+          <input type="submit" id="sendNewSpeed" value="Change speeds" />
+      </form>
+    </div>
+  </body>
+</html>
