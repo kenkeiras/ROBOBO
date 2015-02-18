@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "es.udc.fic.udc.robot_control"
-        minSdkVersion 18
-        targetSdkVersion 19
+        minSdkVersion 14
+        targetSdkVersion 21
         versionCode 1
         versionName "0.1.0"
     }
@@ -22,6 +22,9 @@ android {
     packagingOptions {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE.txt'
+    }
+    lintOptions{
+        abortOnError false
     }
 }
 

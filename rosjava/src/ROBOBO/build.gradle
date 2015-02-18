@@ -22,12 +22,12 @@ buildscript {
     def rosMavenPath = "$System.env.ROS_MAVEN_PATH".split(':').collect { 'file://' + it }
     def rosMavenRepository = "https://github.com/rosjava/rosjava_mvn_repo/raw/master"
     repositories {
+        mavenLocal()
         rosMavenPath.each { p ->
             maven {
                 url p
             }
         }
-        mavenLocal()
         maven {
             url rosMavenRepository
         }

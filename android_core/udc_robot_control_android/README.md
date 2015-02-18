@@ -17,7 +17,7 @@ Plugins are [rosjava](http://wiki.ros.org/rosjava) applications that may be
 dinamically loaded, to be used they must be converted into dex's and placed on
 **/sdcard/ros**, you may convert a `.jar` into a `.dex` like this
 
-    $ANDROID_HOME/build-tools/19.1.0/dx --dex --output=plugin.dex plugin.jar
+    $ANDROID_HOME/build-tools/21.1.2/dx --dex --output=plugin.dex plugin.jar
 
 
 April Tag detection using the NDK

@@ -113,9 +113,6 @@ public class EngineManager extends BroadcastReceiver {
             publishSpeeds();
         }
 
-        Log.d("UDC_EngineManager", "Left : " + left + " -> " + getPower(left));
-        Log.d("UDC_EngineManager", "Right: " + right + " -> " + getPower(right));
-
         robotState.setEngines(getWheelState(left, right),
                               getPower(left),
                               getPower(right));
