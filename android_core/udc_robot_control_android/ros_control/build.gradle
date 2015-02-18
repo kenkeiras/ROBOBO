@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 18
+    compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "es.udc.fic.udc.robot_control"
-        minSdkVersion 18
-        targetSdkVersion 18
+        minSdkVersion 14
+        targetSdkVersion 21
         versionCode 1
         versionName "0.1.0"
     }
