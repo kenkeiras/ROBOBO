@@ -11,7 +11,7 @@ dependencies {
 task examples(type: Exec, dependsOn: ':speech_recog_example:build') {
     description 'Build and dex the examples.'
 
-    def dex = "$System.env.ANDROID_HOME/build-tools/19.1.0/dx"
+    def dex = "$System.env.ANDROID_HOME/build-tools/21.1.2/dx"
     exDir.mkdirs()
 
     // Dex examples

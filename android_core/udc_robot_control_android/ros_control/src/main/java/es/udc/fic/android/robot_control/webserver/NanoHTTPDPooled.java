@@ -127,6 +127,7 @@ public class NanoHTTPDPooled {
 							}
 						}
 					} catch (IOException ioe) {
+                        ioe.printStackTrace();
 					}
 				}
 			});
