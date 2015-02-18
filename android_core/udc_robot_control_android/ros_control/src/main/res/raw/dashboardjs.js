@@ -1,8 +1,8 @@
 (function($){
-    var IMAGE_REFRESH_TIME = 500;
+    var IMAGE_REFRESH_TIME = 2000; // Miliseconds
     var cameraFrame = undefined;
     var imageSet = false;
-    var STATS_REFRESH_TIME = 1000;
+    var STATS_REFRESH_TIME = 2000; // Miliseconds
 
     function updateBackground(){
         var i = new Image();
