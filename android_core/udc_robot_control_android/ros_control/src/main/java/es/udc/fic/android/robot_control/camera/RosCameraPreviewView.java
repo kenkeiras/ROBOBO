@@ -79,6 +79,7 @@ public class RosCameraPreviewView extends CameraPreviewView implements NodeMain 
         }
     }
 
+
     @Override
     public void onShutdown(Node node) {
         Log.d(C.TAG, "Shutting down [ " + node.getName() + " ]");
