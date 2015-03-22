@@ -137,18 +137,22 @@ public class RobotCommController extends Service {
     }
 
 
-    public synchronized void setCameraPreview(RosCameraPreviewView cameraPreview){
-        Log.d("UDC", "Set Camera Preview " + rosCameraPreviewView + " -> " + cameraPreview);
+    public synchronized void setCameraPreview(RosCameraPreviewView newCameraPreview){
+        Log.d("UDC", "Set Camera Preview " + rosCameraPreviewView + " -> " + newCameraPreview);
+
         if (rosCameraPreviewView != null){
             rosCameraPreviewView.releaseCamera();
+            if (nodeMainExecutor != null) {
+                nodeMainExecutor.shutdownNodeMain(rosCameraPreviewView);
+            }
         }
 
-        if (createdInitialNodes && (cameraPreview != null)){
+        if (createdInitialNodes && (newCameraPreview != null)){
             pf.configureCamera(androidControl, nodeMainExecutor,
-                               cameraPreview, 0, 90);
+                               newCameraPreview, 0, 90);
         }
 
-        rosCameraPreviewView = cameraPreview;
+        rosCameraPreviewView = newCameraPreview;
     }
 
 
