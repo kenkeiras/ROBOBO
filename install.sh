@@ -22,6 +22,7 @@ TITLE "Installing rosjava directory (udc_robot_control_java, msgs and control pa
 cd rosjava/
 
 # First built everything with catkin
+export ROS_PACKAGE_PATH="`pwd`/src/ROBOBO/udc_robot_control_msgs/"
 catkin_make
 
 # Then install the packages in the local maven repo

@@ -13,8 +13,8 @@ Hay cuatro artefactos diferentes en este proyecto:
 Dependencias
 ------------
 
-* [ros-hydro](http://wiki.ros.org/ROS/Installation), es suficiente con instalar los repositorios.
-* [rosjava-hydro](http://wiki.ros.org/rosjava/Tutorials/hydro/Installation)
+* [ros-indigo](http://wiki.ros.org/ROS/Installation), es suficiente con instalar los repositorios.
+* [rosjava-indigo](http://wiki.ros.org/rosjava/Tutorials/indigo/Installation)
 * [Android SDK](https://developer.android.com/sdk/index.html) para los apps de
 Android, habiendo apuntado $ANDROID_HOME a la raíz del SDK, desde este se ha
 de instalar los siguientes paquetes:
