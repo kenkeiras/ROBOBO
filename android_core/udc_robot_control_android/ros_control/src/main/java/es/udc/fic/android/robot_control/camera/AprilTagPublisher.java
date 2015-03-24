@@ -7,11 +7,18 @@ import android.util.Log;
 import april.image.FloatImage;
 import april.tag.*;
 
+import boofcv.alg.geo.pose.P3PGrunert;
+import boofcv.alg.geo.pose.PointDistance3;
 import es.udc.robotcontrol.utils.Constants;
+import georegression.struct.point.Point2D_F64;
+import udc_robot_control_msgs.AprilTag;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ddogleg.solver.PolynomialOps;
+import org.ddogleg.solver.RootFinderType;
+import org.ddogleg.struct.FastQueue;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 
@@ -22,6 +29,7 @@ class AprilTagPublisher implements RawImageListener {
     public static final boolean USE_NDK = false;
     private final ConnectedNode connectedNode;
     private final Publisher<udc_robot_control_msgs.AprilTag> aprilPublisher;
+    private final double TAG_SIZE = 0.04f; // Expected april tag size in meters
 
 
 
@@ -87,6 +95,43 @@ class AprilTagPublisher implements RawImageListener {
     }
 
 
+    private AprilTag buildMsg(TagDetection detection){
+        Log.d("UDCApril", "Detected: " + detection);
+
+        P3PGrunert grunert = new P3PGrunert(PolynomialOps.createRootFinder(5, RootFinderType.STURM));
+        Point2D_F64 obs1 = new Point2D_F64(detection.p[0][0], detection.p[0][1]);
+        Point2D_F64 obs2 = new Point2D_F64(detection.p[1][0], detection.p[1][1]);
+        Point2D_F64 obs3 = new Point2D_F64(detection.p[2][0], detection.p[2][1]);
+
+        /* Tags are square, so the distances are either that of the square side or the one from one
+           vertex to the oposite, this last distance is the same as the hipotenuse of a triangle
+           with the same base and height as the square side. */
+        double length23 = TAG_SIZE;
+        double length13 = Math.sqrt(TAG_SIZE * TAG_SIZE + TAG_SIZE * TAG_SIZE);
+        double length12 = TAG_SIZE;
+
+        boolean solved = grunert.process(obs1, obs2, obs3, length23, length13, length12);
+        Log.d("UDCApril", "Solved: " + solved);
+
+        if (solved){
+            FastQueue<PointDistance3> points = grunert.getSolutions();
+            Log.d("UDCApril", points.size() + " solutions!");
+            for (PointDistance3 p : points.toList()){
+                Log.d("UDCApril", "X: " + p.dist1 + " | Y: " + p.dist2 + " | Z: " + p.dist3);
+            }
+        }
+
+        AprilTag msg = aprilPublisher.newMessage();
+        msg.setCode((int) detection.code);
+        msg.setId(detection.id);
+        msg.setHammingDistance(detection.hammingDistance);
+        msg.setRotation(detection.rotation * 90);
+        msg.setObservedPerimeter(detection.observedPerimeter);
+
+        return msg;
+    }
+
+
     @Override
     public void onNewRawImage(byte[] data, Size size) {
 
@@ -119,14 +164,7 @@ class AprilTagPublisher implements RawImageListener {
         }
         Log.d("UDCApril", detections.size() + " detections");
         for (TagDetection detection : detections){
-            Log.d("UDCApril", "Detected: " + detection);
-
-            udc_robot_control_msgs.AprilTag msg = aprilPublisher.newMessage();
-            msg.setCode((int) detection.code);
-            msg.setId(detection.id);
-            msg.setHammingDistance(detection.hammingDistance);
-            msg.setRotation(detection.rotation * 90);
-            msg.setObservedPerimeter(detection.observedPerimeter);
+            udc_robot_control_msgs.AprilTag msg = buildMsg(detection);
 
             aprilPublisher.publish(msg);
         }

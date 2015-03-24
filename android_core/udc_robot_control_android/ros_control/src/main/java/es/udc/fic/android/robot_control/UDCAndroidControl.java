@@ -264,6 +264,18 @@ public class UDCAndroidControl extends RosActivity {
     }
 
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (cameraPreview != null){
+            cameraPreview = null;
+            if (robot != null){
+                robot.setCameraPreview(null);
+            }
+        }
+    }
+
+
     public void startListener(ActionCommand actionCommand) {
         robot.startListener(actionCommand);
     }

@@ -33,7 +33,7 @@ if (!project.hasProperty("text")) {
 
 
 def pkg = 'es.udc.robotcontrol.cmd';
-def rosmvn = '/opt/ros/hydro/share/maven/';
+def rosmvn = '/opt/ros/indigo/share/maven/';
 
 def jar = "${project.buildDir}/libs/cmd_control-0.1.0.jar";
 def rosCoreJar = "${rosmvn}/org/ros/rosjava_core/rosjava/0.1.6/rosjava-0.1.6.jar";

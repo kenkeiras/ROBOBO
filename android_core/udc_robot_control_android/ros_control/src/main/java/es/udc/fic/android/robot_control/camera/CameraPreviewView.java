@@ -154,7 +154,7 @@ public class CameraPreviewView extends ViewGroup {
   private void setupCameraParameters() {
     Camera.Parameters parameters = camera.getParameters();
     List<Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
-    previewSize = getOptimalPreviewSize(supportedPreviewSizes, getWidth(), getHeight());
+    previewSize = getOptimalPreviewSize(supportedPreviewSizes, 640, 320);
     parameters.setPreviewSize(previewSize.width, previewSize.height);
     parameters.setPreviewFormat(ImageFormat.NV21);
     camera.setParameters(parameters);

@@ -37,6 +37,8 @@ dependencies {
     compile('org.ros.rosjava_messages:geometry_msgs:1.10.+'){
         exclude group: 'xml-apis', module: 'xml-apis'
     }
+    compile group: 'org.boofcv', name: 'geo', version: '0.18';
+
     /* Esta dependencia es para compartir las clases con nombres constantes (Comandos y colas) */
     compile('robobo:udc_robot_control_java:0.1.0'){
         exclude group: 'xml-apis', module: 'xml-apis'

@@ -5,13 +5,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "es.udc.robotcontrol.testapp"
-        minSdkVersion 18
-        targetSdkVersion 19
+        minSdkVersion 14
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
