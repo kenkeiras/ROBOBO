@@ -120,6 +120,7 @@
     <orderEntry type="library" exported="" name="gradle_plugins-0.2.1" level="project" />
     <orderEntry type="library" exported="" name="std_msgs-0.5.9" level="project" />
     <orderEntry type="library" exported="" name="android_gingerbread_mr1-0.1.2" level="project" />
+    <orderEntry type="library" exported="" name="multidex-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="tf2_msgs-0.5.9" level="project" />
     <orderEntry type="library" exported="" name="udc_robot_control_msgs-0.0.0" level="project" />
     <orderEntry type="library" exported="" name="actionlib_msgs-1.11.7" level="project" />
