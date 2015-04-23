@@ -19,6 +19,8 @@ package es.udc.fic.android.robot_control.robot;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import es.udc.fic.android.board.RobotState;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;

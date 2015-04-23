@@ -21,11 +21,14 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
+
+import es.udc.fic.android.board.BoardConnector;
+import es.udc.fic.android.board.RobotState;
 import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.PublisherFactory;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
-import es.udc.fic.android.robot_control.commands.EngineManager;
+import es.udc.fic.android.board.EngineManager;
 import es.udc.fic.android.robot_control.screen.InfoActivity;
 import es.udc.fic.android.robot_control.utils.C;
 import udc_robot_control_msgs.ActionCommand;

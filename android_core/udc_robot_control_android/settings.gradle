@@ -1,3 +1,4 @@
+include 'board_library'
 include 'follow_example'
 include 'speech_recog_example'
 include 'april_tag_example'

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package es.udc.fic.android.robot_control.robot;
+package es.udc.fic.android.board;
 
 import android.content.IntentFilter;
 import android.util.Log;

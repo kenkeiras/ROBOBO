@@ -15,8 +15,9 @@ import org.ros.node.topic.Publisher;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import es.udc.fic.android.robot_control.commands.EngineManager;
-import es.udc.fic.android.robot_control.robot.RobotState;
+import es.udc.fic.android.board.BoardConstants;
+import es.udc.fic.android.board.EngineManager;
+import es.udc.fic.android.board.RobotState;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import nav_msgs.Odometry;
@@ -45,9 +46,6 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
     private double pos_x = 0.0f,
                    pos_y = 0.0f;
 
-    public final static double SPEED_CONVERSION = 27.5f; // cm/s at max speed
-    public final static double TURN_CONVERSION = 4.608f; // rad/s at max turn (left -1, right +1)
-
     private Publisher<Object> publisher = null;
     private double speed;
     private double turn;
@@ -69,11 +67,11 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
 
         if (boardIntentFilter.hasAction(intent.getAction())){
             lock.lock();
-            if (data.containsKey(EngineManager.LEFT_WHEEL_UPDATE_KEY)){
-                leftSpeed = data.getDouble(EngineManager.LEFT_WHEEL_UPDATE_KEY);
+            if (data.containsKey(BoardConstants.LEFT_WHEEL_UPDATE_KEY)){
+                leftSpeed = data.getDouble(BoardConstants.LEFT_WHEEL_UPDATE_KEY);
             }
-            if (data.containsKey(EngineManager.RIGHT_WHEEL_UPDATE_KEY)){
-                rightSpeed = data.getDouble(EngineManager.RIGHT_WHEEL_UPDATE_KEY);
+            if (data.containsKey(BoardConstants.RIGHT_WHEEL_UPDATE_KEY)){
+                rightSpeed = data.getDouble(BoardConstants.RIGHT_WHEEL_UPDATE_KEY);
             }
             lock.unlock();
         }
@@ -117,14 +115,14 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
 
             // Inverse of the EngineManager.setTwist() operations
             speed = (rightSpeed + leftSpeed) / 2;
-            turn = (rightSpeed - speed) / EngineManager.DISTANCE_TO_AXIS;
+            turn = (rightSpeed - speed) / BoardConstants.DISTANCE_TO_AXIS;
 
             // Update the angle according to the turn speed
-            angle += turn * timeInc * TURN_CONVERSION;
+            angle += turn * timeInc * BoardConstants.TURN_CONVERSION;
 
             // Update the position according to the speed and angle
-            pos_x += speed * Math.cos(angle) * timeInc * SPEED_CONVERSION;
-            pos_y += speed * Math.sin(angle) * timeInc * SPEED_CONVERSION;
+            pos_x += speed * Math.cos(angle) * timeInc * BoardConstants.SPEED_CONVERSION;
+            pos_y += speed * Math.sin(angle) * timeInc * BoardConstants.SPEED_CONVERSION;
         }
 
         lastUpdateTime = currentTime;

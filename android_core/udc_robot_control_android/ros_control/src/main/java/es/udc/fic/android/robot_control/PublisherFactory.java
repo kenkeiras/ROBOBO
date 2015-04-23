@@ -26,7 +26,7 @@ import es.udc.fic.android.robot_control.battery.BatteryStatus;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.commands.CommandListener;
 import es.udc.fic.android.robot_control.commands.EngineListener;
-import es.udc.fic.android.robot_control.commands.EngineManager;
+import es.udc.fic.android.board.EngineManager;
 import es.udc.fic.android.robot_control.gps.NavSatFixPublisher;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
 import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;

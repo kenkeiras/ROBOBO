@@ -8,8 +8,9 @@ import java.io.ByteArrayInputStream;
 import java.util.Locale;
 import java.util.Properties;
 
+import es.udc.fic.android.board.BoardConstants;
 import es.udc.fic.android.robot_control.R;
-import es.udc.fic.android.robot_control.commands.EngineManager;
+import es.udc.fic.android.board.EngineManager;
 
 
 public class RequestHandler implements AndroidHTTPD.RequestHandler {
@@ -228,11 +229,11 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         }
         else if (method.equals("POST")){
             if (uri.equals("/actuators/wheels")) {
-                Intent i = new Intent(EngineManager.SET_WHEELS_ACTION);
+                Intent i = new Intent(BoardConstants.SET_WHEELS_ACTION);
                 boolean withExtra = false;
                 if (params.containsKey("leftWheel")){
                     try {
-                        i.putExtra(EngineManager.LEFT_WHEEL_UPDATE_KEY,
+                        i.putExtra(BoardConstants.LEFT_WHEEL_UPDATE_KEY,
                                 Double.parseDouble(params.getProperty("leftWheel")));
                         withExtra = true;
                     }
@@ -242,7 +243,7 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
                 }
                 if (params.containsKey("rightWheel")){
                     try {
-                        i.putExtra(EngineManager.RIGHT_WHEEL_UPDATE_KEY,
+                        i.putExtra(BoardConstants.RIGHT_WHEEL_UPDATE_KEY,
                                 Double.parseDouble(params.getProperty("rightWheel")));
                         withExtra = true;
                     }
@@ -252,7 +253,7 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
                 }
                 if (params.containsKey("distance")) {
                     try {
-                        i.putExtra(EngineManager.DISTANCE_UPDATE_KEY,
+                        i.putExtra(BoardConstants.DISTANCE_UPDATE_KEY,
                                 Double.parseDouble(params.getProperty("distance")));
                         withExtra = true;
                     }
