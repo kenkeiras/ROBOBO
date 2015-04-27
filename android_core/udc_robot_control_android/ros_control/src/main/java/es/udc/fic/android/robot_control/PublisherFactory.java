@@ -19,6 +19,8 @@ package es.udc.fic.android.robot_control;
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
+
+import es.udc.fic.android.board.BoardService;
 import es.udc.fic.android.robot_control.audio.AudioPublisher;
 import es.udc.fic.android.robot_control.audio.SpeechRecognitionPublisher;
 import es.udc.fic.android.robot_control.audio.TextToSpeechListener;
@@ -29,7 +31,7 @@ import es.udc.fic.android.robot_control.commands.EngineListener;
 import es.udc.fic.android.board.EngineManager;
 import es.udc.fic.android.robot_control.gps.NavSatFixPublisher;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
-import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
+import es.udc.fic.android.robot_control.sensors.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.screen.ScreenListener;
 import es.udc.fic.android.robot_control.sensors.*;
 import es.udc.fic.android.robot_control.utils.C;
@@ -121,11 +123,11 @@ public class PublisherFactory {
         nodeMainExecutor.execute(cmdl, nc0);
     }
 
-    public void configureEngineListener(EngineManager manager, NodeMainExecutor nodeMainExecutor) {
+    public void configureEngineListener(BoardService board, NodeMainExecutor nodeMainExecutor) {
         Log.i(C.TAG, "Creating Engine Listener");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
         nc0.setNodeName("/" + robotName + "/" + Constants.NODE_ENGINES);
-        engineListener = new EngineListener(manager, robotName, nodeMainExecutor);
+        engineListener = new EngineListener(board, robotName, nodeMainExecutor);
         nodeMainExecutor.execute(engineListener, nc0);
     }
 

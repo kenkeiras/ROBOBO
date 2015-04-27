@@ -13,14 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package es.udc.fic.android.robot_control.robot;
+package es.udc.fic.android.robot_control.sensors;
 
 
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import es.udc.fic.android.board.BoardConstants;
 import es.udc.fic.android.board.RobotState;
+import es.udc.fic.android.board.SensorInfo;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import org.ros.message.Time;
@@ -104,7 +106,7 @@ public class RobotSensorPublisher implements NodeMain {
                                   inf.getsIr4(), inf.getsIr5(), inf.getsIr6(), inf.getsIr7(),
                                   inf.getsIr8()
         };
-        Intent i = new Intent(RobotState.UPDATE_BOARD_STATE);
+        Intent i = new Intent(BoardConstants.UPDATE_BOARD_STATE);
         i.putExtra(IR_SENSORS_UPDATE_KEY, sensors);
         context.sendBroadcast(i);
     }

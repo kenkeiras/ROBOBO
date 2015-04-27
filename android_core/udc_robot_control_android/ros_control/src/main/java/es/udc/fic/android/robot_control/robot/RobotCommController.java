@@ -16,20 +16,21 @@
 package es.udc.fic.android.robot_control.robot;
 
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-import es.udc.fic.android.board.BoardConnector;
-import es.udc.fic.android.board.RobotState;
-import es.udc.fic.android.robot_control.R;
+import es.udc.fic.android.board.BoardService;
+import es.udc.fic.android.board.SensorInfo;
+import es.udc.fic.android.board.SensorInfoHandler;
 import es.udc.fic.android.robot_control.UDCAndroidControl;
 import es.udc.fic.android.robot_control.PublisherFactory;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
-import es.udc.fic.android.board.EngineManager;
 import es.udc.fic.android.robot_control.screen.InfoActivity;
+import es.udc.fic.android.robot_control.sensors.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.utils.C;
 import udc_robot_control_msgs.ActionCommand;
 
@@ -44,27 +45,37 @@ import java.net.URI;
  *
  * Created by kerry on 2/06/13.
  */
-public class RobotCommController extends Service {
+public class RobotCommController extends Service implements SensorInfoHandler {
 
     public UDCAndroidControl androidControl;
 
-    private RobotState robotState;
-    private long readSleepTime;
-    private ControlThread control;
-    private BoardConnector connector;
     private String robotName;
     private URI masterURI;
 
     private PublisherFactory pf;
     private RobotSensorPublisher rsp;
-    private NodeMainExecutor nodeMainExecutor;
+        private NodeMainExecutor nodeMainExecutor;
     private RosCameraPreviewView rosCameraPreviewView;
 
     private static final int DEFAULT_MASTER_PORT = 11311;
     private RosCore core = null;
     private boolean createdInitialNodes = false;
-    private EngineManager engineManager;
     private String lastInfo = null;
+
+    private BoardService boardService = null;
+
+    private ServiceConnection boardConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            boardService = ((BoardService.SimpleBinder) service).getService();
+            boardService.addCallbackTo(RobotCommController.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            boardService = null;
+        }
+    };
 
     private final IBinder sBinder = (IBinder) new SimpleBinder();
 
@@ -92,11 +103,13 @@ public class RobotCommController extends Service {
 
     @Override
     public void onCreate(){
-        robotState = new RobotState();
-        engineManager = new EngineManager(this);
-
         pf = new PublisherFactory();
         pf.setRobotName(robotName);
+
+        // Connect to the board service
+        Intent boardIntent = new Intent(this, BoardService.class);
+        startService(boardIntent);
+        bindService(boardIntent, boardConn, 0);
     }
 
 
@@ -125,7 +138,7 @@ public class RobotCommController extends Service {
         // Configure the initial node. A listener.
         // It's the one which receives instructions from outside
         pf.configureCommandListener(androidControl, nodeMainExecutor);
-        pf.configureEngineListener(engineManager, nodeMainExecutor);
+        pf.configureEngineListener(boardService, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
         Log.d("UDC", "Let's check...");
         pf.configureOdometry(androidControl, nodeMainExecutor);
@@ -152,7 +165,7 @@ public class RobotCommController extends Service {
 
         if (createdInitialNodes && (newCameraPreview != null)){
             pf.configureCamera(androidControl, nodeMainExecutor,
-                               newCameraPreview, 0, 90);
+                    newCameraPreview, 0, 90);
         }
 
         rosCameraPreviewView = newCameraPreview;
@@ -281,24 +294,16 @@ public class RobotCommController extends Service {
         Log.i(C.ROBOT_TAG, "Starting the robot controller");
         try {
 
-            if (connector != null) { // Already connected
+            if (boardService == null){
+                throw new IllegalStateException("start() called before BoardService binded");
+            }
+
+            if (boardService.isConnected()) { // Already connected
                 Log.w(C.ROBOT_TAG, "Called START with a robot already connected");
                 return;
             }
-            Log.i(C.ROBOT_TAG, "Creating board connector");
-            connector = new BoardConnector();
-            Log.i(C.ROBOT_TAG, "Board connector created. Calling connect");
-            connector.connect(this, intent);
-            Log.i(C.ROBOT_TAG, "The connect call has been successfull");
 
-            Toast.makeText(this, R.string.robot_service_started, Toast.LENGTH_SHORT).show();
-
-            Log.i(C.ROBOT_TAG, "Creating control thread");
-            control = new ControlThread(this, true);
-
-            Log.i(C.ROBOT_TAG, "Launching control thread");
-            control.start();
-            Log.i(C.ROBOT_TAG, "All threads had been launched. Start completed.");
+            boardService.connect(intent);
         }
         catch (Exception ex) {
             Log.w(C.ROBOT_TAG, "Error starting connection [ " + ex.getMessage() + " ] ", ex);
@@ -308,49 +313,31 @@ public class RobotCommController extends Service {
     public void manualStart(UDCAndroidControl androidControl) {
         setAndroidControl(androidControl);
         try {
-            Log.v("UDC", "Manually starting, continued? " + (connector != null));
-            if (connector != null) { // Already connected
+            if (boardService == null){
+                throw new IllegalStateException("manualStart() called before BoardService binded");
+            }
+
+            if (boardService.isConnected()) { // Already connected
                 Log.w(C.ROBOT_TAG, "Called START with a robot already connected");
                 return;
             }
-            Log.i(C.ROBOT_TAG, "Manually starting controller.");
-            connector = new BoardConnector();
-            connector.manualConnect(androidControl);
-            control = new ControlThread(this, true);
-            control.start();
+
+            boardService.connect();
         }
         catch (Exception ex) {
             Log.w(C.ROBOT_TAG, "Error staring connection [ " + ex.getMessage() + " ] ", ex);
-            control = new ControlThread(this, false);
-            control.start();
         }
     }
 
 
     public void stop() {
-        if (connector != null) {
-            connector.disconnect();
-        }
-        connector = null;
+        boardService.disconnect();
     }
 
-
-    public synchronized boolean continueControl(ControlThread hl) {
-        return ((connector != null) && (control == hl));
+    public void newSensorInfo(SensorInfo sensorInfo) {
+        rsp.sendInfo(sensorInfo);
     }
 
-
-    public synchronized  byte[] read() {
-        return connector.read();
-    }
-
-    public long getReadSleepTime() {
-        return readSleepTime;
-    }
-
-    public void setReadSleepTime(long readSleepTime) {
-        this.readSleepTime = readSleepTime;
-    }
 
     public void write(ActionCommand command) {
         try {
@@ -360,12 +347,11 @@ public class RobotCommController extends Service {
                     manualStart(androidControl);
                     break;
                 case ActionCommand.CMD_RESET:
-                    robotState.reset();
-                    connector.write(robotState);
+                    boardService.setEngines(0, 0, 0);
                     break;
                 case ActionCommand.CMD_SET_LEDS:
-                    robotState.setLeds(command.getLeds());
-                    connector.write(robotState);
+                    /** @TODO Port led management to BoardService */
+                    //robotState.setLeds(command.getLeds());
                     break;
             }
         }
@@ -379,83 +365,8 @@ public class RobotCommController extends Service {
         }
     }
 
-    public void sendToRos(SensorInfo ss) {
-        rsp.sendInfo(ss);
-    }
-
-    public void refreshRobot(){
-        engineManager.refresh(robotState);
-        if ((connector != null) && (connector.isConnected())) {
-            connector.write(robotState);
-        }
-    }
-
     public void stop(ActionCommand actionCommand){
         pf.stopPublisher(nodeMainExecutor, actionCommand.getPublisher());
     }
 
-}
-
-
-class ControlThread extends Thread {
-
-    RobotCommController parent;
-    private final boolean connected;
-
-    public ControlThread (RobotCommController parent, boolean connected) {
-        this.parent = parent;
-        this.connected = connected;
-    }
-
-
-    @Override
-    public void run() {
-        while (parent.continueControl(this)) {
-            // Commands have to be written for sensor data to be sent back
-            writeCommands();
-            if (connected) {
-                readData();
-            }
-        }
-    }
-
-
-    private void  writeCommands(){
-        parent.refreshRobot();
-    }
-
-    private void readData(){
-        try {
-            Log.d(C.ROBOT_TAG, "Reading sensors");
-            byte[] read = parent.read();
-            if (read != null) {
-                Log.i(C.ROBOT_TAG, "Read [ " + read.length + " ] bytes");
-                try {
-                    // Parse the read data
-                    SensorInfo info = new SensorInfo(read);
-                    parent.sendToRos(info);
-
-                } catch (Exception e) {
-                    Log.w("Error retrieving data", e);
-                    StringBuilder sb = new StringBuilder();
-                    for (int x = 0; x < read.length; x++) {
-                        sb.append("byte [ " + x + " ] = (" + read[x] + ")");
-                    }
-                    Log.w(C.ROBOT_TAG, "Read => " + sb.toString());
-                }
-            }
-            else {
-                Log.i(C.ROBOT_TAG, "Nothing to read");
-            }
-            try {
-                sleep(parent.getReadSleepTime());
-            }
-            catch (InterruptedException ie) {
-                Log.w(C.ROBOT_TAG, "InterruptedException in the reader");
-            }
-        }
-        catch (Exception ex) {
-            Log.w(C.ROBOT_TAG, "Exception in the control thread", ex);
-        }
-    }
 }

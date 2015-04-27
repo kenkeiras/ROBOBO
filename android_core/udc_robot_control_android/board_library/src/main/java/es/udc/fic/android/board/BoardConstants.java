@@ -19,4 +19,5 @@ public class BoardConstants {
     public final static String LEFT_WHEEL_UPDATE_KEY = "LEFT_WHEEL_UPDATE";
     public final static String DISTANCE_UPDATE_KEY = "DISTANCE_UPDATE";
     public final static String SET_WHEELS_ACTION = "SET_WHEELS";
+    public static final String UPDATE_BOARD_STATE = "es.udc.fic.android.robot_control.robot.UPDATE_BOARD_STATE";
 }

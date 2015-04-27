@@ -27,6 +27,8 @@ import org.apache.http.util.ByteArrayBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import es.udc.fic.android.board.utils.BoardMessageBuilder;
+
 /**
  * This class simulates the read/write from the board connector.
  *
@@ -42,12 +44,12 @@ public class BoardConnector  {
     private UsbEndpoint endpointOUT;
     private UsbEndpoint endpointIN;
 
-    public boolean write(RobotState c) {
+    public boolean write(RobotState robotState) {
         boolean output = false;
-        if (c != null) {
-            Log.i(BoardConstants.TAG, "Sending Command [ " + c.toString() + " ]");
+        if (robotState != null) {
+            Log.i(BoardConstants.TAG, "Sending Command [ " + robotState.toString() + " ]");
             try {
-                byte[] m = c.message();
+                byte[] m = BoardMessageBuilder.message(robotState);
                 StringBuffer sb = new StringBuffer();
                 for (int x = 0; x < m.length; x++) {
                     sb.append(String.valueOf(m[x]));
@@ -59,7 +61,7 @@ public class BoardConnector  {
                 output = (result >= 0);
             }
             catch (Exception ex) {
-                Log.w("Error sending data to the robot ", ex);
+                Log.w("Sending data to board", ex);
                 output = false;
             }
         }
@@ -170,7 +172,7 @@ public class BoardConnector  {
         }
     };
 
-    private void connect() throws TransmisionErrorException {
+    void connect() throws TransmisionErrorException {
         Log.i(BoardConstants.TAG, "Connected to [ " + device.getDeviceName() + " ]. mode - Host");
             /*
              * Get the required interface from the USB device.  In this case

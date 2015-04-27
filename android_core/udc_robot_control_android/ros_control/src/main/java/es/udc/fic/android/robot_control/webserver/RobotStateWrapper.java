@@ -16,7 +16,7 @@ import android.util.Log;
 import es.udc.fic.android.board.BoardConstants;
 import es.udc.fic.android.board.RobotState;
 import es.udc.fic.android.robot_control.camera.CompressedImagePublisher;
-import es.udc.fic.android.robot_control.robot.RobotSensorPublisher;
+import es.udc.fic.android.robot_control.sensors.RobotSensorPublisher;
 import es.udc.fic.android.robot_control.sensors.OdometryPublisher;
 
 
@@ -90,7 +90,7 @@ public class RobotStateWrapper extends BroadcastReceiver implements SensorEventL
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
 
         // Board sensors
-        boardIntentFilter = new IntentFilter(RobotState.UPDATE_BOARD_STATE);
+        boardIntentFilter = new IntentFilter(BoardConstants.UPDATE_BOARD_STATE);
         ctx.registerReceiver(this, boardIntentFilter);
 
         imageIntentFilter = new IntentFilter(CompressedImagePublisher.COMPRESSED_CAMERA_IMAGE_ACTION);

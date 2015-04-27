@@ -16,8 +16,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import es.udc.fic.android.board.BoardConstants;
-import es.udc.fic.android.board.EngineManager;
-import es.udc.fic.android.board.RobotState;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import nav_msgs.Odometry;
@@ -56,7 +54,7 @@ public class OdometryPublisher extends BroadcastReceiver implements NodeMain {
         this.robotName = robotName;
 
         // Board sensors
-        boardIntentFilter = new IntentFilter(RobotState.UPDATE_BOARD_STATE);
+        boardIntentFilter = new IntentFilter(BoardConstants.UPDATE_BOARD_STATE);
         ctx.registerReceiver(this, boardIntentFilter);
 
     }

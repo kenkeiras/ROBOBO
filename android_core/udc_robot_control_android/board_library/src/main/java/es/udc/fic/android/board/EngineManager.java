@@ -27,7 +27,6 @@ public class EngineManager extends BroadcastReceiver {
         reset();
     }
 
-
     public void reset(){
         leftSpeed = rightSpeed = 0.0f;
     }
@@ -153,7 +152,7 @@ public class EngineManager extends BroadcastReceiver {
     }
 
     private void publishSpeeds() {
-        Intent i = new Intent(RobotState.UPDATE_BOARD_STATE);
+        Intent i = new Intent(BoardConstants.UPDATE_BOARD_STATE);
         i.putExtra(BoardConstants.LEFT_WHEEL_UPDATE_KEY, leftSpeed);
         i.putExtra(BoardConstants.RIGHT_WHEEL_UPDATE_KEY, rightSpeed);
         ctx.sendBroadcast(i);
