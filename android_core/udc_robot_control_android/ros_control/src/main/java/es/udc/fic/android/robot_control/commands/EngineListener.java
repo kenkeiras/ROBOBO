@@ -2,6 +2,8 @@ package es.udc.fic.android.robot_control.commands;
 
 import android.util.Log;
 
+import es.udc.fic.android.board.BoardService;
+import es.udc.fic.android.board.EngineManager;
 import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import udc_robot_control_msgs.Engines;
@@ -18,7 +20,7 @@ import geometry_msgs.Twist;
 
 public class EngineListener implements NodeMain {
 
-    private EngineManager manager;
+    private BoardService board;
     private String robotName;
     private NodeMainExecutor nodeMainExecutor;
 
@@ -28,10 +30,10 @@ public class EngineListener implements NodeMain {
     private CommandMessageListener cml;
     private HighLevelEngineListener hlel;
 
-    public EngineListener(EngineManager manager, String robotName, NodeMainExecutor nodeMainExecutor) {
+    public EngineListener(BoardService board, String robotName, NodeMainExecutor nodeMainExecutor) {
         super();
         Log.d(C.TAG, "Creating Engine Listener");
-        this.manager = manager;
+        this.board = board;
         this.robotName = robotName;
         this.nodeMainExecutor = nodeMainExecutor;
     }
@@ -44,7 +46,7 @@ public class EngineListener implements NodeMain {
     @Override
     public void onStart(ConnectedNode connectedNode) {
         cn = connectedNode;
-        cml = new CommandMessageListener(manager, nodeMainExecutor);
+        cml = new CommandMessageListener(board, nodeMainExecutor);
 
         String topicName = robotName + "/" + Constants.TOPIC_ENGINES;
         subscriber = connectedNode.newSubscriber(topicName, Twist._TYPE);
@@ -70,36 +72,36 @@ public class EngineListener implements NodeMain {
     }
 
     private class CommandMessageListener implements MessageListener<Twist> {
-        private EngineManager manager;
+        private BoardService board;
         private NodeMainExecutor nodeMainExecutor;
 
 
-        public CommandMessageListener(EngineManager manager, NodeMainExecutor nodeMainExecutor) {
-            this.manager = manager;
+        public CommandMessageListener(BoardService board, NodeMainExecutor nodeMainExecutor) {
+            this.board = board;
             this.nodeMainExecutor = nodeMainExecutor;
         }
 
 
         @Override
         public void onNewMessage(Twist twist) {
-            manager.setTwist(twist);
+            board.setTwist(twist);
         }
     }
 
     private class HighLevelEngineListener implements MessageListener<Engines> {
-        private EngineManager manager;
+        private BoardService board;
         private NodeMainExecutor nodeMainExecutor;
 
 
-        public HighLevelEngineListener(EngineManager manager, NodeMainExecutor nodeMainExecutor) {
-            this.manager = manager;
+        public HighLevelEngineListener(BoardService board, NodeMainExecutor nodeMainExecutor) {
+            this.board = board;
             this.nodeMainExecutor = nodeMainExecutor;
         }
 
 
         @Override
         public void onNewMessage(Engines e) {
-            manager.setEngines(e.getLeftEngine(), e.getRightEngine(), e.getDistance());
+            board.setEngines(e.getLeftEngine(), e.getRightEngine(), e.getDistance());
         }
     }
 }

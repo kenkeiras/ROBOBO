@@ -1,3 +1,4 @@
+package es.udc.fic.android.board;
 /*
  * Copyright (C) 2013 Amancio Díaz Suárez
  *
@@ -13,7 +14,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package es.udc.fic.android.robot_control.robot;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -22,11 +22,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.*;
 import android.util.Log;
-import es.udc.fic.android.robot_control.utils.C;
 import org.apache.http.util.ByteArrayBuffer;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
+import es.udc.fic.android.board.utils.BoardMessageBuilder;
 
 /**
  * This class simulates the read/write from the board connector.
@@ -34,8 +35,7 @@ import java.util.Iterator;
  * Created by kerry on 4/06/13.
  */
 public class BoardConnector  {
-    private static final String ACTION_USB_PERMISSION = "es.udc.fic.android.robot_control.USB_PERMISSION";
-
+    private static final String ACTION_USB_PERMISSION = "es.udc.fic.android.board.USB_PERMISSION";
 
     private UsbManager manager;
     private UsbDevice device;
@@ -44,29 +44,29 @@ public class BoardConnector  {
     private UsbEndpoint endpointOUT;
     private UsbEndpoint endpointIN;
 
-    public boolean write(RobotState c) {
+    public boolean write(RobotState robotState) {
         boolean output = false;
-        if (c != null) {
-            Log.i(C.ROBOT_TAG, "Sending Command [ " + c.toString() + " ]");
+        if (robotState != null) {
+            Log.i(BoardConstants.TAG, "Sending Command [ " + robotState.toString() + " ]");
             try {
-                byte[] m = c.message();
+                byte[] m = BoardMessageBuilder.message(robotState);
                 StringBuffer sb = new StringBuffer();
                 for (int x = 0; x < m.length; x++) {
                     sb.append(String.valueOf(m[x]));
                     sb.append(" ");
                 }
-                Log.i(C.ROBOT_TAG, "In the wire [ " + sb.toString() + " ]");
+                Log.i(BoardConstants.TAG, "In the wire [ " + sb.toString() + " ]");
                 int result = connection.bulkTransfer(endpointOUT, m, m.length, 1000);
-                Log.i(C.ROBOT_TAG, "Result of the write [ " + result + " ]");
+                Log.i(BoardConstants.TAG, "Result of the write [ " + result + " ]");
                 output = (result >= 0);
             }
             catch (Exception ex) {
-                Log.w("Error sending data to the robot ", ex);
+                Log.w("Sending data to board", ex);
                 output = false;
             }
         }
         else {
-            Log.w(C.ROBOT_TAG, "Noting to send. Attempted to send a null state");
+            Log.w(BoardConstants.TAG, "Noting to send. Attempted to send a null state");
         }
         return output;
     }
@@ -77,14 +77,14 @@ public class BoardConnector  {
         int result = -1;
 
         result = connection.bulkTransfer(endpointIN, output, output.length, 1000);
-        Log.d(C.ROBOT_TAG, "Read result [ " + result + " ]");
+        Log.d(BoardConstants.TAG, "Read result [ " + result + " ]");
 
         StringBuffer sb = new StringBuffer();
         for (int x = 0; x < BUFFER_LENGHT; x++) {
             sb.append(String.valueOf(output[x]));
             sb.append(" ");
         }
-        Log.i(C.ROBOT_TAG, "Read from the wire [ " + sb.toString() + " ]");
+        Log.i(BoardConstants.TAG, "Read from the wire [ " + sb.toString() + " ]");
         if (result > 0) {
             ByteArrayBuffer bas = new ByteArrayBuffer(result);
             bas.append(output, 0, result);
@@ -92,16 +92,16 @@ public class BoardConnector  {
             return bas.toByteArray();
         }
         else {
-            Log.i(C.ROBOT_TAG, "Result of the read [ " + result + " ]");
+            Log.i(BoardConstants.TAG, "Result of the read [ " + result + " ]");
             return null;
         }
     }
 
     public void connect(Context ctx, Intent intent) throws TransmisionErrorException {
 
-        Log.i(C.ROBOT_TAG, "Connected to [ " + intent.getAction() + " ]. mode - Host");
+        Log.i(BoardConstants.TAG, "Connected to [ " + intent.getAction() + " ]. mode - Host");
         device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-        Log.i(C.ROBOT_TAG, "Connected to [ " + device.getDeviceName() + " ]. mode - Host");
+        Log.i(BoardConstants.TAG, "Connected to [ " + device.getDeviceName() + " ]. mode - Host");
 		/* Get the USB manager from the requesting context */
         this.manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
         connect();
@@ -112,7 +112,7 @@ public class BoardConnector  {
     }
 
     public void manualConnect(Context ctx) throws TransmisionErrorException {
-        Log.i(C.ROBOT_TAG, "Manually connected. mode - Host");
+        Log.i(BoardConstants.TAG, "Manually connected. mode - Host");
 		/* Get the USB manager from the requesting context */
         this.manager = (UsbManager) ctx.getSystemService(Context.USB_SERVICE);
 
@@ -129,13 +129,13 @@ public class BoardConnector  {
             //connect();
         }
         else {
-            Log.i(C.ROBOT_TAG, "No devices found");
+            Log.i(BoardConstants.TAG, "No devices found");
             throw new TransmisionErrorException("No devices found");
         }
     }
 
     public void disconnect() {
-        Log.i(C.ROBOT_TAG, "Disconnected from [ " + device.getDeviceName() + " ] mode - Host");
+        Log.i(BoardConstants.TAG, "Disconnected from [ " + device.getDeviceName() + " ] mode - Host");
         if (connection != null) {
             connection.close();
         }
@@ -157,23 +157,23 @@ public class BoardConnector  {
                             connect();
                         }
                         else {
-                            Log.i(C.ROBOT_TAG, "No accesory to connect");
+                            Log.i(BoardConstants.TAG, "No accesory to connect");
                         }
                     }
                     else {
-                        Log.w(C.ROBOT_TAG, "Permission denied for device " + mDevice);
+                        Log.w(BoardConstants.TAG, "Permission denied for device " + mDevice);
                     }
                 }
             }
             }
             catch (Exception ex) {
-                Log.w(C.ROBOT_TAG, "Exception on BroadcastReceiver [ " + ex + " ]");
+                Log.w(BoardConstants.TAG, "Exception on BroadcastReceiver [ " + ex + " ]");
             }
         }
     };
 
-    private void connect() throws TransmisionErrorException {
-        Log.i(C.ROBOT_TAG, "Connected to [ " + device.getDeviceName() + " ]. mode - Host");
+    void connect() throws TransmisionErrorException {
+        Log.i(BoardConstants.TAG, "Connected to [ " + device.getDeviceName() + " ]. mode - Host");
             /*
              * Get the required interface from the USB device.  In this case
              * we are hard coding the interface number to 0.  In a dynamic example
@@ -186,7 +186,7 @@ public class BoardConnector  {
             /* Open a connection to the USB device */
         connection = manager.openDevice(device);
 
-        Log.i(C.ROBOT_TAG, "Device openned");
+        Log.i(BoardConstants.TAG, "Device openned");
 
             /* Claim the required interface to gain access to it */
         if(connection.claimInterface(intf, true) == true) {
@@ -194,13 +194,13 @@ public class BoardConnector  {
             endpointOUT = intf.getEndpoint(1);
             /* Get the IN endpoint.  It is the first endpoint in the interface */
             endpointIN = intf.getEndpoint(0);
-            Log.i(C.ROBOT_TAG, "Connection established");
+            Log.i(BoardConstants.TAG, "Connection established");
         } else {
                 /* if the interface claim failed, we should close the
                  * connection and exit.
                  */
             connection.close();
-            Log.i(C.ROBOT_TAG, "Interface couldn't be claimed");
+            Log.i(BoardConstants.TAG, "Interface couldn't be claimed");
             throw new TransmisionErrorException("Interface couldn't be claimed");
         }
     }

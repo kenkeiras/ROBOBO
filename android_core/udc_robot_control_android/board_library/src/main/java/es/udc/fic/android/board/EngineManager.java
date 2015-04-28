@@ -1,4 +1,4 @@
-package es.udc.fic.android.robot_control.commands;
+package es.udc.fic.android.board;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import es.udc.fic.android.robot_control.robot.RobotState;
-import es.udc.fic.android.robot_control.sensors.OdometryPublisher;
-import es.udc.fic.android.robot_control.utils.C;
 
 import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
@@ -16,25 +13,19 @@ import geometry_msgs.Vector3;
 
 public class EngineManager extends BroadcastReceiver {
 
-    public static final String RIGHT_WHEEL_UPDATE_KEY = "RIGHT_WHEEL_UPDATE";
-    public static final String LEFT_WHEEL_UPDATE_KEY = "LEFT_WHEEL_UPDATE";
-    public static final String DISTANCE_UPDATE_KEY = "DISTANCE_UPDATE";
-    public static final String SET_WHEELS_ACTION = "SET_WHEELS";
-    private double leftSpeed, rightSpeed;
+    private static final double TOLERANCE = 0.0000001f;
 
-    public final static double DISTANCE_TO_AXIS = 0.045f; // 4,5cm
-    private final static double TOLERANCE = 0.0000001f;
+    private double leftSpeed, rightSpeed;
 
     private Double endTime = null;
     private final Context ctx;
 
     public EngineManager(Context ctx){
         this.ctx = ctx;
-        IntentFilter f = new IntentFilter(SET_WHEELS_ACTION);
+        IntentFilter f = new IntentFilter(BoardConstants.SET_WHEELS_ACTION);
         ctx.registerReceiver(this, f);
         reset();
     }
-
 
     public void reset(){
         leftSpeed = rightSpeed = 0.0f;
@@ -123,7 +114,7 @@ public class EngineManager extends BroadcastReceiver {
         leftSpeed = leftEngine;
         rightSpeed = rightEngine;
         endTime = (double) System.currentTimeMillis()
-                + (distance * 1000) / OdometryPublisher.SPEED_CONVERSION;
+                + (distance * 1000) / BoardConstants.SPEED_CONVERSION;
         Log.e("EngineManager", "t=" + (endTime - System.currentTimeMillis()));
     }
 
@@ -137,8 +128,8 @@ public class EngineManager extends BroadcastReceiver {
 
         double turnRadius = speed / turn;
 
-        double vLeft = speed - turn * DISTANCE_TO_AXIS;
-        double vRight = speed + turn * DISTANCE_TO_AXIS;
+        double vLeft = speed - turn * BoardConstants.DISTANCE_TO_AXIS;
+        double vRight = speed + turn * BoardConstants.DISTANCE_TO_AXIS;
 
         leftSpeed = vLeft / 1;
         rightSpeed = vRight / 1;
@@ -156,14 +147,14 @@ public class EngineManager extends BroadcastReceiver {
         endTime = null;
 
         publishSpeeds();
-        Log.d(C.TAG, "(" + speed + ", " + turn + ") "
+        Log.d(BoardConstants.TAG, "(" + speed + ", " + turn + ") "
               + "-> L: " + leftSpeed + " R: " + rightSpeed);
     }
 
     private void publishSpeeds() {
-        Intent i = new Intent(RobotState.UPDATE_BOARD_STATE);
-        i.putExtra(LEFT_WHEEL_UPDATE_KEY, leftSpeed);
-        i.putExtra(RIGHT_WHEEL_UPDATE_KEY, rightSpeed);
+        Intent i = new Intent(BoardConstants.UPDATE_BOARD_STATE);
+        i.putExtra(BoardConstants.LEFT_WHEEL_UPDATE_KEY, leftSpeed);
+        i.putExtra(BoardConstants.RIGHT_WHEEL_UPDATE_KEY, rightSpeed);
         ctx.sendBroadcast(i);
     }
 
@@ -172,18 +163,18 @@ public class EngineManager extends BroadcastReceiver {
         Bundle data = intent.getExtras();
         boolean updates = false;
 
-        if (data.containsKey(LEFT_WHEEL_UPDATE_KEY)){
-            leftSpeed = data.getDouble(LEFT_WHEEL_UPDATE_KEY);
+        if (data.containsKey(BoardConstants.LEFT_WHEEL_UPDATE_KEY)){
+            leftSpeed = data.getDouble(BoardConstants.LEFT_WHEEL_UPDATE_KEY);
             updates = true;
         }
-        if (data.containsKey(RIGHT_WHEEL_UPDATE_KEY)){
-            rightSpeed = data.getDouble(RIGHT_WHEEL_UPDATE_KEY);
+        if (data.containsKey(BoardConstants.RIGHT_WHEEL_UPDATE_KEY)){
+            rightSpeed = data.getDouble(BoardConstants.RIGHT_WHEEL_UPDATE_KEY);
             updates = true;
         }
-        if (data.containsKey(DISTANCE_UPDATE_KEY)){
+        if (data.containsKey(BoardConstants.DISTANCE_UPDATE_KEY)){
             endTime = (double) System.currentTimeMillis()
-                    + (data.getDouble(DISTANCE_UPDATE_KEY) * 1000)
-                      / OdometryPublisher.SPEED_CONVERSION;
+                    + (data.getDouble(BoardConstants.DISTANCE_UPDATE_KEY) * 1000)
+                      / BoardConstants.SPEED_CONVERSION;
             Log.e("EngineManager", "t=" + (endTime - System.currentTimeMillis()));
         }
         else {
