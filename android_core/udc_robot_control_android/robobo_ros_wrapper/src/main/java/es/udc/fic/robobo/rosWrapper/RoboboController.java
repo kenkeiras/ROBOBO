@@ -10,7 +10,6 @@ import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Publisher;
-import org.ros.node.topic.Subscriber;
 
 import java.lang.String;
 import java.net.URI;
@@ -18,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import es.udc.fic.robobo.rosWrapper.managers.listeners.AprilTagListenerManager;
 import es.udc.robotcontrol.utils.Constants;
 import udc_robot_control_msgs.AprilTag;
 
@@ -29,13 +29,20 @@ public class RoboboController implements NodeMain {
 
     private ConnectedNode connectedNode = null;
 
+    // Listeners
+    final AprilTagListenerManager aprilTagListenerManager;
+
 
     public RoboboController(URI masterURI, String robotName) throws ControllerNotFound {
         executor = DefaultNodeMainExecutor.newDefault();
         this.masterURI = masterURI;
         this.robotName = robotName;
 
-        // Retrieve own address
+        // Initialize listener managers
+        aprilTagListenerManager = new AprilTagListenerManager(robotName);
+
+
+        // Start this node
         String host = InetAddressFactory.newNonLoopback().getHostAddress();
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(host);
 
@@ -45,58 +52,21 @@ public class RoboboController implements NodeMain {
 
 
     // Listeners
-    // AprilTags
-    private final Set<MessageListener<AprilTag>> aprilTagHandlers =
-            new HashSet<MessageListener<AprilTag>>();
-
-    private final MessageListener<AprilTag> messageListener =
-            new ListenerMultiplexer<AprilTag>(aprilTagHandlers);
-
-    private Subscriber<AprilTag> aprilTagSubscriber = null;
-
-    /**
-     * Initialize the april tag subscriber if it's possible, it isn't already working and there is
-     * some handler in the set.
-     *
-     */
-    private synchronized void initAprilTagSubscriberIfNeeded(){
-        if ((aprilTagSubscriber == null)
-                && (connectedNode != null)
-                && (aprilTagHandlers.size() > 0)){
-
-            String topicName = "/" + robotName + "/" + Constants.TOPIC_APRIL_TAGS;
-            aprilTagSubscriber = connectedNode.newSubscriber(topicName,
-                    udc_robot_control_msgs.AprilTag._TYPE);
-
-            aprilTagSubscriber.addMessageListener(messageListener);
-        }
-    }
-
     /**
      * Add an AprilTag handler to manage the incoming changes.
      *
-     * Spawn the AprilTagListenerNode node if it wasn't before.
-     *
      */
     public synchronized void addAprilTagHandler(MessageListener<AprilTag> aprilTagHandler) {
-        initAprilTagSubscriberIfNeeded();
-
-        aprilTagHandlers.add(aprilTagHandler);
+        aprilTagListenerManager.addHandler(aprilTagHandler);
     }
 
 
     /**
      * Remove a single AprilTag handler.
      *
-     * If the handler set gets empty, stop the listener node.
-     *
      */
     public synchronized void removeAprilTagHandler(MessageListener<AprilTag> aprilTagHandler){
-        aprilTagHandlers.remove(aprilTagHandler);
-        if ((aprilTagHandlers.size() == 0) && (aprilTagSubscriber != null)){
-            aprilTagSubscriber.shutdown();
-            aprilTagSubscriber = null;
-        }
+        aprilTagListenerManager.removeHandler(aprilTagHandler);
     }
 
 
@@ -148,7 +118,7 @@ public class RoboboController implements NodeMain {
     @Override
     public void onStart(ConnectedNode connectedNode) {
         this.connectedNode = connectedNode;
-        initAprilTagSubscriberIfNeeded();
+        aprilTagListenerManager.setConnectedNode(connectedNode);
 
         // Clear the message queue
         queueAndPublish(null);

@@ -1,4 +1,4 @@
-package es.udc.fic.robobo.rosWrapper;
+package es.udc.fic.robobo.rosWrapper.managers.listeners;
 
 import org.ros.message.MessageListener;
 import java.util.Set;
