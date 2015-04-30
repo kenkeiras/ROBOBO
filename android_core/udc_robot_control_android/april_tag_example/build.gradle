@@ -7,16 +7,19 @@ dependencies {
     compile 'org.ros.rosjava_messages:std_msgs:0.5.+'
     compile 'robobo:udc_robot_control_java:0.1.0'
     compile 'robobo:udc_robot_control_msgs:0.0.0'
+
+    compile project(':robobo_ros_wrapper');
 }
 
-task examples(type: Exec, dependsOn: ':april_tag_example:build') {
+task examples(type: Exec, dependsOn: [':april_tag_example:build', ':robobo_ros_wrapper:build']) {
     description 'Build and dex the examples.'
 
     def dex = "$System.env.ANDROID_HOME/build-tools/21.1.2/dx"
     exDir.mkdirs()
 
     // Dex examples
-    commandLine "$dex", '--dex', "--output=$exDir/april_tag_example.dex", "${project.buildDir}/libs/april_tag_example.jar"
+    commandLine "$dex", '--dex', "--output=$exDir/april_tag_example.dex", "${project.buildDir}/libs/april_tag_example.jar",
+                "../robobo_ros_wrapper/build/libs/robobo_ros_wrapper.jar"
 }
 
 task installExamples(type: Exec, dependsOn: examples) {
