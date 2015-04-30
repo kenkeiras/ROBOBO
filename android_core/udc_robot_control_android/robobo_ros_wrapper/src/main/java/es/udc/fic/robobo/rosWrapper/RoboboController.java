@@ -12,12 +12,13 @@ import org.ros.node.NodeMainExecutor;
 
 import java.lang.String;
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import es.udc.fic.robobo.rosWrapper.managers.listeners.AprilTagListenerManager;
+import es.udc.fic.robobo.rosWrapper.managers.producers.EnginesProducerManager;
 import es.udc.fic.robobo.rosWrapper.managers.producers.InfoProducerManager;
+import es.udc.fic.robobo.rosWrapper.managers.producers.TTSProducerManager;
+import es.udc.fic.robobo.rosWrapper.utils.Tuple;
 import udc_robot_control_msgs.AprilTag;
 
 public class RoboboController implements NodeMain {
@@ -29,6 +30,8 @@ public class RoboboController implements NodeMain {
 
     // Publishers
     final InfoProducerManager infoProducerManager;
+    final EnginesProducerManager enginesProducerManager;
+    final TTSProducerManager ttsProducerManager;
 
     public RoboboController(URI masterURI, String robotName) throws ControllerNotFound {
         // Initialize listener managers
@@ -36,6 +39,8 @@ public class RoboboController implements NodeMain {
 
         // Initialize producer managers
         infoProducerManager = new InfoProducerManager(robotName);
+        enginesProducerManager = new EnginesProducerManager(robotName);
+        ttsProducerManager = new TTSProducerManager(robotName);
 
         // Start this node
         executor = DefaultNodeMainExecutor.newDefault();
@@ -70,6 +75,21 @@ public class RoboboController implements NodeMain {
     public void publishInfoMessage(String htmlData){
         infoProducerManager.publish(htmlData);
     }
+
+    /**
+     * Set the engine linear and angular speed.
+     */
+    public void setEnginesTwist(double linearSpeed, double angularSpeed){
+        enginesProducerManager.publish(new Tuple<Double, Double>(linearSpeed, angularSpeed));
+    }
+
+    /**
+     * Publish a message to the TextToSpeech system.
+     */
+    public void publishTextToSpeed(String text){
+        ttsProducerManager.publish(text);
+    }
+
 
     public void stop(){
         executor.shutdownNodeMain(this);
