@@ -13,7 +13,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/build/classes/test" />
     <exclude-output />
@@ -27,6 +27,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="robobo_ros_wrapper" exported="" />
     <orderEntry type="library" exported="" name="std_msgs-0.5.9" level="project" />
     <orderEntry type="library" exported="" name="udc_robot_control_java-0.1.0" level="project" />
     <orderEntry type="library" exported="" name="dnsjava-2.1.1" level="project" />

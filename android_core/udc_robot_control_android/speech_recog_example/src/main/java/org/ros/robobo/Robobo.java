@@ -1,10 +1,10 @@
 package org.ros.robobo;
 
-import java.net.URISyntaxException;
+import java.net.URI;
 
-import org.ros.node.DefaultNodeMainExecutor;
-import org.ros.node.NodeMainExecutor;
-
+import es.udc.fic.robobo.rosWrapper.ControllerNotFound;
+import es.udc.fic.robobo.rosWrapper.RoboboController;
+import es.udc.fic.robobo.rosWrapper.listenerHandlers.SpeechRecognitionHandler;
 
 public class Robobo {
 
@@ -14,23 +14,31 @@ public class Robobo {
 
 
     private String robotName;
-    private static NodeMainExecutor executor;
+    private static RoboboController roboboController;
 
-
-    public static void main(String args[]) throws URISyntaxException {
-        executor = DefaultNodeMainExecutor.newDefault();
-
+    public static void main(String args[]) throws ControllerNotFound {
         final String master = args[1];
         final String robotName = args[2];
         System.out.println("Connecting to master [URI: " + master
                            + " Robot name: " + robotName + " ]");
 
-        SpeechRecognitionListener listener = new SpeechRecognitionListener(
-                robotName, master, executor
-                );
+
+        roboboController = new RoboboController(URI.create(master), robotName);
+        roboboController.addSpeechRecognitionHandler(new SpeechRecognitionHandler() {
+            @Override
+            public void onNewMessage(std_msgs.String message) {
+
+                System.out.println("Speech: " + message.getData() + "\n\n");
+
+                String html = "<html><head></head><body><center><font size=\"12\">"
+                               + message.getData()
+                               + "</font><center></body></html>";
+
+                roboboController.publishInfoMessage(html);
+            }
+        });
 
         waitForShutdown();
-        System.out.println("Done stopping");
     }
 
 
@@ -40,8 +48,8 @@ public class Robobo {
                 Thread.sleep(Integer.MAX_VALUE);
             }
         }
-        catch(InterruptedException e){}
-
-        executor.shutdown();
+        catch(InterruptedException e){
+            roboboController.stop();
+        }
     }
 }

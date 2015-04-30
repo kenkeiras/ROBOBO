@@ -6,6 +6,8 @@ dependencies {
     compile 'org.ros.rosjava_core:rosjava:0.1.6'
     compile 'org.ros.rosjava_messages:geometry_msgs:1.10.+'
     compile 'robobo:udc_robot_control_java:0.1.0'
+
+    compile project(':robobo_ros_wrapper');
 }
 
 task examples(type: Exec, dependsOn: ':follow_example:build') {
