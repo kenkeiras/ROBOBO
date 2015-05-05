@@ -1,10 +1,80 @@
 body {
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Camera */
+#cameraFrameBorder {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    height: auto;
+    overflow: hidden;
 }
 
 #cameraFrame {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+}
+
+hr#division {
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Board IR */
+#boardState {
+    float: left;
+    width: 30%;
+    text-align: center;
+}
+
+#boardSchema {
+    height: 300px;
+    width: 220px;
+}
+
+/* Engines */
+#engines {
     float: left;
 }
 
+#engines > h2 {
+    text-align: center;
+}
+
+#engines label {
+    vertical-align: top;
+}
+
+#engines > #leftEngine {
+    float: left;
+}
+
+#engines > #rightEngine {
+    float: left;
+}
+
+#engines input[orient=vertical]{
+     writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+}
+
+/* Sensors */
 #stats {
+    width: 45%;
     float: right;
+}
+
+#phoneState {
+    margin: 1em;
+}
+
+#phoneState tbody td.value {
+    text-align: right;
+    padding-right: 1ex;
 }
