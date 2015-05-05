@@ -27,6 +27,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="robobo_ros_wrapper" exported="" />
     <orderEntry type="library" exported="" name="std_msgs-0.5.9" level="project" />
     <orderEntry type="library" exported="" name="udc_robot_control_java-0.1.0" level="project" />
     <orderEntry type="library" exported="" name="dnsjava-2.1.1" level="project" />
@@ -58,5 +59,6 @@
     <orderEntry type="library" exported="" name="nav_msgs-1.11.7" level="project" />
     <orderEntry type="library" exported="" name="actionlib_msgs-1.11.7" level="project" />
     <orderEntry type="library" exported="" name="tf2_msgs-0.5.9" level="project" />
+    <orderEntry type="library" exported="" name="speech_recog_example.speech_recog_example" level="project" />
   </component>
 </module>

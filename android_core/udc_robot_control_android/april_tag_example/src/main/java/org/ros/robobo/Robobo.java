@@ -1,10 +1,12 @@
 package org.ros.robobo;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.ros.node.DefaultNodeMainExecutor;
-import org.ros.node.NodeMainExecutor;
-
+import es.udc.fic.robobo.rosWrapper.ControllerNotFound;
+import es.udc.fic.robobo.rosWrapper.RoboboController;
+import es.udc.fic.robobo.rosWrapper.listenerHandlers.AprilTagHandler;
+import udc_robot_control_msgs.AprilTag;
 
 public class Robobo {
 
@@ -12,26 +14,38 @@ public class Robobo {
     public static final String taskDescription = "Reads April tags and "
         + "shows it's id on information screen";
 
+    private static RoboboController roboboController;
 
-    private String robotName;
-    private static NodeMainExecutor executor;
-    private static float speed = 0;
-    private static float turn = 0;
-    private static final int REFRESH_TIME = 100; // In millis
-
-
-    public static void main(String args[]) throws URISyntaxException {
-        executor = DefaultNodeMainExecutor.newDefault();
-
+    public static void main(String args[]) throws URISyntaxException, ControllerNotFound {
         final String master = args[1];
         final String robotName = args[2];
         System.out.println("Connecting to master [URI: " + master
-                           + " Robot name: " + robotName + " ]");
+                + " Robot name: " + robotName + " ]");
 
-        AprilTagListener listener = new AprilTagListener(robotName, master, executor);
 
+        roboboController = new RoboboController(URI.create(master), robotName);
+
+        // Define the action to do when a new AprilTag is found
+        roboboController.addAprilTagHandler(new AprilTagHandler() {
+            @Override
+            public void onNewMessage(AprilTag tag) {
+
+                System.out.println("April tag detection" + "\n"
+                        + "Code: " + tag.getCode() + "\n"
+                        + "ID: " + tag.getId() + "\n"
+                        + "Hamming: " + tag.getHammingDistance() + "\n"
+                        + "Rotation: " + tag.getRotation() + "\n"
+                        + "Perimeter: " + tag.getObservedPerimeter() + "\n\n");
+
+
+                String html = "<html><head></head><body><center><font size=\"12\">"
+                              + tag.getId()
+                              + "</font><center></body></html>";
+
+                roboboController.publishInfoMessage(html);
+            }
+        });
         waitForShutdown();
-        System.out.println("Done stopping");
     }
 
 
@@ -41,8 +55,8 @@ public class Robobo {
                 Thread.sleep(Integer.MAX_VALUE);
             }
         }
-        catch(InterruptedException e){}
-
-        executor.shutdown();
+        catch(InterruptedException e){
+            roboboController.stop();
+        }
     }
 }

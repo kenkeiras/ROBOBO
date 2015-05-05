@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/april_tag_example" />
             <option value="$PROJECT_DIR$/board_library" />
             <option value="$PROJECT_DIR$/follow_example" />
+            <option value="$PROJECT_DIR$/robobo_ros_wrapper" />
             <option value="$PROJECT_DIR$/ros_control" />
             <option value="$PROJECT_DIR$/speech_recog_example" />
           </set>
