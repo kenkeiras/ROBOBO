@@ -24,7 +24,6 @@ public class SensorInfo {
 
     public static int MSG_LENGTH = 24;
 
-    private int sIr0;
     private int sIr1;
     private int sIr2;
     private int sIr3;
@@ -33,6 +32,7 @@ public class SensorInfo {
     private int sIr6;
     private int sIr7;
     private int sIr8;
+    private int sIr9;
     private int sIrS1;
     private int sIrS2;
 
@@ -48,6 +48,25 @@ public class SensorInfo {
     }
 
 
+    private static int remap(int raw_position){
+
+        int position = (raw_position - 1) / 2;
+        switch(position){
+        case 0: // Not used, keep it in a inocuous register
+            return 12;
+
+        case 1: case 2:
+            return position + 7; // 1 -> 8, 2 -> 9
+
+        case 10: case 11:
+            return position;
+
+        default:
+            return position - 2; // 3 -> 1, 4 -> 2, ... 9 -> 7
+        }
+    }
+
+
     public SensorInfo(byte[] raw) throws IllegalArgumentException{
         if (raw.length < MSG_LENGTH) {
             throw new IllegalArgumentException("Data not valid");
@@ -57,9 +76,11 @@ public class SensorInfo {
                 throw new IllegalArgumentException("Incorrect lecture (byte 0 != 0x81)");
             }
             byte checksum = 0;
-            for (int x = 1; x < 22; x += 2) {
+            for (int x = 3; x < 22; x += 2) {
                 int value = (toUnsignedInt(raw[x]) << 8) + toUnsignedInt(raw[x+1]);
-                setValue(x, value);
+                // Raw data is in the following order:
+                // 8, 9, 1, 2, 3, 4, 5, 6, 7
+                setValue(remap(x), value);
                 checksum += raw[x];
                 checksum += raw[x+1];
             }
@@ -74,7 +95,6 @@ public class SensorInfo {
     @Override
     public String toString() {
         String salida = "SensorInfo " +
-                "[ " + getsIr0() + " ]" +
                 "[ " + getsIr1() + " ]" +
                 "[ " + getsIr2() + " ]" +
                 "[ " + getsIr3() + " ]" +
@@ -83,6 +103,7 @@ public class SensorInfo {
                 "[ " + getsIr6() + " ]" +
                 "[ " + getsIr7() + " ]" +
                 "[ " + getsIr8() + " ]" +
+                "[ " + getsIr9() + " ]" +
                 "[ " + getsIrS1() + " ]" +
                 "[ " + getsIrS2() + " ]";
         return salida;
@@ -92,36 +113,36 @@ public class SensorInfo {
     private void setValue(int x, int value) {
         switch (x) {
             case 1:
-                setsIr0(value);
-                break;
-            case 3:
                 setsIr1(value);
                 break;
-            case 5:
+            case 2:
                 setsIr2(value);
                 break;
-            case 7:
+            case 3:
                 setsIr3(value);
                 break;
-            case 9:
+            case 4:
                 setsIr4(value);
                 break;
-            case 11:
+            case 5:
                 setsIr5(value);
                 break;
-            case 13:
+            case 6:
                 setsIr6(value);
                 break;
-            case 15:
+            case 7:
                 setsIr7(value);
                 break;
-            case 17:
+            case 8:
                 setsIr8(value);
                 break;
-            case 19:
+            case 9:
+                setsIr9(value);
+                break;
+            case 10:
                 setsIrS1(value);
                 break;
-            case 21:
+            case 11:
                 setsIrS2(value);
                 break;
         }
@@ -191,6 +212,14 @@ public class SensorInfo {
         this.sIr8 = sIr8;
     }
 
+    public int getsIr9() {
+        return sIr9;
+    }
+
+    public void setsIr9(int sIr9) {
+        this.sIr9 = sIr9;
+    }
+
     public int getsIrS1() {
         return sIrS1;
     }
@@ -207,11 +236,4 @@ public class SensorInfo {
         this.sIrS2 = sIrS2;
     }
 
-    public int getsIr0() {
-        return sIr0;
-    }
-
-    public void setsIr0(int sIr0) {
-        this.sIr0 = sIr0;
-    }
 }

@@ -87,7 +87,6 @@ public class RobotSensorPublisher implements NodeMain {
         SensorStatus ss = publisher.newMessage();
         ss.getHeader().setFrameId(robotName);
         ss.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
-        ss.setSIr0(inf.getsIr0());
         ss.setSIr1(inf.getsIr1());
         ss.setSIr2(inf.getsIr2());
         ss.setSIr3(inf.getsIr3());
@@ -96,15 +95,16 @@ public class RobotSensorPublisher implements NodeMain {
         ss.setSIr6(inf.getsIr6());
         ss.setSIr7(inf.getsIr7());
         ss.setSIr8(inf.getsIr8());
+        ss.setSIr9(inf.getsIr9());
         ss.setSIrS1(inf.getsIrS1());
         ss.setSIrS2(inf.getsIrS2());
         publisher.publish(ss);
     }
 
     private void broadcastInfo(SensorInfo inf) {
-        int[] sensors = new int[]{inf.getsIr0(), inf.getsIr1(), inf.getsIr2(), inf.getsIr3(),
-                                  inf.getsIr4(), inf.getsIr5(), inf.getsIr6(), inf.getsIr7(),
-                                  inf.getsIr8()
+        int[] sensors = new int[]{inf.getsIr1(), inf.getsIr2(), inf.getsIr3(),
+                                  inf.getsIr4(), inf.getsIr5(), inf.getsIr6(),
+                                  inf.getsIr7(), inf.getsIr8(), inf.getsIr9()
         };
         Intent i = new Intent(BoardConstants.UPDATE_BOARD_STATE);
         i.putExtra(IR_SENSORS_UPDATE_KEY, sensors);

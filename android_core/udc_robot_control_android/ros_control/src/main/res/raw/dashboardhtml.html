@@ -9,68 +9,115 @@
   </head>
   <body>
     <div id="cameraFrameBorder">
-      <div id="cameraFrame"></div>
+      <img id="cameraFrame" />
     </div>
+    <hr id="division" />
+
+    <div id="boardState">
+      <!-- Board ir schema -->
+      <svg xmlns="http://www.w3.org/2000/svg" id="boardSchema">
+
+        <!-- Basic shape -->
+        <polyline points="5,100 5,250 210,250 210,100" fill="transparent" stroke="#444" stroke-width="2"/>
+        <path d="M5,100 C5,100 110,0 210,100" fill="transparent" stroke="#444" stroke-width="2" />
+
+        <!-- Infrared positions -->
+        <!-- Frontal sensors -->
+        <rect x="20" y="90" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="22" y="105" id="ir8">?</text>
+
+        <rect x="50" y="60" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="52" y="75" id="ir9">?</text>
+
+        <rect x="120" y="60" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="122" y="75" id="ir1">?</text>
+
+        <rect x="150" y="90" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="152" y="105" id="ir2">?</text>
+
+        <!-- Left side -->
+        <rect x="160" y="150" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="162" y="165" id="ir3">?</text>
+
+        <rect x="160" y="180" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="162" y="195" id="ir4">?</text>
+
+        <!-- Back -->
+        <rect x="90" y="220" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="92" y="235" id="ir5">?</text>
+
+        <!-- Right side -->
+        <rect x="10" y="180" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="12" y="195" id="ir6">?</text>
+
+        <rect x="10" y="150" width="40" height="20" fill="white" stroke="orange" stroke-width="2" />
+        <text x="12" y="165" id="ir7">?</text>
+      </svg>
+    </div>
+
+    <!-- Engine Speeds -->
+    <div id="engines"><h2>Engines</h2>
+      <div id="leftEngine">
+        <label for="leInput">Left</label>
+        <input type="range" orient="vertical" id="leInput" name="leInput"
+               min="-1" max="1" step="0.1" />
+
+      </div>
+
+      <div id="rightEngine">
+        <input type="range" orient="vertical" id="reInput" name="reInput"
+               min="-1" max="1" step="0.1"/>
+
+        <label for="reInput">Right</label>
+      </div>
+    </div>
+
+
     <div id="stats">
-      <div id="boardState"><h2>Board state</h2>
-        <div id="wheels">
-          <span class="name">Wheels</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="irsensors">
-          <span class="name">IrSensors</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="odometry">
-          <span class="name">Odometry</span>
-          <span class="value"> - </span>
-        </div>
-      </div>
-      <div id="boardState"><h2>Phone state</h2>
-        <div id="accelerometer">
-          <span class="name">Accelerometer(m/s²)</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="battery">
-          <span class="name">Battery</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="gravity">
-          <span class="name">Gravity(m/s²)</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="gyroscope">
-          <span class="name">Gyroscope(rad/s)</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="light">
-          <span class="name">Light(lux)</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="magneticField">
-          <span class="name">Magnetic Field(uT)</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="pressure">
-          <span class="name">Pressure(hPa)</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="proximity">
-          <span class="name">Proximity(cm)</span>
-          <span class="value"> - </span>
-        </div>
-        <div id="temperature">
-          <span class="name">Temperature(ºC)</span>
-          <span class="value"> - </span>
-        </div>
-      </div>
-      <form action="#" id="newSpeedForm">
-          Left wheel speed: <input type="text" id="leftWheel" pattern="[+-]?(1(\.0+)?|0(\.\d+)?)" placeholder="from 0 to 1" />
-          <br/>
-          Right wheel speed: <input type="text" id="rightWheel" pattern="[+-]?(1(\.0+)?|0(\.\d+)?)" placeholder="from 0 to 1" />
-          <br/>
-          <input type="submit" id="sendNewSpeed" value="Change speeds" />
-      </form>
+      <table id="phoneState">
+        <tbody>
+          <tr id="accelerometer">
+            <td class="value"> - </td>
+            <td class="name">Accelerometer(m/s²)</td>
+          </tr>
+          <tr id="battery">
+            <td class="value"> - </td>
+            <td class="name">Battery</td>
+          </tr>
+          <tr id="gravity">
+            <td class="value"> - </td>
+            <td class="name">Gravity(m/s²)</td>
+          </tr>
+          <tr id="gyroscope">
+            <td class="value"> - </td>
+            <td class="name">Gyroscope(rad/s)</td>
+          </tr>
+          <tr id="light">
+            <td class="value"> - </td>
+            <td class="name">Light(lux)</td>
+          </tr>
+          <tr id="magneticField">
+            <td class="value"> - </td>
+            <td class="name">Magnetic Field(uT)</td>
+          </tr>
+          <tr id="odometry">
+            <td class="value"> - </td>
+            <td class="name">Odometry</td>
+          </tr>
+          <tr id="pressure">
+            <td class="value"> - </td>
+            <td class="name">Pressure(hPa)</td>
+          </tr>
+          <tr id="proximity">
+            <td class="value"> - </td>
+            <td class="name">Proximity(cm)</td>
+          </tr>
+          <tr id="temperature">
+            <td class="value"> - </td>
+            <td class="name">Temperature(ºC)</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </body>
+</body>
 </html>

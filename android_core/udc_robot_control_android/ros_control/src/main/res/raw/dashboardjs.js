@@ -1,20 +1,12 @@
 (function($){
-    var IMAGE_REFRESH_TIME = 500;
-    var cameraFrame = undefined;
-    var imageSet = false;
+    var IMAGE_REFRESH_TIME = 1000;
     var STATS_REFRESH_TIME = 1000;
+    var SEND_SPEED_BATCH_TIMEOUT = 2000;
+    var updatingSpeed = false;
+    var updatingSpeedTimeout = undefined;
 
     function updateBackground(){
-        var i = new Image();
-        i.onload = (function(){
-            if ((!imageSet) && (this.naturalWidth > 0)){
-                cameraFrame.style.width = this.naturalWidth + "px";
-                cameraFrame.style.height = this.naturalHeight + "px";
-                imageSet = true;
-            }
-            cameraFrame.style.backgroundImage = "url(" + this.src + ")";
-        });
-
+        var i = document.getElementById('cameraFrame');
         // Add a miliseconds parameter to avoid caching
         i.src = "sensors/compressedImage?nocache=" + new Date().getTime();
         setTimeout(updateBackground, IMAGE_REFRESH_TIME);
@@ -23,22 +15,26 @@
     function updateStats(){
         // Board
         // Wheels
-        $.get("actuators/wheels", function(data){
-            $('#wheels>.value').html("left " + data.leftWheel
-                              + ", right: " + data.rightWheel);
-        }, "json");
+        if (!updatingSpeed){
+            $.get("actuators/wheels", function(data){
+                $('#leftEngine input')[0].value = data.leftWheel;
+                $('#rightEngine input')[0].value = data.rightWheel;
+            }, "json");
+        }
+
+        var irNums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
         // IR Sensors
         $.get("sensors/ir", function(data){
-            $('#irsensors>.value').html(data.irSensor0 + ", "
-                                         + data.irSensor1 + ", "
-                                         + data.irSensor2 + ", "
-                                         + data.irSensor3 + ", "
-                                         + data.irSensor4 + ", "
-                                         + data.irSensor5 + ", "
-                                         + data.irSensor6 + ", "
-                                         + data.irSensor7 + ", "
-                                         + data.irSensor8);
+            for (var i in irNums){
+                document.getElementById('ir' + irNums[i]).textContent = data['irSensor' + irNums[i]];
+            }
+        }, "json");
+
+        // Not actually a board one, but based on the engine
+        $.get("sensors/odometry", function(data){
+            $('#odometry>.value').html(data.odometryX + ", "
+                                       + data.odometryY);
         }, "json");
 
         // Android sensors
@@ -69,11 +65,6 @@
             $('#light>.value').html(data.light);
         }, "json");
 
-        $.get("sensors/odometry", function(data){
-            $('#odometry>.value').html(data.odometryX + ", "
-                                       + data.odometryY);
-        }, "json");
-
         $.get("sensors/magneticField", function(data){
             $('#magneticField>.value').html(data.magneticFieldX + ", "
                                              + data.magneticFieldY + ", "
@@ -97,17 +88,32 @@
 
 
     function sendNewSpeed(){
-        var value = "leftWheel=" + $('#leftWheel').val() + "&"
-                + "rightWheel=" + $('#rightWheel').val();
-        $.post("actuators/wheels", value.replace(",", "."));
+        var leftWheel = $('#leftEngine input')[0].value;
+        var rightWheel = $('#rightEngine input')[0].value;
+        var value = "leftWheel=" + leftWheel + "&"+ "rightWheel=" + rightWheel;
+        $.post("actuators/wheels", value);
+        updatingSpeed = false;
+        updatingSpeedTimeout = undefined;
     }
 
 
+    function onChangeSpeed(wheel, e){
+        // Restart timer if it was going on
+        if (updatingSpeed){
+            clearTimeout(updatingSpeedTimeout);
+        }
+
+        // Give the user some time to make changes before the updates are made
+        updatingSpeed = true;
+        updatingSpeedTimeout = setTimeout(sendNewSpeed, SEND_SPEED_BATCH_TIMEOUT);
+    }
+
 
     function onload(){
-        cameraFrame = document.getElementById("cameraFrame");
         updateBackground();
         updateStats();
+        $("#rightEngine input").change(function (e) {onChangeSpeed("right", e); });
+        $("#leftEngine input").change(function (e) {onChangeSpeed("left", e); });
         $("#newSpeedForm").submit(sendNewSpeed);
     };
     window.onload = onload;

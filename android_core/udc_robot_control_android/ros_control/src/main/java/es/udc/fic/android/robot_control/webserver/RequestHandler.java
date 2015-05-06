@@ -89,7 +89,7 @@ public class RequestHandler implements AndroidHTTPD.RequestHandler {
         StringBuilder sensorsJsonBuilder = new StringBuilder();
 
         for (int i = 0; i < len; i++){
-            sensorsJsonBuilder.append("    \"irSensor" + i + "\": " + irSensors[i] + ",\n");
+            sensorsJsonBuilder.append("    \"irSensor" + (i + 1) + "\": " + irSensors[i] + ",\n");
         }
 
         String sensorsJson = sensorsJsonBuilder.toString();
