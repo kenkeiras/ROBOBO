@@ -12,3 +12,8 @@ int32 rotation
 
 # Measured in pixels, how long was the observed perimeter
 float64 observedPerimeter
+
+# Distances
+float64 distanceX
+float64 distanceY
+float64 distanceZ

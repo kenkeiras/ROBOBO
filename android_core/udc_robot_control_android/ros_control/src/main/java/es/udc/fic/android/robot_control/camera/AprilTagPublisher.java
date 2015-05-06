@@ -32,7 +32,6 @@ class AprilTagPublisher implements RawImageListener {
     private final double TAG_SIZE = 0.04f; // Expected april tag size in meters
 
 
-
     public AprilTagPublisher(String robotName, ConnectedNode connectedNode) {
         this.connectedNode = connectedNode;
         String aprilQueue = robotName + "/" + Constants.TOPIC_APRIL_TAGS;
@@ -111,12 +110,16 @@ class AprilTagPublisher implements RawImageListener {
         double length12 = TAG_SIZE;
 
         boolean solved = grunert.process(obs1, obs2, obs3, length23, length13, length12);
+        PointDistance3 distance = null;
         Log.d("UDCApril", "Solved: " + solved);
 
         if (solved){
             FastQueue<PointDistance3> points = grunert.getSolutions();
             Log.d("UDCApril", points.size() + " solutions!");
             for (PointDistance3 p : points.toList()){
+                if (distance == null){
+                    distance = p;
+                }
                 Log.d("UDCApril", "X: " + p.dist1 + " | Y: " + p.dist2 + " | Z: " + p.dist3);
             }
         }
@@ -127,6 +130,12 @@ class AprilTagPublisher implements RawImageListener {
         msg.setHammingDistance(detection.hammingDistance);
         msg.setRotation(detection.rotation * 90);
         msg.setObservedPerimeter(detection.observedPerimeter);
+
+        if (distance != null) {
+            msg.setDistanceX(distance.dist1);
+            msg.setDistanceY(distance.dist2);
+            msg.setDistanceZ(distance.dist3);
+        }
 
         return msg;
     }
