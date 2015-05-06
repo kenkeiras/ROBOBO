@@ -11,6 +11,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.udc.fic.android.robot_control.utils.C;
+
 public class TaskManagerService extends Service {
 
     public final static String TASK_DIRECTORY = "/sdcard/ros/";
@@ -52,18 +54,18 @@ public class TaskManagerService extends Service {
     }
 
     public void toggle(Task task, String masterUri, String robotName){
-        Log.v("UDC", task + "");
+        Log.v(C.TAG, task + "");
 
         switch(task.getState()){
         case Task.STOP: case Task.CRASHED:
-            Log.v("UDC", "Resuming task");
+            Log.v(C.TAG, "Resuming task");
 
             task.stop();
             task.run(masterUri, robotName);
             break;
 
         case Task.RUNNING:
-            Log.v("UDC", "Stopping task");
+            Log.v(C.TAG, "Stopping task");
             task.stop();
             break;
         }
@@ -79,7 +81,7 @@ public class TaskManagerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("UDC", "Bind, " + this.hashCode());
+        Log.d(C.TAG, "Bind, " + this.hashCode());
         refreshTaskList();
         return sBinder;
     }

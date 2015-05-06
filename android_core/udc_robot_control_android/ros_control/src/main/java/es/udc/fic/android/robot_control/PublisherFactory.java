@@ -106,17 +106,17 @@ public class PublisherFactory {
     }
 
     private void checkConfig() {
-            Log.v("UDC_FACTORY", "ROBOT NAME: " + robotName + "  URI: " + masterUri);
+            Log.v(C.FACTORY_TAG, "ROBOT NAME: " + robotName + "  URI: " + masterUri);
         if ((robotName != null) && (masterUri != null)) {
             nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress());
             nodeConfiguration.setMasterUri(masterUri);
             nodeConfiguration.setNodeName("/" + robotName);
-            Log.v("UDC_FACTORY", "NODE: " + nodeConfiguration);
+            Log.v(C.FACTORY_TAG, "NODE: " + nodeConfiguration);
         }
     }
 
     public void configureCommandListener(UDCAndroidControl ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating Commands Listener");
+        Log.i(C.FACTORY_TAG, "Creating Commands Listener");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
         nc0.setNodeName("/" + robotName + "/" + Constants.NODE_COMMANDS);
         cmdl = new CommandListener(ctx, robotName, nodeMainExecutor);
@@ -124,7 +124,7 @@ public class PublisherFactory {
     }
 
     public void configureEngineListener(BoardService board, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating Engine Listener");
+        Log.i(C.FACTORY_TAG, "Creating Engine Listener");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
         nc0.setNodeName("/" + robotName + "/" + Constants.NODE_ENGINES);
         engineListener = new EngineListener(board, robotName, nodeMainExecutor);
@@ -132,7 +132,7 @@ public class PublisherFactory {
     }
 
     public RobotSensorPublisher configureIRSensorPublisher(UDCAndroidControl ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating IR Sensor publisher");
+        Log.i(C.FACTORY_TAG, "Creating IR Sensor publisher");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
         nc0.setNodeName("/" + robotName + "/" + Constants.NODE_IR_SENSORS);
         rsp = new RobotSensorPublisher(ctx, robotName);
@@ -141,7 +141,7 @@ public class PublisherFactory {
     }
 
     public void configureBattery(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating BatteryStatus Publisher");
+        Log.i(C.FACTORY_TAG, "Creating BatteryStatus Publisher");
         NodeConfiguration nc0 = NodeConfiguration.copyOf(nodeConfiguration);
         nc0.setNodeName("/" + robotName + "/" + Constants.NODE_BATTERY);
         batteryStatusPublisher = new BatteryStatus(ctx, robotName);
@@ -149,7 +149,7 @@ public class PublisherFactory {
     }
 
     public void configureProximity(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating Proximity Publisher");
+        Log.i(C.FACTORY_TAG, "Creating Proximity Publisher");
         NodeConfiguration ncProximity = NodeConfiguration.copyOf(nodeConfiguration);
         ncProximity.setNodeName("/" + robotName + "/" + Constants.NODE_PROXIMITY);
         proximityPub = new ProximityPublisher(ctx, robotName);
@@ -157,7 +157,7 @@ public class PublisherFactory {
     }
 
     public void configurePressure(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating PressurePublisher");
+        Log.i(C.FACTORY_TAG, "Creating PressurePublisher");
         NodeConfiguration ncProximity = NodeConfiguration.copyOf(nodeConfiguration);
         ncProximity.setNodeName("/" + robotName + "/" + Constants.NODE_PRESSURE);
         fluidPressurePub = new PressurePublisher(ctx, robotName);
@@ -165,7 +165,7 @@ public class PublisherFactory {
     }
 
     public void configureLight(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating LightPublisher");
+        Log.i(C.FACTORY_TAG, "Creating LightPublisher");
         NodeConfiguration nc= NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_LIGHT);
         lightPub = new LightPublisher(ctx, robotName);
@@ -173,7 +173,7 @@ public class PublisherFactory {
     }
 
     public void configureImu(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating ImuPublisher");
+        Log.i(C.FACTORY_TAG, "Creating ImuPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_IMU);
         imuPub = new ImuPublisher(ctx, robotName);
@@ -181,7 +181,7 @@ public class PublisherFactory {
     }
 
     public void configureGyroscope(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating GyroscopePublisher");
+        Log.i(C.FACTORY_TAG, "Creating GyroscopePublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_GYROSCOPE);
         gyroscopePub = new GyroscopePublisher(ctx, robotName);
@@ -189,7 +189,7 @@ public class PublisherFactory {
     }
 
     public void configureGyroscopeUncalibrated(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating GyroscopeUncalibratedPublisher");
+        Log.i(C.FACTORY_TAG, "Creating GyroscopeUncalibratedPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_GYROSCOPE_UNCALIBRATED);
         gyroscopeUncalibratedPub = new GyroscopeUncalibratedPublisher(ctx, robotName);
@@ -197,7 +197,7 @@ public class PublisherFactory {
     }
 
     public void configureAccelerometer(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating AccelerometerPublisher");
+        Log.i(C.FACTORY_TAG, "Creating AccelerometerPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_ACCELEROMETER);
         accelerometerPub = new AccelerometerPublisher(ctx, robotName);
@@ -205,7 +205,7 @@ public class PublisherFactory {
     }
 
     public void configureGravity(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating GraviyPublisher");
+        Log.i(C.FACTORY_TAG, "Creating GraviyPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_GRAVITY);
         gravityPub = new GravityPublisher(ctx, robotName);
@@ -213,7 +213,7 @@ public class PublisherFactory {
     }
 
     public void configureLinearAcceleration(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating LinearAcceleration");
+        Log.i(C.FACTORY_TAG, "Creating LinearAcceleration");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_LINEAL_ACCELERATION);
         linearAccelerationPub = new LinearAccelerationPublisher(ctx, robotName);
@@ -222,7 +222,7 @@ public class PublisherFactory {
 
 
     public void configureOdometry(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating Odometry manager");
+        Log.i(C.FACTORY_TAG, "Creating Odometry manager");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_ODOMETRY);
         odometryPub = new OdometryPublisher(ctx, robotName);
@@ -231,7 +231,7 @@ public class PublisherFactory {
 
 
     public void configureRotationVector(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating RotationVectorPublisher");
+        Log.i(C.FACTORY_TAG, "Creating RotationVectorPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_ROTATION_VECTOR);
         rotationVectorPub = new RotationVectorPublisher(ctx, robotName);
@@ -239,7 +239,7 @@ public class PublisherFactory {
     }
 
     public void configureGameRotationVector(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating GameRotationVectorPublisher");
+        Log.i(C.FACTORY_TAG, "Creating GameRotationVectorPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_GAME_ROTATION_VECTOR);
         gameRotationVectorPub = new GameRotationVectorPublisher(ctx, robotName);
@@ -247,7 +247,7 @@ public class PublisherFactory {
     }
 
     public void configureMagneticField(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating MagneticFieldPublisher");
+        Log.i(C.FACTORY_TAG, "Creating MagneticFieldPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_MAGNETIC_FIELD);
         magneticFieldPub = new MagneticFieldPublisher(ctx, robotName);
@@ -255,7 +255,7 @@ public class PublisherFactory {
     }
 
     public void configureMagneticUncalibrated(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating MagneticFieldPublisher");
+        Log.i(C.FACTORY_TAG, "Creating MagneticFieldPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_MAGNETIC_FIELD_UNCALIBRATED);
         magneticFieldUncalibratedPub = new MagneticFieldUncalibratedPublisher(ctx, robotName);
@@ -263,7 +263,7 @@ public class PublisherFactory {
     }
 
     public void configureOrientation(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating OrientationPublisher");
+        Log.i(C.FACTORY_TAG, "Creating OrientationPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_ORIENTATION);
         orientationPub = new OrientationPublisher(ctx, robotName);
@@ -271,7 +271,7 @@ public class PublisherFactory {
     }
 
     public void configureTemperature(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating AmbientTemperaturePublisher");
+        Log.i(C.FACTORY_TAG, "Creating AmbientTemperaturePublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_AMBIENT_TEMPERATURE);
         temperaturePub = new AmbientTemperaturePublisher(ctx, robotName);
@@ -279,7 +279,7 @@ public class PublisherFactory {
     }
 
     public void configureRelativeHumidity(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating RelativeHumidityPublisher");
+        Log.i(C.FACTORY_TAG, "Creating RelativeHumidityPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_RELATIVE_HUMIDITY);
         relativeHumidityPub = new RelativeHumidityPublisher(ctx, robotName);
@@ -288,7 +288,7 @@ public class PublisherFactory {
 
 
     public void configureNavSatFix(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating NavSatFixPublisher");
+        Log.i(C.FACTORY_TAG, "Creating NavSatFixPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_NAV_SAT_FIX);
         navSatFixPub = new NavSatFixPublisher(ctx, robotName);
@@ -296,13 +296,13 @@ public class PublisherFactory {
     }
 
     public void configureCamera(Context ctx, NodeMainExecutor nodeMainExecutor, RosCameraPreviewView rcp, int cameraId, int displayOrientation) {
-        Log.i(C.TAG, "Starting the preview");
+        Log.i(C.FACTORY_TAG, "Starting the preview");
         rosCameraPreviewView = rcp;
         Camera c = Camera.open(cameraId);
         c.setDisplayOrientation(displayOrientation);
 
         rosCameraPreviewView.setCamera(c);
-        Log.i(C.TAG, "Creating video configuration");
+        Log.i(C.FACTORY_TAG, "Creating video configuration");
         NodeConfiguration ncCamara = NodeConfiguration.copyOf(nodeConfiguration);
         ncCamara.setNodeName("/" + robotName + "/" + Constants.NODE_IMAGE);
         rosCameraPreviewView.setRobotName(robotName);
@@ -310,7 +310,7 @@ public class PublisherFactory {
     }
 
     public void configureAudio(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating AudioPublisher");
+        Log.i(C.FACTORY_TAG, "Creating AudioPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_AUDIO);
         audioPub = new AudioPublisher(ctx, robotName);
@@ -318,7 +318,7 @@ public class PublisherFactory {
     }
 
     public void configureSpeechRecognition(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating SpeechRecognitionPublisher");
+        Log.i(C.FACTORY_TAG, "Creating SpeechRecognitionPublisher");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_SPEECH_RECOGNITION);
         speechPub = new SpeechRecognitionPublisher(ctx, robotName);
@@ -326,7 +326,7 @@ public class PublisherFactory {
     }
 
     public void configureTTS(Context ctx, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating TextToSpeech Listener");
+        Log.i(C.FACTORY_TAG, "Creating TextToSpeech Listener");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_TEXT_TO_SPEECH);
         ttsListener = new TextToSpeechListener(ctx, robotName, nodeMainExecutor);
@@ -334,7 +334,7 @@ public class PublisherFactory {
     }
 
     public void configureScreenListener(RobotCommController robot, NodeMainExecutor nodeMainExecutor) {
-        Log.i(C.TAG, "Creating TextToSpeech Listener");
+        Log.i(C.FACTORY_TAG, "Creating TextToSpeech Listener");
         NodeConfiguration nc = NodeConfiguration.copyOf(nodeConfiguration);
         nc.setNodeName("/" + robotName + "/" + Constants.NODE_SCREEN);
         screenListener = new ScreenListener(robot, robotName, nodeMainExecutor);
@@ -428,7 +428,7 @@ public class PublisherFactory {
                 node.shutdownNodeMain(rosCameraPreviewView);
                 break;
             default:
-                Log.w(C.TAG, "Unknown publisher to stop [ " + publisher + " ]");
+                Log.w(C.FACTORY_TAG, "Unknown publisher to stop [ " + publisher + " ]");
         }
     }
 

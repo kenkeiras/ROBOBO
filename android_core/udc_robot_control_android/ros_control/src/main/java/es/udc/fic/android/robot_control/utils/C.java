@@ -26,6 +26,9 @@ public final class C {
     public static final String TAG = "UDC";
     public static final String CMD_TAG = "UDC_CMD";
     public static final String ROBOT_TAG = "UDC_ROBOT";
+    public static final String FACTORY_TAG = "UDC_FACTORY";
+    public static final String APRIL_TAG = "UDC_APRIL_TAG";
+    public static final String SPEECH_RECOG_TAG = "UDC_SPEECH_RECOG";
 
     // Default base name for gadgets Graphname
     public static final String DefaultBaseNodeName = "udc_robot/";

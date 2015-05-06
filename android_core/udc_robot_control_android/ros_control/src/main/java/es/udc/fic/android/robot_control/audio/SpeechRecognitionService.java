@@ -11,6 +11,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import es.udc.fic.android.robot_control.utils.C;
+
 
 public class SpeechRecognitionService
     extends Service
@@ -37,13 +39,13 @@ public class SpeechRecognitionService
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(this);
         speechRecognizer.startListening(serviceIntent);
-        Log.d("SpeechRecognitionService", "Listening started through " + serviceIntent);
+        Log.d(C.SPEECH_RECOG_TAG, "Listening started through " + serviceIntent);
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("SpeechRecognitionService", "onStartCommand");
+        Log.d(C.SPEECH_RECOG_TAG, "onStartCommand");
         serviceIntent = intent;
         initService();
         return START_STICKY;
@@ -52,7 +54,7 @@ public class SpeechRecognitionService
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("SpeechRecognitionService", "onBind");
+        Log.d(C.SPEECH_RECOG_TAG, "onBind");
         return sBinder;
     }
 
@@ -77,7 +79,7 @@ public class SpeechRecognitionService
      * @param results
      */
     public void onResults(Bundle results) {
-        Log.d("SpeechRecognitionPublisher", "onResults");
+        Log.d(C.SPEECH_RECOG_TAG, "onResults");
         ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         String speech = data.get(0);
         if (publisher != null){
@@ -93,33 +95,33 @@ public class SpeechRecognitionService
      * @param error
      */
     public void onError(int error) {
-        Log.d("SpeechRecognitionPublisher", "Error " + error);
+        Log.d(C.SPEECH_RECOG_TAG, "Error " + error);
         waitAndListen();
     }
 
 
     public void onReadyForSpeech(Bundle params) {
-        Log.d("SpeechRecognitionPublisher", "onReadyForSpeech (Audio ON)");
+        Log.d(C.SPEECH_RECOG_TAG, "onReadyForSpeech (Audio ON)");
     }
 
 
     public void onEndOfSpeech() {
-        Log.d("SpeechRecognitionPublisher", "onEndOfSpeech");
+        Log.d(C.SPEECH_RECOG_TAG, "onEndOfSpeech");
     }
 
 
     public void onBeginningOfSpeech() {
-        Log.d("SpeechRecognitionPublisher", "onBeggining");
+        Log.d(C.SPEECH_RECOG_TAG, "onBeggining");
     }
 
 
     public void onPartialResults(Bundle partialResults) {
-        Log.d("SpeechRecognitionPublisher", "onPartialResults");
+        Log.d(C.SPEECH_RECOG_TAG, "onPartialResults");
     }
 
 
     public void onEvent(int eventType, Bundle params) {
-        Log.d("SpeechRecognitionPublisher", "onEvent " + eventType);
+        Log.d(C.SPEECH_RECOG_TAG, "onEvent " + eventType);
     }
 
 

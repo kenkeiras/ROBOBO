@@ -30,6 +30,8 @@ import android.util.Log;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import es.udc.fic.android.robot_control.utils.C;
+
 public class ConfigActivity extends Activity {
     /**
      * The key with which the last used {@link java.net.URI} will be stored as a
@@ -107,7 +109,7 @@ public class ConfigActivity extends Activity {
 
             SharedPreferences.Editor editor = getSharedPreferences(
                 ConfigActivity.class.getName(), MODE_PRIVATE).edit();
-            Log.v("UDC", "MASTER URI: " + masterUri);
+            Log.v(C.TAG, "MASTER URI: " + masterUri);
             editor.putString(PREFS_KEY_URI, masterUri);
             editor.putString(PREFS_KEY_ROBOT_NAME, robotName);
             editor.putBoolean(PREFS_KEY_LOCAL_APRIL_TAG_DETECTION, localAprilTagDetection);

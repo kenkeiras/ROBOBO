@@ -64,7 +64,7 @@ public class TextToSpeechListener implements NodeMain {
 
     @Override
     public void onError(Node node, Throwable throwable) {
-        Log.w(C.CMD_TAG, "Error on TextToSpeech Listener [ " + node.getName() + " ] [ " + throwable.getMessage() + " ]", throwable);
+        Log.w(C.TAG, "Error on TextToSpeech Listener [ " + node.getName() + " ] [ " + throwable.getMessage() + " ]", throwable);
     }
 
     private class TTSMessageListener implements
@@ -86,7 +86,7 @@ public class TextToSpeechListener implements NodeMain {
                 ttsReady = true;
             }
             else {
-                Log.e("UDC", "Couldn't setup TTS");
+                Log.e(C.TAG, "Couldn't setup TTS");
             }
         }
 
@@ -97,7 +97,7 @@ public class TextToSpeechListener implements NodeMain {
                 tts.speak(msg.getData(), TextToSpeech.QUEUE_FLUSH, null);
             }
             else {
-                Log.w("UDC", "TTS wasn't ready, skipped message “"
+                Log.w(C.TAG, "TTS wasn't ready, skipped message “"
                       + msg.getData() + "”");
             }
         }

@@ -52,7 +52,7 @@ public class BoardControlThread extends Thread {
                 boardService.newData(info);
 
             } catch (Exception e) {
-                Log.w("Error retrieving data", e);
+                Log.w(BoardConstants.TAG, "Error retrieving data", e);
                 StringBuilder sb = new StringBuilder();
                 for (int x = 0; x < read.length; x++) {
                     sb.append("byte [ " + x + " ] = (" + read[x] + ")");
