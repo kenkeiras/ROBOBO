@@ -18,6 +18,7 @@ import es.udc.fic.android.robot_control.ConfigActivity;
 import es.udc.fic.android.robot_control.R;
 import es.udc.fic.android.robot_control.camera.RosCameraPreviewView;
 import es.udc.fic.android.robot_control.robot.RobotCommController;
+import es.udc.fic.android.robot_control.utils.C;
 
 import org.ros.node.NodeConfiguration;
 
@@ -88,7 +89,6 @@ public class TaskManagerActivity extends Activity {
                             ConfigActivity.PREFS_KEY_ROBOT_NAME,
                             NodeConfiguration.DEFAULT_MASTER_URI.toString());
 
-                    Log.v("long clicked","pos: " + pos);
                     tService.toggle(adapter.getItem(pos), masterUri, robotName);
                     return true;
                 }

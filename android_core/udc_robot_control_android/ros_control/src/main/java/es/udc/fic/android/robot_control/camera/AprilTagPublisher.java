@@ -9,6 +9,7 @@ import april.tag.*;
 
 import boofcv.alg.geo.pose.P3PGrunert;
 import boofcv.alg.geo.pose.PointDistance3;
+import es.udc.fic.android.robot_control.utils.C;
 import es.udc.robotcontrol.utils.Constants;
 import georegression.struct.point.Point2D_F64;
 import udc_robot_control_msgs.AprilTag;
@@ -95,7 +96,7 @@ class AprilTagPublisher implements RawImageListener {
 
 
     private AprilTag buildMsg(TagDetection detection){
-        Log.d("UDCApril", "Detected: " + detection);
+        Log.d(C.APRIL_TAG, "Detected: " + detection);
 
         P3PGrunert grunert = new P3PGrunert(PolynomialOps.createRootFinder(5, RootFinderType.STURM));
         Point2D_F64 obs1 = new Point2D_F64(detection.p[0][0], detection.p[0][1]);
@@ -111,16 +112,16 @@ class AprilTagPublisher implements RawImageListener {
 
         boolean solved = grunert.process(obs1, obs2, obs3, length23, length13, length12);
         PointDistance3 distance = null;
-        Log.d("UDCApril", "Solved: " + solved);
+        Log.d(C.APRIL_TAG, "Solved: " + solved);
 
         if (solved){
             FastQueue<PointDistance3> points = grunert.getSolutions();
-            Log.d("UDCApril", points.size() + " solutions!");
+            Log.d(C.APRIL_TAG, points.size() + " solutions!");
             for (PointDistance3 p : points.toList()){
                 if (distance == null){
                     distance = p;
                 }
-                Log.d("UDCApril", "X: " + p.dist1 + " | Y: " + p.dist2 + " | Z: " + p.dist3);
+                Log.d(C.APRIL_TAG, "X: " + p.dist1 + " | Y: " + p.dist2 + " | Z: " + p.dist3);
             }
         }
 
@@ -171,7 +172,7 @@ class AprilTagPublisher implements RawImageListener {
             td = null;
             img = null;
         }
-        Log.d("UDCApril", detections.size() + " detections");
+        Log.d(C.APRIL_TAG, detections.size() + " detections");
         for (TagDetection detection : detections){
             udc_robot_control_msgs.AprilTag msg = buildMsg(detection);
 

@@ -61,7 +61,7 @@ public class BoardConnector  {
                 output = (result >= 0);
             }
             catch (Exception ex) {
-                Log.w("Sending data to board", ex);
+                Log.w(BoardConstants.TAG, "Sending data to board", ex);
                 output = false;
             }
         }

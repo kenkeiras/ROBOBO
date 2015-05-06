@@ -115,7 +115,7 @@ public class EngineManager extends BroadcastReceiver {
         rightSpeed = rightEngine;
         endTime = (double) System.currentTimeMillis()
                 + (distance * 1000) / BoardConstants.SPEED_CONVERSION;
-        Log.e("EngineManager", "t=" + (endTime - System.currentTimeMillis()));
+        Log.e(BoardConstants.TAG, "t=" + (endTime - System.currentTimeMillis()));
     }
 
 
@@ -175,7 +175,7 @@ public class EngineManager extends BroadcastReceiver {
             endTime = (double) System.currentTimeMillis()
                     + (data.getDouble(BoardConstants.DISTANCE_UPDATE_KEY) * 1000)
                       / BoardConstants.SPEED_CONVERSION;
-            Log.e("EngineManager", "t=" + (endTime - System.currentTimeMillis()));
+            Log.e(BoardConstants.TAG, "t=" + (endTime - System.currentTimeMillis()));
         }
         else {
             endTime = null;

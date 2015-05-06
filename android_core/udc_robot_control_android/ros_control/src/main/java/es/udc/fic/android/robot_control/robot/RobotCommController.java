@@ -97,7 +97,7 @@ public class RobotCommController extends Service implements SensorInfoHandler {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("UDC", "Controller bound: " + this.hashCode());
+        Log.d(C.TAG, "Controller bound: " + this.hashCode());
         return sBinder;
     }
 
@@ -123,16 +123,16 @@ public class RobotCommController extends Service implements SensorInfoHandler {
 
 
     private void createInitialNodes(){
-        Log.d("UDC", "Creating initial nodes...");
+        Log.d(C.TAG, "Creating initial nodes...");
 
         if ((masterURI == null)
             || (nodeMainExecutor == null)
             || (androidControl == null)){
 
-            Log.d("UDC", "NOT! NodeMainExec=" + nodeMainExecutor + " masterUri=" + masterURI + " androidControl=" + androidControl);
+            Log.d(C.TAG, "NOT! NodeMainExec=" + nodeMainExecutor + " masterUri=" + masterURI + " androidControl=" + androidControl);
             return;
         }
-        Log.d("UDC", "OK");
+        Log.d(C.TAG, "OK");
 
         createdInitialNodes = true;
         // Configure the initial node. A listener.
@@ -140,7 +140,7 @@ public class RobotCommController extends Service implements SensorInfoHandler {
         pf.configureCommandListener(androidControl, nodeMainExecutor);
         pf.configureEngineListener(boardService, nodeMainExecutor);
         rsp = pf.configureIRSensorPublisher(androidControl, nodeMainExecutor);
-        Log.d("UDC", "Let's check...");
+        Log.d(C.TAG, "Let's check...");
         pf.configureOdometry(androidControl, nodeMainExecutor);
         pf.configureTTS(androidControl, nodeMainExecutor);
         pf.configureScreenListener(this, nodeMainExecutor);
@@ -154,7 +154,7 @@ public class RobotCommController extends Service implements SensorInfoHandler {
 
 
     public synchronized void setCameraPreview(RosCameraPreviewView newCameraPreview){
-        Log.d("UDC", "Set Camera Preview " + rosCameraPreviewView + " -> " + newCameraPreview);
+        Log.d(C.TAG, "Set Camera Preview " + rosCameraPreviewView + " -> " + newCameraPreview);
 
         if (rosCameraPreviewView != null){
             rosCameraPreviewView.releaseCamera();
