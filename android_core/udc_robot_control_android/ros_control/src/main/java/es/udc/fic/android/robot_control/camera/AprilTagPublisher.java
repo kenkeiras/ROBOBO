@@ -27,7 +27,6 @@ import org.ros.node.topic.Publisher;
 class AprilTagPublisher implements RawImageListener {
 
     private boolean working = false;
-    public static final boolean USE_NDK = false;
     private final ConnectedNode connectedNode;
     private final Publisher<udc_robot_control_msgs.AprilTag> aprilPublisher;
     private final double TAG_SIZE = 0.04f; // Expected april tag size in meters
@@ -50,48 +49,6 @@ class AprilTagPublisher implements RawImageListener {
             fimg[i] = ((float)grey) / 255.0f;
         }
         return fimg;
-    }
-
-
-    private byte[] yuvToBytes(byte[] yuv){
-        int origLen = yuv.length;
-        byte[] img = new byte[origLen];
-
-        // Check convertion quality
-        for (int i = 0; i < origLen; i++) {
-            byte grey = (byte)(yuv[i] & 0xff);
-            img[i] = grey;
-        }
-        return img;
-    }
-
-
-    private TagDetection stringToDetection (String str){
-        TagDetection detection = new TagDetection();
-        String []parts = str.split(", ");
-        assert(parts.length == 5);
-
-        detection.code              = Integer.parseInt(parts[0], 16);
-        detection.id                = Integer.parseInt(parts[1], 16);
-        detection.hammingDistance   = Integer.parseInt(parts[2], 16);
-        detection.rotation          = Integer.parseInt(parts[3], 16);
-        detection.observedPerimeter = Integer.parseInt(parts[4], 16);
-
-        // Filler
-        detection.obsCode = -1;
-        detection.good = true; // Probably...
-        detection.cxy = new double[]{(double) -1, (double) -1};
-
-        return detection;
-    }
-
-    private List<TagDetection> stringArrayToDetections(String[] results){
-        List<TagDetection> detections = new ArrayList<TagDetection>();
-        for (String result : results){
-            detections.add(stringToDetection(result));
-        }
-
-        return detections;
     }
 
 
@@ -152,26 +109,19 @@ class AprilTagPublisher implements RawImageListener {
         int width = size.width;
         int height = size.height;
 
-        if (USE_NDK){
-            AprilTagNdkInterface april = new AprilTagNdkInterface();
-            String[] results = april.process(yuvToBytes(data), width, height);
+        TagFamily tf = new Tag36h11();
+        TagDetector td = new TagDetector(tf);
 
-            detections = stringArrayToDetections(results);
-        }
-        else {
-            TagFamily tf = new Tag36h11();
-            TagDetector td = new TagDetector(tf);
+        FloatImage img = new FloatImage(width, height,
+                                        yuvToFloats(data));
+        data = null;
 
-            FloatImage img = new FloatImage(width, height,
-                                            yuvToFloats(data));
-            data = null;
+        detections = td.processFloat(img, new double[]{width / 2,
+                                                       height / 2});
+        tf = null;
+        td = null;
+        img = null;
 
-            detections = td.processFloat(img, new double[]{width / 2,
-                                                           height / 2});
-            tf = null;
-            td = null;
-            img = null;
-        }
         Log.d(C.APRIL_TAG, detections.size() + " detections");
         for (TagDetection detection : detections){
             udc_robot_control_msgs.AprilTag msg = buildMsg(detection);
